@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elroy Saltzherr • 16-Bit Town RPG Overworld</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0f172a;
+      color: #fff;
+      font-family: 'Press Start 2P', monospace;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    #game-container {
+      position: relative;
+      width: 800px;
+      height: 600px;
+      border: 4px solid #334155;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.3);
+      overflow: hidden;
+      background: #1e293b;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      image-rendering: pixelated;
+    }
+
+    /* Top HUD */
+    .top-hud {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+      z-index: 10;
+      font-size: 0.65rem;
+    }
+
+    .hud-chip {
+      background: rgba(15, 23, 42, 0.85);
+      border: 2px solid #475569;
+      border-radius: 6px;
+      padding: 6px 12px;
+      color: #fbbf24;
+      pointer-events: auto;
+    }
+
+    .btn-exit {
+      background: rgba(239, 68, 68, 0.2);
+      border: 2px solid #ef4444;
+      color: #fca5a5;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.65rem;
+      pointer-events: auto;
+    }
+
+    /* Retro Dialogue Box */
+    #dialogue-box {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      height: 150px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 4px solid #fbbf24;
+      border-radius: 8px;
+      padding: 16px;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 20;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    }
+
+    .dialogue-speaker {
+      font-size: 0.75rem;
+      color: #38bdf8;
+      margin-bottom: 8px;
+    }
+
+    .dialogue-text {
+      font-size: 0.7rem;
+      line-height: 1.8;
+      color: #f8fafc;
+      flex-grow: 1;
+    }
+
+    .dialogue-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .dialogue-link-btn {
+      background: #6366f1;
+      border: 2px solid #818cf8;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 0.65rem;
+      cursor: pointer;
+    }
+
+    .dialogue-hint {
+      font-size: 0.55rem;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <div class="top-hud">
+      <div class="hud-chip">📍 ELROY'S TOWN: OVERWORLD</div>
+      <div class="hud-chip" style="color: #38bdf8;">[WASD] WALK • [SPACE] TALK</div>
+      <a href="play.html" class="btn-exit">EXIT</a>
+    </div>
+
+    <canvas id="rpg-canvas" width="800" height="600"></canvas>
+
+    <!-- Retro Dialogue Window -->
+    <div id="dialogue-box">
+      <div>
+        <div class="dialogue-speaker" id="dialogue-speaker">NPC NAME</div>
+        <div class="dialogue-text" id="dialogue-text">Dialogue text goes here...</div>
+      </div>
+      <div class="dialogue-actions">
+        <a id="dialogue-btn" href="#" target="_blank" class="dialogue-link-btn" style="display: none;">VISIT LINK →</a>
+        <div class="dialogue-hint">PRESS [SPACE] OR [ESC] TO CLOSE</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Web Audio Synthesizer for 8-bit text beeps & sparkles
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function playBeep(freq = 440, duration = 0.05) {
+      try {
+        if (!audioCtx) audioCtx = new AudioCtx();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const t = audioCtx.currentTime;
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(freq, t);
+        gain.gain.setValueAtTime(0.08, t);
+        gain.gain.linearRampToValueAtTime(0, t + duration);
+        osc.start(t);
+        osc.stop(t + duration);
+      } catch (e) {}
+    }
+
+    const canvas = document.getElementById('rpg-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Player
+    const player = {
+      x: 400,
+      y: 300,
+      w: 24,
+      h: 28,
+      speed: 3.5,
+      dir: 'down',
+      animStep: 0
+    };
+
+    // NPCs & Zones
+    const npcs = [
+      {
+        id: 'darkthrone',
+        name: 'KNIGHT • DARK THRONE',
+        x: 400,
+        y: 120,
+        w: 26,
+        h: 30,
+        color: '#6366f1',
+        text: 'Greetings traveler! I am the protagonist of Dark Throne, shipped on Steam! Elroy designed my 2D combat loops, dash mechanics, and boss state machines.',
+        url: 'https://store.steampowered.com/app/2995790/Dark_Throne/',
+        btnText: 'VIEW ON STEAM'
+      },
+      {
+        id: 'cloud',
+        name: 'ROBOT DRONE • GCP CLOUD',
+        x: 650,
+        y: 280,
+        w: 24,
+        h: 24,
+        color: '#38bdf8',
+        text: 'BEEP BOOP! I represent the Google Cloud Run autonomous pipeline for Jambelles.nl & LongboardsUSA! Ingestion time reduced from hours to 10 minutes.',
+        url: 'https://github.com/esaltzherr',
+        btnText: 'VIEW GITHUB'
+      },
+      {
+        id: 'arena',
+        name: 'ARENA MASTER • LEAGUE',
+        x: 150,
+        y: 280,
+        w: 24,
+        h: 28,
+        color: '#f87171',
+        text: 'Welcome to the Summoner Arena! Elroy reached Diamond piloting off-meta carries: 2.4M mastery points on Taliyah, plus Zyra and Diana ADC.',
+        url: 'https://masterychart.com/profile/na/LRoy-Rocks',
+        btnText: 'MASTERY CHART'
+      },
+      {
+        id: 'pokemon_meadow',
+        name: 'SHINY POKÉMON RANGER',
+        x: 400,
+        y: 480,
+        w: 24,
+        h: 28,
+        color: '#34d399',
+        text: 'Look at the meadow! Marshadow, Wishiwashi School Form, Perrserker, Mega Golisopod, Cramorant, and Litten are all roaming peacefully!',
+        url: 'index.html#philosophy',
+        btnText: 'SEE SHINIES'
+      }
+    ];
+
+    // Shiny Pokemon roaming in the bottom meadow
+    const shinies = [
+      { name: 'Marshadow ✨', x: 280, y: 460, color: '#a855f7' },
+      { name: 'Wishiwashi ✨', x: 340, y: 510, color: '#38bdf8' },
+      { name: 'Mega Golisopod ✨', x: 460, y: 450, color: '#e2e8f0' },
+      { name: 'Cramorant ✨', x: 520, y: 500, color: '#fb923c' },
+      { name: 'Litten ✨', x: 480, y: 530, color: '#f87171' },
+      { name: 'Perrserker ✨', x: 310, y: 520, color: '#fbbf24' }
+    ];
+
+    const keys = {};
+    let activeDialogue = false;
+
+    window.addEventListener('keydown', e => {
+      keys[e.code] = true;
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (activeDialogue) {
+          closeDialogue();
+        } else {
+          checkInteract();
+        }
+      }
+      if (e.code === 'Escape') {
+        closeDialogue();
+      }
+    });
+
+    window.addEventListener('keyup', e => {
+      keys[e.code] = false;
+    });
+
+    function checkInteract() {
+      // Find closest NPC
+      for (const npc of npcs) {
+        const dist = Math.hypot((player.x + player.w/2) - (npc.x + npc.w/2), (player.y + player.h/2) - (npc.y + npc.h/2));
+        if (dist < 48) {
+          openDialogue(npc);
+          return;
+        }
+      }
+
+      // Check shiny pokemon
+      for (const s of shinies) {
+        const dist = Math.hypot((player.x + player.w/2) - s.x, (player.y + player.h/2) - s.y);
+        if (dist < 38) {
+          playBeep(880, 0.1);
+          openDialogue({
+            name: s.name,
+            text: `You encountered ${s.name}! It shines brilliantly with a sparkling aura!`,
+            url: 'index.html#philosophy',
+            btnText: 'VIEW FAVORITES'
+          });
+          return;
+        }
+      }
+    }
+
+    function openDialogue(npc) {
+      activeDialogue = true;
+      const box = document.getElementById('dialogue-box');
+      document.getElementById('dialogue-speaker').textContent = npc.name;
+      document.getElementById('dialogue-text').textContent = npc.text;
+      const btn = document.getElementById('dialogue-btn');
+      if (npc.url) {
+        btn.href = npc.url;
+        btn.textContent = npc.btnText || 'VISIT LINK →';
+        btn.style.display = 'inline-block';
+      } else {
+        btn.style.display = 'none';
+      }
+      box.style.display = 'flex';
+      playBeep(587.33, 0.08); // D5
+    }
+
+    function closeDialogue() {
+      activeDialogue = false;
+      document.getElementById('dialogue-box').style.display = 'none';
+    }
+
+    function update() {
+      if (activeDialogue) return;
+
+      let moved = false;
+      if (keys['KeyW'] || keys['ArrowUp']) {
+        player.y -= player.speed;
+        player.dir = 'up';
+        moved = true;
+      }
+      if (keys['KeyS'] || keys['ArrowDown']) {
+        player.y += player.speed;
+        player.dir = 'down';
+        moved = true;
+      }
+      if (keys['KeyA'] || keys['ArrowLeft']) {
+        player.x -= player.speed;
+        player.dir = 'left';
+        moved = true;
+      }
+      if (keys['KeyD'] || keys['ArrowRight']) {
+        player.x += player.speed;
+        player.dir = 'right';
+        moved = true;
+      }
+
+      if (moved) {
+        player.animStep = (player.animStep + 0.15) % Math.PI;
+      }
+
+      // World bounds
+      player.x = Math.max(30, Math.min(canvas.width - 50, player.x));
+      player.y = Math.max(50, Math.min(canvas.height - 50, player.y));
+    }
+
+    function render() {
+      // 1. Draw Map (Grass / Paths / Water)
+      ctx.fillStyle = '#064e3b'; // Meadow green
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Cobblestone town square
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(250, 180, 300, 240);
+
+      // Path North to Castle
+      ctx.fillRect(360, 40, 80, 150);
+      // Path East to Cloud
+      ctx.fillRect(540, 260, 180, 80);
+      // Path West to Arena
+      ctx.fillRect(80, 260, 180, 80);
+      // Path South to Meadow
+      ctx.fillRect(360, 410, 80, 120);
+
+      // Buildings / Zones
+      // North: Dark Throne Keep
+      ctx.fillStyle = '#312e81';
+      ctx.fillRect(330, 40, 140, 70);
+      ctx.fillStyle = '#4338ca';
+      ctx.fillRect(370, 75, 60, 35); // Gate
+
+      // East: Cloud Foundry
+      ctx.fillStyle = '#0369a1';
+      ctx.fillRect(630, 200, 120, 70);
+
+      // West: Colosseum
+      ctx.fillStyle = '#881337';
+      ctx.fillRect(50, 200, 120, 70);
+
+      // Center Fountain / Statue
+      ctx.fillStyle = '#0284c7';
+      ctx.beginPath();
+      ctx.arc(400, 300, 24, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath();
+      ctx.arc(400, 300, 12, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw NPCs
+      for (const npc of npcs) {
+        ctx.fillStyle = npc.color;
+        ctx.fillRect(npc.x, npc.y, npc.w, npc.h);
+        // Interaction exclamation mark if near
+        const dist = Math.hypot((player.x + player.w/2) - (npc.x + npc.w/2), (player.y + player.h/2) - (npc.y + npc.h/2));
+        if (dist < 55) {
+          ctx.fillStyle = '#fbbf24';
+          ctx.font = '10px "Press Start 2P"';
+          ctx.fillText('!', npc.x + 8, npc.y - 8);
+        }
+      }
+
+      // Draw Shinies in Meadow
+      for (const s of shinies) {
+        ctx.fillStyle = s.color;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, 8, 0, Math.PI * 2);
+        ctx.fill();
+        // Sparkle glint
+        ctx.fillStyle = '#fbbf24';
+        ctx.fillText('✦', s.x + 8, s.y - 4);
+      }
+
+      // Draw Player
+      ctx.save();
+      ctx.translate(player.x, player.y);
+      // Shadow
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+      ctx.beginPath();
+      ctx.ellipse(player.w/2, player.h + 2, player.w/2, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Body (Hero in Red / White)
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(4, 10, player.w - 8, player.h - 10);
+      // Head
+      ctx.fillStyle = '#fde047';
+      ctx.fillRect(4, 0, player.w - 8, 12);
+      // Eyes based on direction
+      ctx.fillStyle = '#000';
+      if (player.dir === 'down') {
+        ctx.fillRect(8, 6, 2, 4);
+        ctx.fillRect(14, 6, 2, 4);
+      } else if (player.dir === 'up') {
+        // Back of head
+      } else if (player.dir === 'left') {
+        ctx.fillRect(6, 6, 2, 4);
+      } else if (player.dir === 'right') {
+        ctx.fillRect(16, 6, 2, 4);
+      }
+      ctx.restore();
+    }
+
+    function loop() {
+      update();
+      render();
+      requestAnimationFrame(loop);
+    }
+    loop();
+  </script>
+</body>
+</html>
