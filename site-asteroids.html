@@ -1110,12 +1110,27 @@
     }
   </style>
 <style>
-    /* On-Site Game HUD Common Styling */
+    /* ZERO SCROLLBAR & VIRTUAL CAMERA CONTAINER */
+    html, body {
+      overflow: hidden !important;
+      height: 100vh !important;
+      width: 100vw !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    ::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
     #onsite-game-hud {
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100000;
-      background: rgba(9, 13, 22, 0.94);
+      background: rgba(9, 13, 22, 0.95);
       backdrop-filter: blur(14px);
       border-bottom: 2px solid #6366f1;
       padding: 10px 20px;
@@ -1185,32 +1200,42 @@
       color: #94a3b8;
       font-size: 0.55rem;
     }
-    body {
+
+    /* World stage that translates smoothly without native scrollbar */
+    #world-stage {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      will-change: transform;
       padding-top: 56px;
     }
 
 
 #astCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 99999; }
 </style></head>
-<body>
 
-  <!-- ON-SITE RESKIN TOP HUD -->
+<body>
+  
+  <!-- ON-SITE RESKIN TOP HUD (Fixed on top of viewport) -->
   <div id="onsite-game-hud">
     <div class="hud-left">
       <a href="play.html" class="btn-hud">◀ Arcade Hub</a>
       <span class="hud-mode-pill">🌐 ON-SITE RESKIN • VECTOR ASTEROIDS</span>
     </div>
     <div class="hud-center">
-      <div class="hud-stat-chip">ASTEROIDS: <span id="astCount">6 LEFT</span></div>
+      <div class="hud-stat-chip">ASTEROIDS: <span id="astCount">4 LEFT</span></div>
     </div>
     <div class="hud-right">
-      <span class="hud-hint">Rotate: A/D | Thrust: W | Fire: Space</span>
+      <span class="hud-hint">Rotate: A/D | Thrust: W | Fire: Space | Wheel: Scroll</span>
       <button class="btn-hud" id="btnAudioToggle">🔊 AUDIO: ON</button>
       <a href="asteroids.html" class="btn-hud btn-hud-compare">🖥️ Standalone Version ▶</a>
       <a href="index.html" class="btn-hud">Standard Site ▶</a>
     </div>
   </div>
 
+  <div id="world-stage">
+    
 
   <!-- Sticky Top Nav -->
   <header>
@@ -1916,8 +1941,10 @@
       });
     }
   </script>
-<script>
 
+  </div>
+  <script>
+    
 class NativeAudio {
   constructor() { this.ctx = null; this.enabled = true; }
   init() { if (!this.ctx) { const AC = window.AudioContext || window.webkitAudioContext; this.ctx = new AC(); } }
@@ -1950,7 +1977,37 @@ if (audioBtn) {
   });
 }
 
+    
+// Virtual Camera (Zero scrollbars, manual wheel scroll + game camera follow)
+let camY = 0;
+let targetCamY = 0;
+const stage = document.getElementById('world-stage');
+let maxCamY = 3000;
 
+function updateMaxCam() {
+  maxCamY = Math.max(0, stage.scrollHeight - window.innerHeight);
+}
+window.addEventListener('resize', updateMaxCam);
+setTimeout(updateMaxCam, 500);
+
+// Smooth mouse wheel / touchpad scroll without scrollbar
+window.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  targetCamY += e.deltaY;
+  targetCamY = Math.max(0, Math.min(maxCamY, targetCamY));
+}, { passive: false });
+
+function updateCamera(followWorldY) {
+  if (followWorldY !== undefined) {
+    targetCamY = followWorldY - window.innerHeight * 0.45;
+  }
+  targetCamY = Math.max(0, Math.min(maxCamY, targetCamY));
+  camY += (targetCamY - camY) * 0.12;
+  stage.style.transform = `translate3d(0, ${-camY}px, 0)`;
+  return camY;
+}
+
+    
 const aCanvas = document.createElement('canvas');
 aCanvas.id = 'astCanvas';
 document.body.appendChild(aCanvas);
@@ -1959,46 +2016,50 @@ function resizeAst() { aCanvas.width = window.innerWidth; aCanvas.height = windo
 window.addEventListener('resize', resizeAst);
 resizeAst();
 
-const ship = { x: window.innerWidth / 2, y: window.innerHeight / 2, vx: 0, vy: 0, angle: -Math.PI/2 };
+const ship = { x: window.innerWidth / 2, worldY: 250, vx: 0, vy: 0, angle: -Math.PI/2 };
 const lasers = [];
 const keys = {};
 window.addEventListener('keydown', e => {
   keys[e.key] = true;
+  if (['ArrowUp','ArrowDown',' '].includes(e.key)) e.preventDefault();
   if (e.key === ' ' || e.key === 'Spacebar') {
-    lasers.push({ x: ship.x, y: ship.y, vx: Math.cos(ship.angle) * 8, vy: Math.sin(ship.angle) * 8, life: 60 });
+    lasers.push({ x: ship.x, y: ship.worldY - camY, vx: Math.cos(ship.angle) * 9, vy: Math.sin(ship.angle) * 9, life: 60 });
     sfx.playTone(700, 0.08, 'sawtooth');
   }
 });
 window.addEventListener('keyup', e => { keys[e.key] = false; });
 
 const asts = [
-  { x: 150, y: 150, label: 'DARK THRONE', r: 35 },
-  { x: window.innerWidth - 200, y: 220, label: 'STOCKSBOT', r: 35 },
-  { x: 250, y: window.innerHeight - 150, label: 'ROBOTICS', r: 35 },
-  { x: window.innerWidth - 250, y: window.innerHeight - 120, label: 'DIAMOND', r: 35 }
+  { x: 180, worldY: 280, label: 'DARK THRONE', r: 38 },
+  { x: window.innerWidth - 220, worldY: 550, label: 'STOCKSBOT', r: 38 },
+  { x: 260, worldY: 1050, label: 'ROBOTICS', r: 38 },
+  { x: window.innerWidth - 240, worldY: 1550, label: 'DIAMOND', r: 38 }
 ];
 
 function updateAst() {
   if (keys['a'] || keys['ArrowLeft']) ship.angle -= 0.06;
   if (keys['d'] || keys['ArrowRight']) ship.angle += 0.06;
   if (keys['w'] || keys['ArrowUp']) {
-    ship.vx += Math.cos(ship.angle) * 0.2;
-    ship.vy += Math.sin(ship.angle) * 0.2;
+    ship.vx += Math.cos(ship.angle) * 0.22;
+    ship.vy += Math.sin(ship.angle) * 0.22;
   }
   ship.vx *= 0.98; ship.vy *= 0.98;
   ship.x = (ship.x + ship.vx + window.innerWidth) % window.innerWidth;
-  ship.y = (ship.y + ship.vy + window.innerHeight) % window.innerHeight;
+  ship.worldY = Math.max(100, Math.min(stage.scrollHeight - 60, ship.worldY + ship.vy));
+
+  updateCamera(ship.worldY);
 
   // Lasers
   for (let i = lasers.length - 1; i >= 0; i--) {
     const l = lasers[i];
     l.x += l.vx; l.y += l.vy; l.life--;
-    if (l.life <= 0) lasers.splice(i, 1);
+    if (l.life <= 0) { lasers.splice(i, 1); continue; }
 
     // Hit asteroids
     for (let j = asts.length - 1; j >= 0; j--) {
       const a = asts[j];
-      if (Math.hypot(l.x - a.x, l.y - a.y) < a.r) {
+      const asy = a.worldY - camY;
+      if (Math.hypot(l.x - a.x, l.y - asy) < a.r) {
         sfx.playTone(200, 0.2, 'square');
         asts.splice(j, 1);
         lasers.splice(i, 1);
@@ -2011,26 +2072,30 @@ function updateAst() {
 
 function drawAst() {
   aCtx.clearRect(0, 0, aCanvas.width, aCanvas.height);
+  const sy = ship.worldY - camY;
 
   // Lasers
   aCtx.fillStyle = '#38bdf8';
   lasers.forEach(l => { aCtx.beginPath(); aCtx.arc(l.x, l.y, 3, 0, Math.PI*2); aCtx.fill(); });
 
-  // Asteroids
+  // Asteroids at world coordinates
   asts.forEach(a => {
-    aCtx.strokeStyle = '#4ade80'; aCtx.lineWidth = 2;
-    aCtx.beginPath(); aCtx.arc(a.x, a.y, a.r, 0, Math.PI*2); aCtx.stroke();
-    aCtx.fillStyle = '#fff'; aCtx.font = '7px "Press Start 2P"'; aCtx.textAlign = 'center';
-    aCtx.fillText(a.label, a.x, a.y + 3);
+    const asy = a.worldY - camY;
+    if (asy > -60 && asy < window.innerHeight + 60) {
+      aCtx.strokeStyle = '#4ade80'; aCtx.lineWidth = 2;
+      aCtx.beginPath(); aCtx.arc(a.x, asy, a.r, 0, Math.PI*2); aCtx.stroke();
+      aCtx.fillStyle = '#fff'; aCtx.font = '7px "Press Start 2P"'; aCtx.textAlign = 'center';
+      aCtx.fillText(a.label, a.x, asy + 3);
+    }
   });
 
   // Ship
   aCtx.save();
-  aCtx.translate(ship.x, ship.y);
+  aCtx.translate(ship.x, sy);
   aCtx.rotate(ship.angle);
   aCtx.strokeStyle = '#38bdf8'; aCtx.lineWidth = 2;
   aCtx.beginPath();
-  aCtx.moveTo(14, 0); aCtx.lineTo(-10, -8); aCtx.lineTo(-6, 0); aCtx.lineTo(-10, 8); aCtx.closePath();
+  aCtx.moveTo(15, 0); aCtx.lineTo(-10, -8); aCtx.lineTo(-6, 0); aCtx.lineTo(-10, 8); aCtx.closePath();
   aCtx.stroke();
   aCtx.restore();
 }
@@ -2038,5 +2103,7 @@ function drawAst() {
 function loopAst() { updateAst(); drawAst(); requestAnimationFrame(loopAst); }
 requestAnimationFrame(loopAst);
 
-</script></body>
+  </script>
+</body>
+
 </html>
