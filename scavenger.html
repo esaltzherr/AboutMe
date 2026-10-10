@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elroy Saltzherr • Scavenger Detective Mode</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Press+Start+2P&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    /* Base styles matching index.html */
+    :root {
+      --bg: #090d16;
+      --card-bg: #101726;
+      --card-border: #1e293b;
+      --accent: #6366f1;
+      --cyan: #38bdf8;
+      --gold: #fbbf24;
+      --green: #34d399;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-top: 80px;
+    }
+
+    /* Fixed Detective HUD Bar */
+    #detective-hud {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 2px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 9999;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.72rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    }
+
+    .hud-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .hud-title {
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .secrets-counter {
+      color: var(--cyan);
+    }
+
+    .btn-exit {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.65rem;
+      transition: all 0.2s;
+    }
+
+    .btn-exit:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    /* Secret Element Hover Glows */
+    .secret-target {
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+    }
+
+    .secret-target:hover {
+      outline: 2px dashed var(--gold);
+      outline-offset: 4px;
+    }
+
+    .secret-found {
+      border-color: var(--green) !important;
+      box-shadow: 0 0 20px rgba(52, 211, 153, 0.4) !important;
+    }
+
+    /* Clue Notification Toast */
+    #clue-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 2px solid var(--gold);
+      border-radius: 14px;
+      padding: 16px 20px;
+      font-size: 0.85rem;
+      color: #fff;
+      display: none;
+      z-index: 10000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      max-width: 360px;
+      animation: slide-up 0.3s ease;
+    }
+
+    @keyframes slide-up {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Confetti Canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10001;
+    }
+
+    /* Content Cards */
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 30px 24px;
+    }
+
+    .scavenger-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .secret-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: var(--gold);
+      background: rgba(251, 191, 36, 0.15);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      padding: 4px 8px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- HUD -->
+  <div id="detective-hud">
+    <div class="hud-left">
+      <div class="hud-title">🔎 DETECTIVE MODE</div>
+      <div class="secrets-counter">SECRETS: <span id="found-count">0</span> / 5</div>
+    </div>
+    <div style="font-size: 0.6rem; color: #94a3b8;">CLICK HIGHLIGHTED ELEMENTS TO REVEAL SECRETS</div>
+    <a href="play.html" class="btn-exit">EXIT</a>
+  </div>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="container">
+    <div style="text-align: center; margin-bottom: 40px;">
+      <h1 style="font-size: 2rem; font-weight: 800; color: #fff; margin-bottom: 10px;">Portfolio Scavenger Hunt</h1>
+      <p style="color: var(--text-muted); font-size: 1rem;">Explore Elroy's portfolio to discover 5 hidden game designer secrets & developer commentary.</p>
+    </div>
+
+    <!-- Secret 1: Profile Clue -->
+    <div class="scavenger-card secret-target" id="secret-profile" onclick="findSecret(1, 'Secret 1 Unlocked: Design Rationale', 'Elroy believes the best combat designs start with input latency tuning and frame-accurate state transitions!')">
+      <span class="secret-badge">CLUE #1: THE CREATOR</span>
+      <h2 style="font-size: 1.3rem; margin-bottom: 8px;">Elroy Saltzherr — Gameplay Programmer</h2>
+      <p style="color: var(--text-muted); font-size: 0.92rem;">Click this card to extract the hidden design philosophy quote.</p>
+    </div>
+
+    <!-- Secret 2: Dark Throne Clue -->
+    <div class="scavenger-card secret-target" id="secret-darkthrone" onclick="findSecret(2, 'Secret 2 Unlocked: Dark Throne Easter Egg', 'In Dark Throne, the dodge roll was tuned with 4 frames of invulnerability and an active coyote window!')">
+      <span class="secret-badge" style="color: #34d399; border-color: rgba(52, 211, 153, 0.3); background: rgba(52, 211, 153, 0.15);">CLUE #2: STEAM RELEASE</span>
+      <h2 style="font-size: 1.3rem; margin-bottom: 8px;">Dark Throne: Melee Combat State Machines</h2>
+      <p style="color: var(--text-muted); font-size: 0.92rem;">Click to reveal how the dodge mechanic was engineered.</p>
+    </div>
+
+    <!-- Secret 3: LoL Mastery Clue -->
+    <div class="scavenger-card secret-target" id="secret-mastery" onclick="findSecret(3, 'Secret 3 Unlocked: 2.4M Mastery Secret', '2,389,591 points on Taliyah! Piloted off-meta bot lane carries with wave state leverage.')">
+      <span class="secret-badge" style="color: #38bdf8; border-color: rgba(56, 189, 248, 0.3); background: rgba(56, 189, 248, 0.15);">CLUE #3: COMPETITIVE DNA</span>
+      <h2 style="font-size: 1.3rem; margin-bottom: 8px;">Diamond League Mastery Chart</h2>
+      <p style="color: var(--text-muted); font-size: 0.92rem;">Click to unlock the exact combat math behind Diamond off-meta bot lane.</p>
+    </div>
+
+    <!-- Secret 4: Cloud Automation Clue -->
+    <div class="scavenger-card secret-target" id="secret-cloud" onclick="findSecret(4, 'Secret 4 Unlocked: 10-Minute Pipeline', 'Replaced a multi-hour manual catalog ingest process with autonomous Google Cloud Run containers!')">
+      <span class="secret-badge" style="color: #a855f7; border-color: rgba(168, 85, 247, 0.3); background: rgba(168, 85, 247, 0.15);">CLUE #4: AUTONOMOUS SYSTEMS</span>
+      <h2 style="font-size: 1.3rem; margin-bottom: 8px;">Jambelles.nl & LongboardsUSA Cloud Architecture</h2>
+      <p style="color: var(--text-muted); font-size: 0.92rem;">Click to inspect the serverless cloud speedup stats.</p>
+    </div>
+
+    <!-- Secret 5: Pokémon Sparkle Clue -->
+    <div class="scavenger-card secret-target" id="secret-pokemon" onclick="findSecret(5, 'Secret 5 Unlocked: Shiny Hunter Master', 'Congratulations! You found all 5 secrets! Shiny Marshadow, School Wishiwashi, and Mega Golisopod salute you!')">
+      <span class="secret-badge" style="color: #f43f5e; border-color: rgba(244, 63, 94, 0.3); background: rgba(244, 63, 94, 0.15);">CLUE #5: SHINY ENCOUNTERS</span>
+      <h2 style="font-size: 1.3rem; margin-bottom: 8px;">Shiny Pokémon Mastery</h2>
+      <p style="color: var(--text-muted); font-size: 0.92rem;">Click to trigger the grand finale celebration.</p>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="clue-toast">
+    <div id="toast-title" style="font-weight: 800; color: var(--gold); margin-bottom: 4px;">SECRET DISCOVERED!</div>
+    <div id="toast-body" style="color: #cbd5e1; font-size: 0.82rem; line-height: 1.5;">Info</div>
+  </div>
+
+  <script>
+    // Web Audio Synthesizer
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function playChime() {
+      try {
+        if (!audioCtx) audioCtx = new AudioCtx();
+        const t = audioCtx.currentTime;
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, t + i * 0.08);
+          gain.gain.setValueAtTime(0.12, t + i * 0.08);
+          gain.gain.linearRampToValueAtTime(0, t + i * 0.08 + 0.3);
+          osc.start(t + i * 0.08);
+          osc.stop(t + i * 0.08 + 0.3);
+        });
+      } catch (e) {}
+    }
+
+    const foundSecrets = new Set();
+
+    function findSecret(num, title, body) {
+      if (foundSecrets.has(num)) return;
+      foundSecrets.add(num);
+      playChime();
+
+      document.getElementById('found-count').textContent = foundSecrets.size;
+      const card = document.querySelector(`.secret-target:nth-of-type(${num})`);
+      if (card) card.classList.add('secret-found');
+
+      const toast = document.getElementById('clue-toast');
+      document.getElementById('toast-title').textContent = title;
+      document.getElementById('toast-body').textContent = body;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 4500);
+
+      if (foundSecrets.size === 5) {
+        startConfetti();
+      }
+    }
+
+    // Confetti System
+    const cCanvas = document.getElementById('confetti-canvas');
+    const cCtx = cCanvas.getContext('2d');
+    let confetti = [];
+
+    function resizeConfetti() {
+      cCanvas.width = window.innerWidth;
+      cCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeConfetti);
+    resizeConfetti();
+
+    function startConfetti() {
+      confetti = [];
+      const colors = ['#6366f1', '#38bdf8', '#fbbf24', '#34d399', '#f43f5e', '#a855f7'];
+      for (let i = 0; i < 150; i++) {
+        confetti.push({
+          x: Math.random() * cCanvas.width,
+          y: Math.random() * cCanvas.height - cCanvas.height,
+          vx: (Math.random() - 0.5) * 4,
+          vy: Math.random() * 4 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          size: Math.random() * 8 + 4,
+          rot: Math.random() * 360
+        });
+      }
+      requestAnimationFrame(updateConfetti);
+    }
+
+    function updateConfetti() {
+      cCtx.clearRect(0, 0, cCanvas.width, cCanvas.height);
+      let alive = false;
+      confetti.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += 4;
+        cCtx.save();
+        cCtx.translate(p.x, p.y);
+        cCtx.rotate((p.rot * Math.PI) / 180);
+        cCtx.fillStyle = p.color;
+        cCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+        cCtx.restore();
+        if (p.y < cCanvas.height) alive = true;
+      });
+      if (alive) requestAnimationFrame(updateConfetti);
+    }
+  </script>
+</body>
+</html>
