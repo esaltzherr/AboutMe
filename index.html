@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <title>Elroy Saltzherr • Gameplay Programmer & Technical Designer</title>
-  <meta name="description" content="Portfolio of Elroy Saltzherr — Shipped Steam developer, UCSC Game Design graduate, Gameplay Programmer & Technical Designer specializing in Unity (C#), Unreal Engine, and AI systems." />
+  <meta name="description" content="Portfolio of Elroy Saltzherr — Shipped Steam developer (Dark Throne), UCSC Game Design graduate, Gameplay Programmer & Technical Designer specializing in Unity (C#), Unreal Engine, and Game Systems." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -25,6 +25,8 @@
       --cyan: #06b6d4;
       --rose: #f43f5e;
       --amber: #f59e0b;
+      --gold: #fbbf24;
+      --purple: #a855f7;
     }
 
     * {
@@ -50,7 +52,6 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
-    /* Container */
     .container {
       max-width: 1200px;
       margin: 0 auto;
@@ -83,8 +84,8 @@
     }
 
     .brand-avatar {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 12px;
       object-fit: cover;
       border: 2px solid var(--accent);
@@ -108,14 +109,14 @@
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 24px;
+      gap: 22px;
       list-style: none;
     }
 
     .nav-links a {
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 600;
       transition: color 0.15s;
     }
@@ -141,7 +142,7 @@
 
     /* Hero Section */
     .hero {
-      padding: 90px 0 60px 0;
+      padding: 80px 0 60px 0;
       position: relative;
     }
 
@@ -150,8 +151,8 @@
       top: 10%;
       left: 50%;
       transform: translateX(-50%);
-      width: 600px;
-      height: 350px;
+      width: 650px;
+      height: 380px;
       background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(6, 182, 212, 0.08) 50%, transparent 70%);
       filter: blur(80px);
       z-index: -1;
@@ -203,7 +204,7 @@
     }
 
     .hero p {
-      font-size: 1.12rem;
+      font-size: 1.1rem;
       color: var(--text-muted);
       margin-bottom: 30px;
       line-height: 1.7;
@@ -222,7 +223,7 @@
       gap: 8px;
       padding: 12px 24px;
       border-radius: 12px;
-      font-size: 0.94rem;
+      font-size: 0.92rem;
       font-weight: 700;
       text-decoration: none;
       transition: all 0.2s;
@@ -279,7 +280,7 @@
     }
 
     .stat-item p {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       color: var(--text-muted);
       margin-bottom: 0;
       text-transform: uppercase;
@@ -292,7 +293,7 @@
       background: linear-gradient(145deg, #131c31 0%, #0c1220 100%);
       border: 1px solid var(--card-border);
       border-radius: 24px;
-      padding: 28px;
+      padding: 26px;
       box-shadow: 0 20px 40px rgba(0,0,0,0.4);
       position: relative;
     }
@@ -300,10 +301,10 @@
     .hero-card-img-wrapper {
       position: relative;
       width: 100%;
-      height: 300px;
+      height: 290px;
       border-radius: 18px;
       overflow: hidden;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .hero-card-img {
@@ -317,7 +318,7 @@
       position: absolute;
       bottom: 12px;
       left: 12px;
-      background: rgba(9, 13, 22, 0.85);
+      background: rgba(9, 13, 22, 0.88);
       backdrop-filter: blur(8px);
       padding: 6px 14px;
       border-radius: 8px;
@@ -330,14 +331,14 @@
     .hero-card-meta {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     .meta-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       padding: 6px 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
@@ -353,6 +354,69 @@
     .meta-val {
       font-weight: 600;
       color: var(--text);
+    }
+
+    /* Target Studios Banner */
+    .studios-banner {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 16px 28px;
+      margin: 20px 0 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .studios-banner-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .studios-banner-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    .studio-tags {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .studio-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .studio-riot {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+
+    .studio-wotc {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+    }
+
+    .studio-nintendo {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
     }
 
     /* Sections Shared */
@@ -384,9 +448,9 @@
     }
 
     .section-subtitle {
-      font-size: 1.05rem;
+      font-size: 1.02rem;
       color: var(--text-muted);
-      max-width: 650px;
+      max-width: 680px;
     }
 
     /* Flagship Project: Dark Throne */
@@ -520,7 +584,7 @@
 
     .projects-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
       gap: 24px;
     }
 
@@ -624,6 +688,102 @@
     .project-link-btn:hover {
       gap: 8px;
       color: #7dd3fc;
+    }
+
+    /* Gamer DNA & Systems Philosophy Section */
+    .dna-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .dna-card {
+      background: linear-gradient(145deg, #131c31 0%, #0c1220 100%);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .dna-card:hover {
+      transform: translateY(-3px);
+      border-color: #334155;
+    }
+
+    .dna-card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .dna-icon-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .dna-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .dna-sub {
+      font-size: 0.8rem;
+      color: var(--cyan);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .dna-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .dna-highlight-box {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 0.84rem;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+
+    .dna-highlight-title {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .pokemon-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .pokemon-chip {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 6px;
     }
 
     /* Skills Grid */
@@ -844,7 +1004,6 @@
       color: var(--text-dim);
     }
 
-    /* Responsive */
     @media (max-width: 900px) {
       .hero-content { grid-template-columns: 1fr; }
       .hero h1 { font-size: 2.5rem; }
@@ -869,6 +1028,7 @@
       <ul class="nav-links">
         <li><a href="#featured">Steam Project</a></li>
         <li><a href="#projects">All Games</a></li>
+        <li><a href="#philosophy">Systems & Passion</a></li>
         <li><a href="#skills">Skills</a></li>
         <li><a href="#experience">Experience</a></li>
         <li><a href="#resumes">Resumes</a></li>
@@ -890,7 +1050,7 @@
             Engineering responsive, scalable <span class="hero-gradient-text">gameplay systems</span> & immersive combat.
           </h1>
           <p>
-            Hi, I’m <strong>Elroy Saltzherr</strong>. I design and program combat architectures, progression loops, and custom designer tools in Unity (C#) and Unreal Engine. Lead Developer of <em>Dark Throne</em> on Steam with a passion for combat feel, balance tuning, and game AI.
+            Hi, I’m <strong>Elroy Saltzherr</strong>. I design and program combat architectures, progression loops, and custom designer tools in Unity (C#) and Unreal Engine. Lead Developer of <em>Dark Throne</em> on Steam with a passion for combat feel, balance tuning, card game economics, and game AI.
           </p>
           <div class="hero-actions">
             <a href="#featured" class="btn btn-primary">🎮 View Shipped Work</a>
@@ -933,6 +1093,19 @@
               <span class="meta-val">League of Legends (Diamond)</span>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Target Studios Banner -->
+      <div class="studios-banner">
+        <div class="studios-banner-left">
+          <span style="font-size: 1.2rem;">🎯</span>
+          <span class="studios-banner-label">Target Studios & Ambition:</span>
+        </div>
+        <div class="studio-tags">
+          <span class="studio-tag studio-riot">⚔️ Riot Games (LoL / 2XKO)</span>
+          <span class="studio-tag studio-wotc">🃏 Wizards of the Coast (MTG)</span>
+          <span class="studio-tag studio-nintendo">🔴 Nintendo / Pokémon</span>
         </div>
       </div>
     </div>
@@ -988,7 +1161,7 @@
         <span class="section-eyebrow">Portfolio Work</span>
         <h2 class="section-title">Games & Interactive Systems</h2>
         <p class="section-subtitle">
-          From fast-paced browser games to competitive game jam prototypes and algorithmic AI systems.
+          From fast-paced browser games to competitive game jam prototypes, tactical AI, and card tools.
         </p>
       </div>
 
@@ -997,7 +1170,7 @@
         <button class="filter-btn active" onclick="filterProjects('all')">All Projects</button>
         <button class="filter-btn" onclick="filterProjects('jam')">Game Jams</button>
         <button class="filter-btn" onclick="filterProjects('browser')">Browser & Web</button>
-        <button class="filter-btn" onclick="filterProjects('systems')">AI & Systems</button>
+        <button class="filter-btn" onclick="filterProjects('systems')">AI & Tools</button>
       </div>
 
       <div class="projects-grid">
@@ -1121,28 +1294,143 @@
           </div>
         </div>
 
-        <!-- Project: Game AI & Systems Suite -->
+        <!-- Project: Planet Wars Behavior Tree Bot -->
         <div class="project-card" data-category="systems">
           <div class="project-card-media" style="background: linear-gradient(135deg, #1e1b4b 0%, #0c1222 100%); display: flex; align-items: center; justify-content: center; font-size: 3rem;">
-            🤖
-            <span class="project-tag">Game AI & Systems</span>
+            🪐
+            <span class="project-tag">Tactical AI Bot</span>
           </div>
           <div class="project-card-body">
-            <h3 class="project-card-title">Game AI & Simulation Suite</h3>
-            <div class="project-card-sub">Behavior Trees, Procedural Generation, GA</div>
+            <h3 class="project-card-title">Planet Wars AI Bot</h3>
+            <div class="project-card-sub">Behavior Trees • Tactical Scoring • Python</div>
             <p class="project-card-desc">
-              Collection of advanced technical game systems: Behavior Tree tactical AI bot (*Planet Wars*), Grammar-based Mario Level Generator, Genetic Algorithm Market Sim, and ShaderLab rendering effects.
+              Autonomous fleet commander AI utilizing hierarchical Behavior Trees (Selectors, Sequences, Conditions, Inverters) to evaluate planetary expansion, strategic reinforcement, and defensive maneuvering.
             </p>
             <div class="tech-pill-row">
               <span class="tech-pill">Behavior Trees</span>
-              <span class="tech-pill">Procedural Gen</span>
-              <span class="tech-pill">ShaderLab</span>
+              <span class="tech-pill">Tactical Scoring</span>
               <span class="tech-pill">Python</span>
             </div>
             <div class="project-card-footer">
-              <a href="https://github.com/esaltzherr/Plantet-Wars-behavior-tree-bot" target="_blank" class="project-link-btn">View AI Bot Repo →</a>
-              <a href="https://github.com/esaltzherr/MarioLevelGeneration" target="_blank" style="color: var(--text-dim); text-decoration: none; font-size: 0.8rem;">Mario Gen</a>
+              <a href="https://github.com/esaltzherr/Plantet-Wars-behavior-tree-bot" target="_blank" class="project-link-btn">View Bot Source →</a>
+              <span class="mono" style="font-size: 0.76rem; color: var(--text-dim);">Game AI</span>
             </div>
+          </div>
+        </div>
+
+        <!-- Project: MTG Bluetooth Counters Tracker -->
+        <div class="project-card" data-category="systems">
+          <div class="project-card-media" style="background: linear-gradient(135deg, #451a03 0%, #0c1222 100%); display: flex; align-items: center; justify-content: center; font-size: 3rem;">
+            🃏
+            <span class="project-tag">Card Game Tool</span>
+          </div>
+          <div class="project-card-body">
+            <h3 class="project-card-title">MTG Counters App</h3>
+            <div class="project-card-sub">Hardware Integration • Bluetooth Device Sync</div>
+            <p class="project-card-desc">
+              Companion app designed to connect via Bluetooth to custom physical devices that replace dice for complex Magic: The Gathering board states with heavy +1/+1 and counter tracking.
+            </p>
+            <div class="tech-pill-row">
+              <span class="tech-pill">Hardware Sync</span>
+              <span class="tech-pill">Bluetooth</span>
+              <span class="tech-pill">Game Ergonomics</span>
+            </div>
+            <div class="project-card-footer">
+              <a href="https://github.com/esaltzherr/MTG-Counters-App" target="_blank" class="project-link-btn">View App Repo →</a>
+              <a href="https://github.com/esaltzherr/MTGCheap" target="_blank" style="color: var(--text-dim); text-decoration: none; font-size: 0.8rem;">MTGCheap</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gamer DNA & Systems Philosophy -->
+  <section id="philosophy" style="background: rgba(15, 23, 42, 0.4);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Player DNA & Design Mindset</span>
+        <h2 class="section-title">Systems Philosophy & Competitive Acumen</h2>
+        <p class="section-subtitle">
+          Great game designers and gameplay programmers don't just write code — they understand player psychology, frame data, economy loops, and the feel of competition.
+        </p>
+      </div>
+
+      <div class="dna-grid">
+        <!-- Card 1: League of Legends -->
+        <div class="dna-card">
+          <div class="dna-card-header">
+            <div class="dna-icon-badge" style="background: rgba(239, 68, 68, 0.15); color: #f87171;">⚔️</div>
+            <div>
+              <div class="dna-title">League of Legends</div>
+              <div class="dna-sub">Diamond Rank • Off-Meta Theorycrafting</div>
+            </div>
+          </div>
+          <p class="dna-desc">
+            Reached <strong>Diamond rank</strong> primarily piloting unconventional, off-meta bottom lane / ADC carries: <strong>Taliyah</strong>, <strong>Zyra</strong>, and <strong>Diana ADC</strong>.
+          </p>
+          <div class="dna-highlight-box">
+            <div class="dna-highlight-title">Systems & Balance Insight:</div>
+            Theorycrafting non-standard champions exposes combat math: ability scaling breakpoints, wave state leverage, projectile hitbox exploitation, and ability cooldown windows that punish standard meta play.
+          </div>
+        </div>
+
+        <!-- Card 2: Magic The Gathering -->
+        <div class="dna-card">
+          <div class="dna-card-header">
+            <div class="dna-icon-badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">🃏</div>
+            <div>
+              <div class="dna-title">Magic: The Gathering</div>
+              <div class="dna-sub">Resilient Deckbuilding • Budget ~$100 Cap</div>
+            </div>
+          </div>
+          <p class="dna-desc">
+            Avid deckbuilder specializing in <strong>Bracket 2–3 casual/Commander</strong> play. Passionate about building highly resilient, synergistic engines on a strict <strong>~$100 budget cap</strong>.
+          </p>
+          <div class="dna-highlight-box">
+            <div class="dna-highlight-title">Game Economy & Synergy Insight:</div>
+            Budget constraints force genuine game design thinking: instead of relying on expensive generic staples, decks win through non-linear recursion, resource redundancy, and table-wide interactive puzzle solving.
+          </div>
+        </div>
+
+        <!-- Card 3: Pokemon & Shiny Hunting -->
+        <div class="dna-card">
+          <div class="dna-card-header">
+            <div class="dna-icon-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">⚡</div>
+            <div>
+              <div class="dna-title">Pokémon & Encounter Design</div>
+              <div class="dna-sub">Dedicated Shiny Hunter • Mechanics Enthusiast</div>
+            </div>
+          </div>
+          <p class="dna-desc">
+            Lifelong Pokémon player fascinated by encounter probability, shiny odds distribution curves, and unique battle gimmick mechanics (stat thresholds, ability triggers, form changes).
+          </p>
+          <div class="dna-highlight-box">
+            <div class="dna-highlight-title">Favorite Shiny Signatures:</div>
+            <div class="pokemon-list">
+              <span class="pokemon-chip">✨ Shiny Marshadow</span>
+              <span class="pokemon-chip">✨ Shiny Wishiwashi (Schooling)</span>
+              <span class="pokemon-chip">✨ Shiny Perrserker</span>
+              <span class="pokemon-chip">✨ Shiny Mega Golisopod (Emergency Exit)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Athletics & Robotics -->
+        <div class="dna-card">
+          <div class="dna-card-header">
+            <div class="dna-icon-badge" style="background: rgba(6, 182, 212, 0.15); color: #38bdf8;">⚽</div>
+            <div>
+              <div class="dna-title">Athletics & Robotics</div>
+              <div class="dna-sub">16 Years Soccer • FRC Team 199 Deep Blue</div>
+            </div>
+          </div>
+          <p class="dna-desc">
+            Competed in organized <strong>soccer for 16 years</strong> alongside 4 years of <strong>competitive FIRST robotics</strong> as lead driver and competition strategist with multiple top-5 regional finishes.
+          </p>
+          <div class="dna-highlight-box">
+            <div class="dna-highlight-title">Teamwork Under Pressure:</div>
+            Translating complex game rules into real-time physical strategies, split-second spatial tracking, and seamless cross-disciplinary communication under competitive tournament deadlines.
           </div>
         </div>
       </div>
