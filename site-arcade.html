@@ -1110,12 +1110,27 @@
     }
   </style>
 <style>
-    /* On-Site Game HUD Common Styling */
+    /* ZERO SCROLLBAR & VIRTUAL CAMERA CONTAINER */
+    html, body {
+      overflow: hidden !important;
+      height: 100vh !important;
+      width: 100vw !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    ::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
     #onsite-game-hud {
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100000;
-      background: rgba(9, 13, 22, 0.94);
+      background: rgba(9, 13, 22, 0.95);
       backdrop-filter: blur(14px);
       border-bottom: 2px solid #6366f1;
       padding: 10px 20px;
@@ -1185,16 +1200,24 @@
       color: #94a3b8;
       font-size: 0.55rem;
     }
-    body {
+
+    /* World stage that translates smoothly without native scrollbar */
+    #world-stage {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      will-change: transform;
       padding-top: 56px;
     }
 
 
 #pacCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 99999; }
 </style></head>
-<body>
 
-  <!-- ON-SITE RESKIN TOP HUD -->
+<body>
+  
+  <!-- ON-SITE RESKIN TOP HUD (Fixed on top of viewport) -->
   <div id="onsite-game-hud">
     <div class="hud-left">
       <a href="play.html" class="btn-hud">◀ Arcade Hub</a>
@@ -1204,13 +1227,15 @@
       <div class="hud-stat-chip">SCORE: <span id="pacScore">0</span></div><div class="hud-stat-chip">DOTS: <span id="pacDots">0/24</span></div>
     </div>
     <div class="hud-right">
-      <span class="hud-hint">Navigate lanes: WASD / Arrows</span>
+      <span class="hud-hint">Navigate lanes: WASD / Arrows (No scrollbars)</span>
       <button class="btn-hud" id="btnAudioToggle">🔊 AUDIO: ON</button>
       <a href="arcade.html" class="btn-hud btn-hud-compare">🖥️ Standalone Version ▶</a>
       <a href="index.html" class="btn-hud">Standard Site ▶</a>
     </div>
   </div>
 
+  <div id="world-stage">
+    
 
   <!-- Sticky Top Nav -->
   <header>
@@ -1916,8 +1941,10 @@
       });
     }
   </script>
-<script>
 
+  </div>
+  <script>
+    
 class NativeAudio {
   constructor() { this.ctx = null; this.enabled = true; }
   init() { if (!this.ctx) { const AC = window.AudioContext || window.webkitAudioContext; this.ctx = new AC(); } }
@@ -1950,7 +1977,37 @@ if (audioBtn) {
   });
 }
 
+    
+// Virtual Camera (Zero scrollbars, manual wheel scroll + game camera follow)
+let camY = 0;
+let targetCamY = 0;
+const stage = document.getElementById('world-stage');
+let maxCamY = 3000;
 
+function updateMaxCam() {
+  maxCamY = Math.max(0, stage.scrollHeight - window.innerHeight);
+}
+window.addEventListener('resize', updateMaxCam);
+setTimeout(updateMaxCam, 500);
+
+// Smooth mouse wheel / touchpad scroll without scrollbar
+window.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  targetCamY += e.deltaY;
+  targetCamY = Math.max(0, Math.min(maxCamY, targetCamY));
+}, { passive: false });
+
+function updateCamera(followWorldY) {
+  if (followWorldY !== undefined) {
+    targetCamY = followWorldY - window.innerHeight * 0.45;
+  }
+  targetCamY = Math.max(0, Math.min(maxCamY, targetCamY));
+  camY += (targetCamY - camY) * 0.12;
+  stage.style.transform = `translate3d(0, ${-camY}px, 0)`;
+  return camY;
+}
+
+    
 const pacCanvas = document.createElement('canvas');
 pacCanvas.id = 'pacCanvas';
 document.body.appendChild(pacCanvas);
@@ -1959,9 +2016,12 @@ function resizePac() { pacCanvas.width = window.innerWidth; pacCanvas.height = w
 window.addEventListener('resize', resizePac);
 resizePac();
 
-const pac = { x: 80, worldY: 140, vx: 0, vy: 0, speed: 4.5, score: 0 };
+const pac = { x: 80, worldY: 160, vx: 0, vy: 0, speed: 5, score: 0 };
 const keys = {};
-window.addEventListener('keydown', e => { keys[e.key] = true; });
+window.addEventListener('keydown', e => {
+  keys[e.key] = true;
+  if (['ArrowUp','ArrowDown',' '].includes(e.key)) e.preventDefault();
+});
 window.addEventListener('keyup', e => { keys[e.key] = false; });
 
 const dots = [];
@@ -1983,18 +2043,15 @@ function updatePac() {
   else pac.vx = 0;
 
   pac.x = Math.max(40, Math.min(window.innerWidth - 40, pac.x + pac.vx));
-  pac.worldY = Math.max(100, Math.min(document.body.scrollHeight - 60, pac.worldY + pac.vy));
+  pac.worldY = Math.max(100, Math.min(stage.scrollHeight - 60, pac.worldY + pac.vy));
 
-  // Camera scroll
-  const ty = pac.worldY - window.innerHeight * 0.45;
-  if (Math.abs(window.scrollY - ty) > 6) {
-    window.scrollBy(0, (ty - window.scrollY) * 0.1);
-  }
+  // Virtual Camera update follows Pac-Dev smoothly!
+  updateCamera(pac.worldY);
 
   // Dots
   let eatenCount = 0;
   dots.forEach(d => {
-    if (!d.eaten && Math.hypot(pac.x - d.x, pac.worldY - d.worldY) < 30) {
+    if (!d.eaten && Math.hypot(pac.x - d.x, pac.worldY - d.worldY) < 35) {
       d.eaten = true;
       pac.score += 20;
       sfx.playTone(220, 0.05, 'triangle');
@@ -2007,15 +2064,15 @@ function updatePac() {
 
 function drawPac() {
   pCtx.clearRect(0, 0, pacCanvas.width, pacCanvas.height);
-  const sy = pac.worldY - window.scrollY;
+  const sy = pac.worldY - camY;
 
   // Dots
   dots.forEach(d => {
     if (!d.eaten) {
-      const dsy = d.worldY - window.scrollY;
+      const dsy = d.worldY - camY;
       if (dsy > -20 && dsy < window.innerHeight + 20) {
         pCtx.fillStyle = '#fde047';
-        pCtx.beginPath(); pCtx.arc(d.x, dsy, 4, 0, Math.PI*2); pCtx.fill();
+        pCtx.beginPath(); pCtx.arc(d.x, dsy, 5, 0, Math.PI*2); pCtx.fill();
       }
     }
   });
@@ -2024,7 +2081,7 @@ function drawPac() {
   pCtx.fillStyle = '#facc15';
   pCtx.shadowColor = '#facc15'; pCtx.shadowBlur = 12;
   pCtx.beginPath();
-  pCtx.arc(pac.x, sy, 14, 0.25 * Math.PI, 1.75 * Math.PI);
+  pCtx.arc(pac.x, sy, 15, 0.25 * Math.PI, 1.75 * Math.PI);
   pCtx.lineTo(pac.x, sy);
   pCtx.fill();
   pCtx.shadowBlur = 0;
@@ -2033,5 +2090,7 @@ function drawPac() {
 function loopPac() { updatePac(); drawPac(); requestAnimationFrame(loopPac); }
 requestAnimationFrame(loopPac);
 
-</script></body>
+  </script>
+</body>
+
 </html>
