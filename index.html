@@ -839,46 +839,50 @@
     .pokemon-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 10px;
+      gap: 10px;
+      margin-top: 12px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .pokemon-card {
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.95);
       border: 1px solid rgba(251, 191, 36, 0.25);
       border-radius: 12px;
-      padding: 10px 12px;
+      padding: 12px 8px;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 10px;
-      transition: border-color 0.2s, transform 0.2s;
+      justify-content: center;
+      text-align: center;
+      gap: 8px;
+      box-sizing: border-box;
+      overflow: hidden;
+      transition: all 0.2s ease;
     }
 
     .pokemon-card:hover {
       border-color: var(--gold);
       transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(251, 191, 36, 0.18);
     }
 
     .pokemon-img {
-      width: 50px;
-      height: 50px;
+      width: 58px;
+      height: 58px;
       object-fit: contain;
-      filter: drop-shadow(0 2px 8px rgba(251, 191, 36, 0.3));
+      filter: drop-shadow(0 3px 10px rgba(251, 191, 36, 0.25));
     }
 
     .pokemon-info-name {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 800;
       color: #ffffff;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .pokemon-info-sub {
-      font-size: 0.72rem;
-      color: var(--gold);
-      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      text-align: center;
     }
 
     /* Resume Downloads Bar */
@@ -1488,39 +1492,27 @@
             Lifelong Pokémon player fascinated by encounter probability, shiny odds distribution curves, and unique battle gimmick mechanics (stat thresholds, ability triggers, form changes).
           </p>
           <div class="dna-highlight-box">
-            <div class="dna-highlight-title">Favorite Pokémon (All Shiny):</div>
+            <div class="dna-highlight-title" style="text-align: center;">Favorite Pokémon (All Shiny)</div>
             <div class="pokemon-grid">
               <!-- Marshadow -->
               <div class="pokemon-card">
-                <img src="images/pokemon/marshadow_highres.png" alt="Shiny Marshadow" class="pokemon-img" />
-                <div>
-                  <div class="pokemon-info-name">Marshadow ✨</div>
-                  <div class="pokemon-info-sub">Ghost / Fighting</div>
-                </div>
+                <img src="images/pokemon/marshadow_highres.png" alt="Shiny Zenith Marshadow" class="pokemon-img" />
+                <span class="pokemon-info-name">Marshadow ✨</span>
               </div>
               <!-- Wishiwashi -->
               <div class="pokemon-card">
-                <img src="images/pokemon/wishiwashi_highres.png" alt="Shiny Wishiwashi" class="pokemon-img" />
-                <div>
-                  <div class="pokemon-info-name">Wishiwashi ✨</div>
-                  <div class="pokemon-info-sub">Schooling Form</div>
-                </div>
+                <img src="images/pokemon/wishiwashi_highres.png" alt="Shiny Wishiwashi (School Form)" class="pokemon-img" />
+                <span class="pokemon-info-name">Wishiwashi ✨</span>
               </div>
               <!-- Perrserker -->
               <div class="pokemon-card">
                 <img src="images/pokemon/perrserker_highres.png" alt="Shiny Perrserker" class="pokemon-img" />
-                <div>
-                  <div class="pokemon-info-name">Perrserker ✨</div>
-                  <div class="pokemon-info-sub">Steely Spirit</div>
-                </div>
+                <span class="pokemon-info-name">Perrserker ✨</span>
               </div>
-              <!-- Golisopod -->
+              <!-- Mega Golisopod -->
               <div class="pokemon-card">
-                <img src="images/pokemon/golisopod_highres.png" alt="Shiny Golisopod" class="pokemon-img" />
-                <div>
-                  <div class="pokemon-info-name">Golisopod ✨</div>
-                  <div class="pokemon-info-sub">Emergency Exit</div>
-                </div>
+                <img src="images/pokemon/golisopod_highres.png" alt="Shiny Mega Golisopod" class="pokemon-img" />
+                <span class="pokemon-info-name">Mega Golisopod ✨</span>
               </div>
             </div>
           </div>
