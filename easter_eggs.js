@@ -1132,111 +1132,161 @@
     const blockColors = ['#ef4444', '#3b82f6', '#f97316', '#eab308', '#22c55e', '#a855f7', '#06b6d4'];
 
     const persistentBodies = [];
-    const floorY = scalerCard.offsetHeight - 30;
     let physLoopRunning = false;
     let lastClackTime = 0;
+
+    function getFloorY() {
+      return (scalerCard.clientHeight || scalerCard.offsetHeight || 500) - 26;
+    }
 
     function runPhysLoop() {
       if (physLoopRunning) return;
       physLoopRunning = true;
 
       const loopInt = setInterval(() => {
+        const floorY = getFloorY();
         let activeMoving = false;
         const now = Date.now();
 
+        // 1. Process block lifespans & removals
         for (let a = persistentBodies.length - 1; a >= 0; a--) {
           const bA = persistentBodies[a];
-
-          // Pure time-based lifetime (6.5s)
           const elapsed = now - bA.spawnTime;
+
           if (elapsed >= bA.lifespan) {
-            bA.el.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+            // Immediate removal with quick pop animation
+            bA.el.style.transition = 'opacity 0.22s ease, transform 0.22s ease';
             bA.el.style.opacity = '0';
-            bA.el.style.transform = 'scale(0.4)';
+            bA.el.style.transform = 'scale(0.3)';
             const toRemove = bA.el;
-            setTimeout(() => { if (toRemove && toRemove.parentNode) toRemove.remove(); }, 350);
+            setTimeout(() => { if (toRemove && toRemove.parentNode) toRemove.remove(); }, 220);
             persistentBodies.splice(a, 1);
 
-            // Re-enable physics for any block that was resting above
+            // Re-enable physics for ANY block that was resting above or in the air
             for (let k = 0; k < persistentBodies.length; k++) {
               const bK = persistentBodies[k];
-              if (bK.y + bK.h < floorY - 2) {
+              if (bK.y + bK.h < floorY - 1.5) {
                 bK.settled = false;
-                bK.vy = Math.max(bK.vy, 0.5);
+                bK.vy = Math.max(bK.vy, 1.2);
+                // Guarantee dropping blocks live long enough to land and settle on floor
+                bK.lifespan = Math.max(bK.lifespan, (now - bK.spawnTime) + 2600);
+                bK.el.style.opacity = '1';
               }
             }
+            activeMoving = true;
+          } else if (elapsed >= bA.lifespan - 600) {
+            // Subtle fade-out in final 600ms
+            bA.el.style.opacity = Math.max(0.2, (bA.lifespan - elapsed) / 600).toFixed(2);
+          }
+        }
+
+        if (persistentBodies.length === 0) {
+          clearInterval(loopInt);
+          physLoopRunning = false;
+          return;
+        }
+
+        // 2. Multi-tier recursive support check (Bottom-Up)
+        // Sort indices by bottom coordinate descending (from lowest block to highest)
+        const sortedIndices = persistentBodies
+          .map((b, idx) => ({ idx, bottom: b.y + b.h }))
+          .sort((a, b) => b.bottom - a.bottom);
+
+        const supportedSet = new Set();
+
+        for (const item of sortedIndices) {
+          const bA = persistentBodies[item.idx];
+          const onFloor = (bA.y + bA.h >= floorY - 1.5);
+
+          if (onFloor) {
+            supportedSet.add(item.idx);
             continue;
-          } else if (elapsed >= bA.lifespan - 1200) {
-            // Fade out smoothly in final 1.2 seconds
-            bA.el.style.opacity = ((bA.lifespan - elapsed) / 1200).toFixed(2);
           }
 
-          // Active support check: if a settled block is above the floor, verify it still has a block directly beneath it!
-          if (bA.settled && (bA.y + bA.h < floorY - 2)) {
-            let hasSupport = false;
-            for (let b = 0; b < persistentBodies.length; b++) {
-              if (a === b) continue;
-              const bB = persistentBodies[b];
-              const verticalGap = Math.abs((bA.y + bA.h) - bB.y);
-              const minX = Math.max(bA.x, bB.x);
-              const maxX = Math.min(bA.x + bA.w, bB.x + bB.w);
-              const hOverlap = maxX - minX;
+          // Check if resting on a settled block that is itself supported!
+          let hasSolidSupport = false;
+          for (let b = 0; b < persistentBodies.length; b++) {
+            if (b === item.idx) continue;
+            if (!supportedSet.has(b)) continue; // Supporting block MUST be supported!
+            const bB = persistentBodies[b];
+            if (!bB.settled) continue; // Supporting block MUST be settled!
 
-              if (verticalGap <= 4 && hOverlap > 4) {
-                hasSupport = true;
-                break;
-              }
-            }
-            if (!hasSupport) {
-              bA.settled = false;
-              bA.vy = Math.max(bA.vy, 0.5);
-              activeMoving = true;
+            const vGap = Math.abs((bA.y + bA.h) - bB.y);
+            const minX = Math.max(bA.x, bB.x);
+            const maxX = Math.min(bA.x + bA.w, bB.x + bB.w);
+            const hOverlap = maxX - minX;
+
+            if (vGap <= 2.5 && hOverlap >= 6) {
+              hasSolidSupport = true;
+              break;
             }
           }
 
-          if (bA.settled) continue;
+          if (hasSolidSupport) {
+            supportedSet.add(item.idx);
+          } else {
+            // Block has NO support! Must fall!
+            if (bA.settled) {
+              // Just lost support! Guarantee enough lifetime to visibly drop and land!
+              bA.lifespan = Math.max(bA.lifespan, (now - bA.spawnTime) + 2600);
+              bA.el.style.opacity = '1';
+            }
+            bA.settled = false;
+            bA.vy = Math.max(bA.vy, 1.0);
+            activeMoving = true;
+          }
+        }
 
-          bA.vy += 0.65; // Gravity
-          bA.x += bA.vx;
-          bA.y += bA.vy;
-          activeMoving = true;
-
-          // While falling, gentle upright sway (within ±3 degrees)
+        // 3. Movement integration
+        for (let a = 0; a < persistentBodies.length; a++) {
+          const bA = persistentBodies[a];
           if (!bA.settled) {
+            bA.vy += 0.7; // Gravity
+            bA.vx *= 0.96;
+            bA.x += bA.vx;
+            bA.y += bA.vy;
+            activeMoving = true;
             bA.rot = Math.sin((now - bA.spawnTime) * 0.008) * 3;
           }
+        }
 
-          // Floor collision (Accurate hitbox: bottom is y + h)
+        // 4. Floor & Wall collisions
+        const cardW = scalerCard.offsetWidth || 340;
+        for (let a = 0; a < persistentBodies.length; a++) {
+          const bA = persistentBodies[a];
+
+          // Floor
           if (bA.y + bA.h >= floorY) {
             bA.y = floorY - bA.h;
-            bA.vy = -bA.vy * 0.2;
-            bA.vx *= 0.65;
-            bA.rot = 0; // Snap perfectly upright on impact!
+            bA.vy = -bA.vy * 0.15;
+            bA.vx *= 0.6;
+            bA.rot = 0;
             if (Math.abs(bA.vy) < 0.6) {
               bA.vy = 0;
               bA.vx = 0;
-              bA.rot = 0;
               bA.settled = true;
             }
           }
 
-          // Wall collision
-          if (bA.x <= 15) {
-            bA.x = 15;
-            bA.vx = -bA.vx * 0.4;
+          // Left wall
+          if (bA.x <= 14) {
+            bA.x = 14;
+            bA.vx = -bA.vx * 0.3;
           }
-          const maxW = scalerCard.offsetWidth - bA.w - 15;
+          // Right wall
+          const maxW = cardW - bA.w - 14;
           if (bA.x >= maxW) {
             bA.x = maxW;
-            bA.vx = -bA.vx * 0.4;
+            bA.vx = -bA.vx * 0.3;
           }
+        }
 
-          // Accurate AABB collision between all bodies
-          for (let b = 0; b < persistentBodies.length; b++) {
-            if (a === b) continue;
+        // 5. Block-to-Block AABB collisions
+        for (let a = 0; a < persistentBodies.length; a++) {
+          for (let b = a + 1; b < persistentBodies.length; b++) {
+            const bA = persistentBodies[a];
             const bB = persistentBodies[b];
 
-            // Centers
             const cxA = bA.x + bA.w * 0.5;
             const cyA = bA.y + bA.h * 0.5;
             const cxB = bB.x + bB.w * 0.5;
@@ -1252,12 +1302,11 @@
             const overlapY = halfH - Math.abs(dy);
 
             if (overlapX > 0 && overlapY > 0) {
-              // Colliding! Straighten out instantly
               bA.rot = 0;
-              if (bB.settled) bB.rot = 0;
+              bB.rot = 0;
 
               if (overlapX < overlapY) {
-                // Horizontal collision (hit side of another block)
+                // Lateral side collision
                 const signX = dx > 0 ? 1 : -1;
                 if (bB.settled) {
                   bA.x += signX * overlapX;
@@ -1268,58 +1317,49 @@
                 } else {
                   bA.x += signX * overlapX * 0.5;
                   bB.x -= signX * overlapX * 0.5;
-                  const vAvg = (bA.vx - bB.vx) * 0.35;
+                  const vAvg = (bA.vx - bB.vx) * 0.3;
                   bA.vx = vAvg;
                   bB.vx = -vAvg;
                 }
               } else {
-                // Vertical collision (stacking)
-                if (dy < 0) {
-                  // A is on top of B (A lands directly on top of B!)
-                  bA.y = bB.y - bA.h;
-                  bA.vy = -bA.vy * 0.15;
-                  bA.vx *= 0.6;
-                  bA.rot = 0;
-                  if (Math.abs(bA.vy) < 0.6) {
-                    bA.vy = 0;
-                    bA.vx = 0;
-                    bA.settled = true;
+                // Vertical stacking collision
+                const topBlock = dy < 0 ? bA : bB;
+                const botBlock = dy < 0 ? bB : bA;
+
+                topBlock.y = botBlock.y - topBlock.h;
+                topBlock.rot = 0;
+
+                // CRITICAL: Top block can ONLY settle if bottom block is ALREADY settled!
+                if (botBlock.settled) {
+                  topBlock.vy = -topBlock.vy * 0.15;
+                  topBlock.vx *= 0.6;
+                  if (Math.abs(topBlock.vy) < 0.6) {
+                    topBlock.vy = 0;
+                    topBlock.vx = 0;
+                    topBlock.settled = true;
                   }
                 } else {
-                  // B is on top of A
-                  if (bA.settled) {
-                    bB.y = bA.y - bB.h;
-                    bB.vy = -bB.vy * 0.15;
-                    bB.vx *= 0.6;
-                    bB.rot = 0;
-                    if (Math.abs(bB.vy) < 0.6) {
-                      bB.vy = 0;
-                      bB.vx = 0;
-                      bB.settled = true;
-                    }
-                  } else {
-                    bA.y += overlapY * 0.5;
-                    bB.y -= overlapY * 0.5;
-                  }
+                  // Bottom block is falling -> Top block falls along with it!
+                  topBlock.settled = false;
+                  topBlock.vy = Math.max(topBlock.vy, botBlock.vy);
                 }
               }
 
-              // Throttled quiet clack audio
+              // Throttled quiet clack sound
               if (now - lastClackTime > 450) {
                 sfx.playBlockClack();
                 lastClackTime = now;
               }
             }
           }
-
-          bA.el.style.left = `${bA.x}px`;
-          bA.el.style.top = `${bA.y}px`;
-          bA.el.style.transform = bA.rot !== 0 ? `rotate(${bA.rot}deg)` : 'none';
         }
 
-        if (!activeMoving && persistentBodies.length === 0) {
-          clearInterval(loopInt);
-          physLoopRunning = false;
+        // 6. DOM Transform Update
+        for (let a = 0; a < persistentBodies.length; a++) {
+          const b = persistentBodies[a];
+          b.el.style.left = `${b.x}px`;
+          b.el.style.top = `${b.y}px`;
+          b.el.style.transform = b.rot !== 0 ? `rotate(${b.rot}deg)` : 'none';
         }
       }, 25);
     }
