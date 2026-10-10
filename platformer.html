@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Elroy Saltzherr • 2D DOM Platformer Mode</title>
+  <title>Elroy Saltzherr • 2D Platformer Level</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Press+Start+2P&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <style>
-    /* Embed same styles as index.html */
     :root {
       --bg: #090d16;
       --card-bg: #101726;
@@ -19,7 +18,6 @@
       --gold: #fbbf24;
       --text: #f8fafc;
       --text-muted: #94a3b8;
-      --text-dim: #64748b;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,47 +33,28 @@
       line-height: 1.6;
       user-select: none;
     }
-    ::-webkit-scrollbar {
-      display: none !important;
-      width: 0 !important;
-      height: 0 !important;
-    }
+    ::-webkit-scrollbar { display: none !important; width: 0 !important; }
 
     /* Platformer Game HUD Overlay */
     #game-hud {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       z-index: 10000;
-      background: rgba(9, 13, 22, 0.92);
-      backdrop-filter: blur(12px);
+      background: rgba(9, 13, 22, 0.94);
+      backdrop-filter: blur(14px);
       border-bottom: 2px solid var(--accent);
-      padding: 12px 24px;
+      padding: 10px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
       font-family: 'Press Start 2P', monospace;
-      font-size: 0.72rem;
+      font-size: 0.68rem;
     }
 
-    .hud-stats {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .hud-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .hud-controls-hint {
-      color: var(--cyan);
-      font-size: 0.65rem;
-    }
+    .hud-stats { display: flex; align-items: center; gap: 20px; }
+    .hud-badge { display: flex; align-items: center; gap: 8px; }
+    .hud-controls-hint { color: var(--cyan); font-size: 0.62rem; }
 
     .btn-exit-game {
       background: rgba(239, 68, 68, 0.2);
@@ -85,125 +64,163 @@
       border-radius: 6px;
       text-decoration: none;
       font-family: 'Press Start 2P', monospace;
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       cursor: pointer;
       transition: all 0.2s;
     }
+    .btn-exit-game:hover { background: #ef4444; color: #fff; }
 
-    .btn-exit-game:hover {
-      background: #ef4444;
-      color: #fff;
-    }
-
-    /* Player Sprite Canvas Layer */
+    /* Canvas Layer */
     #platformer-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
       pointer-events: none;
       z-index: 9999;
     }
 
-    /* Level Container (Holds all platform elements) */
+    /* Level Container (Stage translated by Virtual Camera) */
     .level-container {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      max-width: 1140px;
-      margin: 80px auto 100px auto;
-      padding: 0 24px;
+      top: 0; left: 0; right: 0;
+      max-width: 1200px;
+      margin: 70px auto 140px auto;
+      padding: 0 20px;
       will-change: transform;
+      min-height: 2400px;
     }
 
-    /* Platformer Elements (Acts as solid platforms) */
+    /* Broken-up Solid Platforms */
     .solid-platform {
+      position: absolute;
       background: var(--card-bg);
-      border: 2px solid rgba(99, 102, 241, 0.35);
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 30px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-      position: relative;
-      transition: border-color 0.2s;
+      border: 2px solid rgba(99, 102, 241, 0.4);
+      border-radius: 12px;
+      padding: 14px 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     .solid-platform.touched {
       border-color: var(--gold);
-      box-shadow: 0 0 20px rgba(251, 191, 36, 0.35);
+      box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
     }
 
     .platform-tag {
       display: inline-block;
-      padding: 4px 10px;
+      padding: 3px 8px;
       background: rgba(99, 102, 241, 0.2);
       color: var(--cyan);
       border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 700;
+      font-size: 0.65rem;
+      font-weight: 800;
       text-transform: uppercase;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
 
     .platform-title {
-      font-size: 1.4rem;
+      font-size: 0.98rem;
       font-weight: 800;
       color: #fff;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
 
     .platform-desc {
       color: var(--text-muted);
-      font-size: 0.95rem;
-      line-height: 1.6;
+      font-size: 0.78rem;
+      line-height: 1.5;
     }
 
     .gem-indicator {
       position: absolute;
-      top: -24px;
-      right: 24px;
-      font-size: 1.4rem;
+      top: -20px;
+      right: 14px;
+      font-size: 1.1rem;
       animation: float-gem 1.5s ease-in-out infinite alternate;
     }
-
     @keyframes float-gem {
       from { transform: translateY(0); }
-      to { transform: translateY(-8px); }
+      to { transform: translateY(-6px); }
     }
 
-    /* Modal for inspect */
+    /* Ladders on Sides */
+    .level-ladder {
+      position: absolute;
+      width: 32px;
+      background: repeating-linear-gradient(
+        0deg,
+        #78350f,
+        #78350f 4px,
+        transparent 4px,
+        transparent 20px
+      );
+      border-left: 5px solid #b45309;
+      border-right: 5px solid #b45309;
+      z-index: 50;
+      box-shadow: 0 0 10px rgba(180, 83, 9, 0.3);
+    }
+    .ladder-label {
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.52rem;
+      color: #f59e0b;
+      white-space: nowrap;
+    }
+
+    /* Bounce Springs */
+    .bounce-pad {
+      position: absolute;
+      width: 70px;
+      height: 22px;
+      background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+      border: 2px solid #fff;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.55rem;
+      color: #000;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+      z-index: 60;
+      cursor: pointer;
+    }
+    .bounce-pad.compressed {
+      transform: scaleY(0.4);
+    }
+
+    /* Inspect Modal */
     #inspect-modal {
       position: fixed;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%) scale(0.9);
       background: rgba(15, 23, 42, 0.96);
       backdrop-filter: blur(16px);
       border: 2px solid var(--gold);
-      border-radius: 20px;
-      padding: 30px;
-      max-width: 500px;
+      border-radius: 18px;
+      padding: 26px;
+      max-width: 520px;
       width: 90%;
       z-index: 10001;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 40px rgba(251, 191, 36, 0.3);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.85), 0 0 40px rgba(251, 191, 36, 0.3);
       display: none;
       opacity: 0;
       transition: all 0.2s ease;
       text-align: center;
     }
-
     #inspect-modal.active {
       display: block;
       opacity: 1;
       transform: translate(-50%, -50%) scale(1);
     }
-
     .modal-btn {
       display: inline-block;
-      margin-top: 18px;
-      padding: 10px 20px;
+      margin-top: 14px;
+      padding: 10px 18px;
       background: var(--accent);
       color: #fff;
       border-radius: 10px;
@@ -217,95 +234,174 @@
   <!-- HUD -->
   <div id="game-hud">
     <div class="hud-stats">
-      <div class="hud-badge" style="color: var(--gold);">★ GEMS: <span id="gem-count">0</span> / 6</div>
-      <div class="hud-badge" style="color: var(--cyan);">LEVEL: <span id="level-display">PORTFOLIO DEEP DIVE</span></div>
+      <div class="hud-badge" style="color: var(--gold);">★ GEMS: <span id="gem-count">0</span> / 12</div>
+      <div class="hud-badge" style="color: var(--cyan);">ZONE: <span id="level-display">SPAWN LEDGE</span></div>
     </div>
     <div class="hud-controls-hint">
-      [A][D] / [←][→] MOVE • [W] / [SPACE] JUMP • [DOUBLE JUMP] UNLOCKED
+      [A][D] MOVE • [W]/[SPACE] JUMP / CLIMB LADDER • [SPRING PADS]
     </div>
-    <a href="play.html" class="btn-exit-game">ESC / EXIT</a>
+    <div style="display: flex; gap: 8px;">
+      <a href="site-platformer.html" class="btn-exit-game" style="border-color: #38bdf8; color: #38bdf8;">🌐 On-Site ▶</a>
+      <a href="play.html" class="btn-exit-game">ESC / EXIT</a>
+    </div>
   </div>
 
   <!-- Player Canvas -->
   <canvas id="platformer-canvas"></canvas>
 
-  <!-- Level Platforms -->
+  <!-- Level Platforms Container -->
   <div class="level-container" id="level">
-    <!-- Platform 1: Hero -->
-    <div class="solid-platform" id="plat-hero" data-name="Elroy Saltzherr (Lead Dev)" data-gem="true">
-      <span class="gem-indicator">💎</span>
-      <span class="platform-tag">LEVEL START • SPAWN ZONE</span>
-      <h1 class="platform-title">Elroy Saltzherr — Gameplay Programmer & Designer</h1>
-      <p class="platform-desc">
-        Welcome to the playable portfolio! Jump across the solid sections below to explore shipped titles, cloud systems, and competitive insights.
-      </p>
+    <!-- LADDERS on Left and Right Sides -->
+    <div class="level-ladder" style="left: 20px; top: 180px; height: 600px;">
+      <span class="ladder-label">LADDER</span>
+    </div>
+    <div class="level-ladder" style="right: 20px; top: 650px; height: 700px;">
+      <span class="ladder-label">LADDER</span>
+    </div>
+    <div class="level-ladder" style="left: 20px; top: 1200px; height: 650px;">
+      <span class="ladder-label">LADDER</span>
     </div>
 
-    <!-- Platform 2: Dark Throne -->
-    <div class="solid-platform" id="plat-darkthrone" data-name="Dark Throne (Steam Release)" data-url="https://store.steampowered.com/app/2995790/Dark_Throne/" data-gem="true">
+    <!-- BOUNCE SPRINGS -->
+    <div class="bounce-pad" style="left: 220px; top: 580px;">▲ SPRING</div>
+    <div class="bounce-pad" style="right: 220px; top: 1120px;">▲ SPRING</div>
+    <div class="bounce-pad" style="left: 480px; top: 1680px;">▲ SPRING</div>
+
+    <!-- =========================================================
+         SECTION 1: SPAWN & HERO LEDGES
+         ========================================================= -->
+    <!-- Spawn Platform -->
+    <div class="solid-platform" style="left: 80px; top: 120px; width: 440px;" data-name="Elroy Saltzherr (Lead Dev)" data-gem="true">
       <span class="gem-indicator">💎</span>
-      <span class="platform-tag" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">FLAGSHIP TITLE</span>
-      <h2 class="platform-title">Dark Throne — 2D Metroidvania on Steam</h2>
-      <p class="platform-desc">
-        Shipped commercial Metroidvania. Engineered player controllers, combat state machines, boss AI, and Steamworks SDK. (Touch this platform to inspect!)
-      </p>
+      <span class="platform-tag">SPAWN ZONE</span>
+      <h1 class="platform-title">Elroy Saltzherr — Gameplay Programmer</h1>
+      <p class="platform-desc">Jump across the broken-up stepping ledges to traverse my shipped titles, AI cloud pipelines, and competitive mechanics!</p>
     </div>
 
-    <!-- Platform 3: Where's My Gun -->
-    <div class="solid-platform" id="plat-gun" data-name="Where's My Gun? (Phaser)" data-url="https://esaltzherr.github.io/120FinalGame/" data-gem="true">
+    <!-- Hero Skill Stepping Stone (Right) -->
+    <div class="solid-platform" style="right: 80px; top: 160px; width: 340px;" data-name="Primary Tech Stack" data-gem="true">
       <span class="gem-indicator">💎</span>
-      <span class="platform-tag">GAME JAM WAVE SURVIVAL</span>
-      <h2 class="platform-title">Where's My Gun? — Phaser.js</h2>
-      <p class="platform-desc">
-        Wave survival game featuring dynamic risk-reward progression mechanics where upgrading one skill disables another.
-      </p>
+      <span class="platform-tag" style="color:#fbbf24;">TECH LEDGE</span>
+      <h2 class="platform-title">Unity • Godot 4.3 • C# • GCP</h2>
+      <p class="platform-desc">Precision game mechanics, state machine AI graphs, and zero cold-start microservices.</p>
     </div>
 
-    <!-- Platform 4: Cloud Automation -->
-    <div class="solid-platform" id="plat-cloud" data-name="Cloud Automation (Jambelles & Longboards)" data-gem="true">
+    <!-- =========================================================
+         SECTION 2: DARK THRONE (Broken into 3 Stepping Stones)
+         ========================================================= -->
+    <!-- Dark Throne: Header & Steam Ledge -->
+    <div class="solid-platform" style="left: 120px; top: 320px; width: 320px;" data-name="Dark Throne: Steam Release" data-url="https://store.steampowered.com/app/2995790/Dark_Throne/" data-gem="true">
       <span class="gem-indicator">💎</span>
-      <span class="platform-tag" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8;">AUTONOMOUS AI SYSTEMS</span>
-      <h2 class="platform-title">Cloud Run & Gemini Multi-Agent Pipelines</h2>
-      <p class="platform-desc">
-        Cut catalog publishing from hours to 10 minutes. Containerized Google Cloud Run feature serving 900+ users.
-      </p>
+      <span class="platform-tag" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">STEAM SHIPPED</span>
+      <h2 class="platform-title">Dark Throne: Blood & Gold</h2>
+      <p class="platform-desc">Commercial Metroidvania published on Steam with positive community reception.</p>
     </div>
 
-    <!-- Platform 5: Competitive Acumen -->
-    <div class="solid-platform" id="plat-acumen" data-name="Diamond LoL & MTG Acumen" data-gem="true">
+    <!-- Dark Throne: 4-Hit Combo Step -->
+    <div class="solid-platform" style="left: 480px; top: 360px; width: 280px;" data-name="Combat Physics Engine" data-gem="true">
       <span class="gem-indicator">💎</span>
-      <span class="platform-tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">COMPETITIVE DNA</span>
-      <h2 class="platform-title">Diamond League of Legends (2.4M Taliyah) & MTG Economy</h2>
-      <p class="platform-desc">
-        Piloting off-meta bottom lane carries to Diamond; designing resilient ~$100 Commander decks.
-      </p>
+      <span class="platform-tag">COMBAT FEEL</span>
+      <h2 class="platform-title">4-Hit Combo Engine</h2>
+      <p class="platform-desc">Hitboxes with sub-pixel precision, hitstop frame delays, and particle screen-shake juice.</p>
     </div>
 
-    <!-- Platform 6: Shipped Finish Line -->
-    <div class="solid-platform" id="plat-finish" data-name="Level Complete! Resumes Available" data-url="index.html#resumes" data-gem="true" style="border-color: var(--gold); text-align: center; padding: 40px;">
+    <!-- Dark Throne: Enemy AI Ledge -->
+    <div class="solid-platform" style="right: 100px; top: 410px; width: 260px;" data-name="Boss & Enemy AI" data-gem="true">
+      <span class="gem-indicator">💎</span>
+      <span class="platform-tag">AI SYSTEMS</span>
+      <h2 class="platform-title">Enemy State Machines</h2>
+      <p class="platform-desc">Autonomous multi-state enemy behaviors with aggro radii and telegraph windows.</p>
+    </div>
+
+    <!-- =========================================================
+         SECTION 3: WHERE'S MY GUN & PENCIL PUSHER
+         ========================================================= -->
+    <div class="solid-platform" style="left: 140px; top: 620px; width: 300px;" data-name="Where's My Gun? (Phaser)" data-url="https://esaltzherr.github.io/120FinalGame/" data-gem="true">
+      <span class="gem-indicator">💎</span>
+      <span class="platform-tag">PHASER.JS</span>
+      <h2 class="platform-title">Where's My Gun?</h2>
+      <p class="platform-desc">Wave survival roguelite featuring inverted risk-reward progression loops.</p>
+    </div>
+
+    <div class="solid-platform" style="left: 480px; top: 680px; width: 260px;" data-name="Pencil Pusher" data-gem="true">
+      <span class="gem-indicator">💎</span>
+      <span class="platform-tag">MECHANICS</span>
+      <h2 class="platform-title">Pencil Pusher</h2>
+      <p class="platform-desc">Physical eraser wiping mechanics integrated directly into puzzle solving.</p>
+    </div>
+
+    <div class="solid-platform" style="right: 120px; top: 740px; width: 280px;" data-name="Building Scaler" data-gem="true">
+      <span class="gem-indicator">💎</span>
+      <span class="platform-tag">ISOMETRIC</span>
+      <h2 class="platform-title">Building Scaler</h2>
+      <p class="platform-desc">Dynamic 3D block stacking with physics mass scaling algorithms.</p>
+    </div>
+
+    <!-- =========================================================
+         SECTION 4: CLOUD AI & JAMBELLES
+         ========================================================= -->
+    <div class="solid-platform" style="left: 100px; top: 940px; width: 340px;" data-name="StocksBot Cloud Run" data-gem="true">
+      <span class="gem-indicator">💎</span>
+      <span class="platform-tag" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8;">CLOUD DOCKER</span>
+      <h2 class="platform-title">StocksBot Cloud Pipeline</h2>
+      <p class="platform-desc">Containerized autonomous screener running 24/7 on GCP Cloud Run with Discord alerts.</p>
+    </div>
+
+    <div class="solid-platform" style="left: 480px; top: 1000px; width: 320px;" data-name="Jambelles & Longboards E-Commerce" data-gem="true">
+      <span class="gem-indicator">💎</span>
+      <span class="platform-tag">SCALING OPS</span>
+      <h2 class="platform-title">Jambelles Store Operations</h2>
+      <p class="platform-desc">Cut multi-hour publishing backlogs to 10 minutes using automated AI workflows.</p>
+    </div>
+
+    <!-- =========================================================
+         SECTION 5: FRC ROBOTICS & ATHLETICS
+         ========================================================= -->
+    <div class="solid-platform" style="left: 120px; top: 1260px; width: 320px;" data-name="FRC Team 199 Drive Team Lead" data-gem="true">
+      <span class="gem-indicator">💎</span>
+      <span class="platform-tag" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">ROBOTICS LEAD</span>
+      <h2 class="platform-title">Competitive FRC Driver</h2>
+      <p class="platform-desc">Primary competitive robot driver, CNC precision machinist, and structural CAD designer.</p>
+    </div>
+
+    <div class="solid-platform" style="left: 480px; top: 1320px; width: 280px;" data-name="Diamond League Mastery" data-gem="true">
+      <span class="gem-indicator">💎</span>
+      <span class="platform-tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">TOP 1% COMPETITOR</span>
+      <h2 class="platform-title">Diamond League Mastery</h2>
+      <p class="platform-desc">2.4M Mastery Taliyah off-meta carry; apex cooldown windows & wave state mastery.</p>
+    </div>
+
+    <div class="solid-platform" style="right: 120px; top: 1380px; width: 260px;" data-name="15 Years Competitive Soccer" data-gem="true">
+      <span class="gem-indicator">💎</span>
+      <span class="platform-tag">SPORTS</span>
+      <h2 class="platform-title">15 Years Soccer Athletics</h2>
+      <p class="platform-desc">Predictive trajectory tracking, field vision, and high-end team endurance.</p>
+    </div>
+
+    <!-- =========================================================
+         SECTION 6: FINISH LINE
+         ========================================================= -->
+    <div class="solid-platform" style="left: 200px; top: 1620px; width: 800px; border-color: var(--gold); text-align: center; padding: 30px;" data-name="Level Complete! Resumes Available" data-url="index.html#resumes" data-gem="true">
       <span class="gem-indicator">🏆</span>
       <span class="platform-tag" style="background: rgba(251, 191, 36, 0.2); color: var(--gold);">FINISH LINE</span>
-      <h2 class="platform-title">You Completed the Traversal!</h2>
-      <p class="platform-desc">
-        Download full Gameplay Programmer & Technical Designer resumes, or return to standard mode.
-      </p>
+      <h2 class="platform-title" style="font-size: 1.3rem;">Level Conquered • Traversal Complete!</h2>
+      <p class="platform-desc">You navigated all project stepping stones! Touch this platform to inspect resumes or return to standard portfolio.</p>
     </div>
   </div>
 
   <!-- Modal -->
   <div id="inspect-modal">
-    <div style="font-size: 2rem; margin-bottom: 10px;">🌟</div>
-    <h3 id="modal-title" style="font-size: 1.3rem; margin-bottom: 8px; color: #fff;">Platform Inspected!</h3>
-    <p id="modal-desc" style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 16px;">Platform info loaded.</p>
+    <div style="font-size: 2.2rem; margin-bottom: 8px;">🌟</div>
+    <h3 id="modal-title" style="font-size: 1.2rem; margin-bottom: 8px; color: #fff;">Platform Inspected!</h3>
+    <p id="modal-desc" style="font-size: 0.88rem; color: #94a3b8; margin-bottom: 14px;">Platform info loaded.</p>
     <a id="modal-link" href="#" target="_blank" class="modal-btn">Visit Link →</a>
-    <button onclick="closeModal()" style="margin-left: 10px; padding: 10px 18px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: #fff; cursor: pointer;">Resume Playing [ESC]</button>
+    <button onclick="closeModal()" style="margin-left: 10px; padding: 10px 16px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: #fff; cursor: pointer;">Resume [ESC]</button>
   </div>
 
   <script>
-    // Web Audio Synthesizer for Authentic Game Sound Effects
+    // Audio Synthesizer
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
-
     function playSound(type) {
       try {
         if (!audioCtx) audioCtx = new AudioCtx();
@@ -317,101 +413,88 @@
 
         if (type === 'jump') {
           osc.type = 'square';
-          osc.frequency.setValueAtTime(150, t);
-          osc.frequency.exponentialRampToValueAtTime(450, t + 0.12);
+          osc.frequency.setValueAtTime(160, t);
+          osc.frequency.exponentialRampToValueAtTime(460, t + 0.12);
           gain.gain.setValueAtTime(0.12, t);
           gain.gain.linearRampToValueAtTime(0, t + 0.12);
-          osc.start(t);
-          osc.stop(t + 0.12);
+          osc.start(t); osc.stop(t + 0.12);
         } else if (type === 'double-jump') {
           osc.type = 'triangle';
-          osc.frequency.setValueAtTime(300, t);
-          osc.frequency.exponentialRampToValueAtTime(700, t + 0.15);
-          gain.gain.setValueAtTime(0.15, t);
+          osc.frequency.setValueAtTime(320, t);
+          osc.frequency.exponentialRampToValueAtTime(740, t + 0.15);
+          gain.gain.setValueAtTime(0.14, t);
           gain.gain.linearRampToValueAtTime(0, t + 0.15);
-          osc.start(t);
-          osc.stop(t + 0.15);
+          osc.start(t); osc.stop(t + 0.15);
+        } else if (type === 'spring') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, t);
+          osc.frequency.exponentialRampToValueAtTime(950, t + 0.25);
+          gain.gain.setValueAtTime(0.15, t);
+          gain.gain.linearRampToValueAtTime(0, t + 0.25);
+          osc.start(t); osc.stop(t + 0.25);
         } else if (type === 'coin') {
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(987.77, t); // B5
-          osc.frequency.setValueAtTime(1318.51, t + 0.08); // E6
-          gain.gain.setValueAtTime(0.18, t);
-          gain.gain.linearRampToValueAtTime(0, t + 0.28);
-          osc.start(t);
-          osc.stop(t + 0.28);
+          osc.frequency.setValueAtTime(987, t);
+          osc.frequency.setValueAtTime(1318, t + 0.08);
+          gain.gain.setValueAtTime(0.15, t);
+          gain.gain.linearRampToValueAtTime(0, t + 0.2);
+          osc.start(t); osc.stop(t + 0.2);
         }
       } catch (e) {}
     }
 
-    // 2D Physics Engine
     const canvas = document.getElementById('platformer-canvas');
     const ctx = canvas.getContext('2d');
+    const levelContainer = document.getElementById('level');
 
-    function resizeCanvas() {
+    function resize() {
       canvas.width = window.innerWidth;
-      canvas.height = document.documentElement.scrollHeight;
+      canvas.height = window.innerHeight;
     }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+    window.addEventListener('resize', resize);
+    resize();
 
-    // Player State
+    // Player Hero
     const player = {
-      x: window.innerWidth / 2 - 16,
-      y: 120,
-      w: 28,
-      h: 42,
+      x: 140,
+      y: 80,
+      w: 24,
+      h: 34,
       vx: 0,
       vy: 0,
-      speed: 6.8,
-      gravity: 0.65,
-      jumpForce: -13.5,
+      speed: 6.0,
+      jumpForce: -13.0,
+      gravity: 0.58,
       isGrounded: false,
       jumpsLeft: 2,
-      facing: 1, // 1 = right, -1 = left
-      color: '#6366f1'
+      onLadder: false,
+      facing: 1
     };
 
-    let gemsCollected = 0;
-    const keys = {};
-
-    window.addEventListener('keydown', e => {
-      keys[e.code] = true;
-      if (['Space', 'KeyW', 'ArrowUp'].includes(e.code)) {
-        e.preventDefault();
-        tryJump();
-      }
-      if (e.code === 'Escape') {
-        closeModal();
-      }
-    });
-
-    window.addEventListener('keyup', e => {
-      keys[e.code] = false;
-    });
-
-    function tryJump() {
-      if (player.jumpsLeft > 0) {
-        player.vy = player.jumpForce;
-        if (player.jumpsLeft === 2) {
-          playSound('jump');
-        } else {
-          playSound('double-jump');
-        }
-        player.jumpsLeft--;
-        player.isGrounded = false;
-      }
-    }
-
-    const levelContainer = document.getElementById('level');
     let cameraY = 0;
     let targetCamY = 0;
+    let gemsCollected = 0;
 
-    window.addEventListener('wheel', (e) => {
+    // Keys
+    const keys = {};
+    window.addEventListener('keydown', e => {
+      keys[e.code] = true;
+      if (['ArrowUp','ArrowDown','Space'].includes(e.code)) e.preventDefault();
+      if ((e.code === 'KeyW' || e.code === 'ArrowUp' || e.code === 'Space') && player.jumpsLeft > 0 && !player.onLadder) {
+        player.vy = player.jumpForce;
+        player.jumpsLeft--;
+        playSound(player.jumpsLeft === 1 ? 'jump' : 'double-jump');
+      }
+      if (e.code === 'Escape') closeModal();
+    });
+    window.addEventListener('keyup', e => { keys[e.code] = false; });
+
+    // Smooth wheel scrolling without scrollbar
+    window.addEventListener('wheel', e => {
       e.preventDefault();
-      targetCamY += e.deltaY;
+      targetCamY += e.deltaY * 0.9;
     }, { passive: false });
 
-    // Platforms
     function getPlatformRects() {
       const plats = document.querySelectorAll('.solid-platform');
       const rects = [];
@@ -437,10 +520,8 @@
     }
 
     function closeModal() {
-      const modal = document.getElementById('inspect-modal');
-      modal.classList.remove('active');
+      document.getElementById('inspect-modal').classList.remove('active');
     }
-
     function inspectPlatform(el) {
       const modal = document.getElementById('inspect-modal');
       document.getElementById('modal-title').textContent = el.getAttribute('data-name');
@@ -456,9 +537,9 @@
       modal.classList.add('active');
     }
 
-    // Main Game Loop
+    // Main Update Loop
     function update() {
-      // Horizontal input
+      // Horizontal Input
       if (keys['KeyA'] || keys['ArrowLeft']) {
         player.vx = -player.speed;
         player.facing = -1;
@@ -466,34 +547,56 @@
         player.vx = player.speed;
         player.facing = 1;
       } else {
-        player.vx *= 0.75;
+        player.vx *= 0.78;
       }
 
-      // Apply Gravity
-      player.vy += player.gravity;
-      if (player.vy > 15) player.vy = 15;
+      // Ladder Detection
+      const ladders = document.querySelectorAll('.level-ladder');
+      let touchingLadder = false;
+      ladders.forEach(lad => {
+        const lx = lad.offsetLeft;
+        const ly = lad.offsetTop;
+        const lw = lad.offsetWidth;
+        const lh = lad.offsetHeight;
+        if (player.x + player.w > lx && player.x < lx + lw && player.y + player.h > ly && player.y < ly + lh) {
+          touchingLadder = true;
+        }
+      });
 
-      // Move X
+      player.onLadder = touchingLadder;
+
+      if (player.onLadder) {
+        // Climbing up/down smoothly on ladder!
+        player.vy = 0;
+        player.jumpsLeft = 2;
+        if (keys['KeyW'] || keys['ArrowUp']) player.y -= 5;
+        if (keys['KeyS'] || keys['ArrowDown']) player.y += 5;
+      } else {
+        // Normal Gravity
+        player.vy += player.gravity;
+        if (player.vy > 16) player.vy = 16;
+        player.y += player.vy;
+      }
+
       player.x += player.vx;
-      // Screen bounds X
-      if (player.x < 10) player.x = 10;
-      if (player.x + player.w > window.innerWidth - 10) player.x = window.innerWidth - 10 - player.w;
 
-      // Move Y & Collisions
-      player.y += player.vy;
+      // Screen bounds X
+      if (player.x < 15) player.x = 15;
+      if (player.x + player.w > window.innerWidth - 15) player.x = window.innerWidth - 15 - player.w;
+
+      // Solid Platforms Collisions
       const platforms = getPlatformRects();
       player.isGrounded = false;
 
       for (const plat of platforms) {
         if (checkCollision(player, plat)) {
-          // Landing on top
-          if (player.vy > 0 && player.y + player.h - player.vy <= plat.y + 12) {
+          // Landing on top ledge
+          if (player.vy > 0 && player.y + player.h - player.vy <= plat.y + 16) {
             player.y = plat.y - player.h;
             player.vy = 0;
             player.isGrounded = true;
-            player.jumpsLeft = 2; // Reset double jump
+            player.jumpsLeft = 2;
 
-            // Gem pickup & touched styling
             if (!plat.el.classList.contains('touched')) {
               plat.el.classList.add('touched');
               const gemEl = plat.el.querySelector('.gem-indicator');
@@ -502,20 +605,38 @@
                 gemsCollected++;
                 document.getElementById('gem-count').textContent = gemsCollected;
                 playSound('coin');
+                document.getElementById('level-display').textContent = plat.el.querySelector('.platform-title').textContent.slice(0, 22);
               }
             }
           }
         }
       }
 
-      // Smooth Virtual Camera without native scrollbars
+      // Bounce Springs Collisions
+      const springs = document.querySelectorAll('.bounce-pad');
+      springs.forEach(sp => {
+        const sx = sp.offsetLeft;
+        const sy = sp.offsetTop;
+        const sw = sp.offsetWidth;
+        const sh = sp.offsetHeight;
+        if (player.x + player.w > sx && player.x < sx + sw && player.y + player.h >= sy && player.y + player.h <= sy + 18 && player.vy > 0) {
+          player.vy = -18.5; // BOUNCE HIGH!
+          player.jumpsLeft = 2;
+          playSound('spring');
+          sp.classList.add('compressed');
+          setTimeout(() => sp.classList.remove('compressed'), 180);
+        }
+      });
+
+      // Virtual Camera Smooth Tracking (Zero scrollbars)
       targetCamY = player.y - window.innerHeight * 0.45;
-      const maxCamY = Math.max(0, levelContainer.scrollHeight - window.innerHeight + 150);
+      const maxCamY = Math.max(0, 2400 - window.innerHeight + 150);
       targetCamY = Math.max(0, Math.min(maxCamY, targetCamY));
       cameraY += (targetCamY - cameraY) * 0.12;
       levelContainer.style.transform = `translate3d(0, ${-cameraY}px, 0)`;
     }
 
+    // Render Canvas
     function render() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const screenY = player.y - cameraY;
@@ -524,40 +645,41 @@
       ctx.save();
       ctx.translate(player.x, screenY);
 
-      // Shadow on ground
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+      // Shadow on floor
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
       ctx.beginPath();
       ctx.ellipse(player.w / 2, player.h + 2, player.w / 2, 4, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Body (Knight Armor)
+      // Armor Body
       ctx.fillStyle = '#6366f1';
-      ctx.fillRect(4, 14, player.w - 8, player.h - 18);
+      ctx.fillRect(4, 12, player.w - 8, player.h - 14);
 
-      // Knight Helmet
+      // Helmet
       ctx.fillStyle = '#94a3b8';
-      ctx.fillRect(2, 0, player.w - 4, 16);
+      ctx.fillRect(2, 0, player.w - 4, 14);
 
       // Visor Glow
       ctx.fillStyle = '#38bdf8';
-      const visorX = player.facing === 1 ? 14 : 4;
-      ctx.fillRect(visorX, 6, 8, 4);
+      const eyeX = player.facing === 1 ? player.w - 8 : 4;
+      ctx.fillRect(eyeX, 4, 4, 4);
 
-      // Sword or Cape
-      ctx.fillStyle = '#f43f5e';
-      const capeX = player.facing === 1 ? 0 : player.w - 4;
-      ctx.fillRect(capeX, 16, 4, 18);
+      // Sword
+      ctx.fillStyle = '#f8fafc';
+      const swordX = player.facing === 1 ? player.w + 2 : -6;
+      ctx.fillRect(swordX, 8, 4, 18);
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillRect(swordX - 2, 14, 8, 3);
 
       ctx.restore();
     }
 
-    function loop() {
+    function gameLoop() {
       update();
       render();
-      requestAnimationFrame(loop);
+      requestAnimationFrame(gameLoop);
     }
-    loop();
+    requestAnimationFrame(gameLoop);
   </script>
 </body>
 </html>
-
