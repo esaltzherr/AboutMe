@@ -1413,7 +1413,7 @@
         </div>
       </a>
       <ul class="nav-links">
-        <li><a href="play.html" style="color: #34d399; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">🕹️ Play Modes</a></li>
+        <!-- <li><a href="play.html" style="color: #34d399; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">🕹️ Play Modes</a></li> -->
         <li><a href="#featured">Steam Project</a></li>
         <li><a href="#projects">Games & Systems</a></li>
         <li><a href="#skills">Skills</a></li>
@@ -1441,7 +1441,7 @@
             Hi, I’m <strong>Elroy Saltzherr</strong>. I design and program combat architectures, progression loops, and custom designer tools in Unity (C#) and Unreal Engine. Lead Developer of <em>Dark Throne</em> on Steam with a passion for combat feel, balance tuning, AI pipelines, and cloud automation.
           </p>
           <div class="hero-actions">
-            <a href="play.html" class="btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; font-weight: 800; box-shadow: 0 4px 18px rgba(16, 185, 129, 0.45); display: inline-flex; align-items: center; gap: 8px;">🕹️ Play This Site</a>
+            <!-- <a href="play.html" class="btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; font-weight: 800; box-shadow: 0 4px 18px rgba(16, 185, 129, 0.45); display: inline-flex; align-items: center; gap: 8px;">🕹️ Play This Site</a> -->
             <a href="#featured" class="btn btn-primary">🎮 View Shipped Work</a>
             <a href="#resumes" class="btn btn-secondary">📄 Download Resumes</a>
             <a href="https://github.com/esaltzherr" target="_blank" class="btn btn-outline">💻 GitHub</a>
@@ -1876,13 +1876,24 @@
           </p>
 
           <!-- Top 4 Mastery Bubble Chart -->
-          <div class="mastery-chart-box" style="margin: 14px 0 16px 0; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 14px; padding: 14px; text-align: center;">
-            <div style="font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 8px;">
+          <div class="mastery-chart-box" style="margin: 14px 0 16px 0; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 14px; padding: 22px 14px 14px 14px; text-align: center; position: relative;">
+            <div style="font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 24px;">
               Top 4 Champion Mastery (<a href="https://masterychart.com/profile/na/LRoy-Rocks" target="_blank" style="color: var(--cyan); text-decoration: none;">LRoy#Rocks</a>)
             </div>
-            <a href="https://masterychart.com/profile/na/LRoy-Rocks" target="_blank" title="View full Mastery Chart for LRoy#Rocks" style="display: block; text-decoration: none;">
-              <img src="images/league_mastery_top4.png" alt="Top 4 Mastery Chart (Taliyah 2.4M, Zyra 803k, Miss Fortune 677k, Diana 467k)" style="width: 100%; max-width: 270px; height: auto; display: block; margin: 0 auto; filter: drop-shadow(0 4px 16px rgba(56, 189, 248, 0.22)); transition: transform 0.2s;" />
-            </a>
+            <div class="league-bubbles-wrapper">
+              <div class="league-champ-bubble" data-champ="Taliyah" data-pts="2.4M PTS" data-raw="2,418,290" style="width: 80px; height: 80px;">
+                <img src="images/taliyah.png" alt="Taliyah" class="league-champ-avatar" />
+              </div>
+              <div class="league-champ-bubble" data-champ="Zyra" data-pts="803K PTS" data-raw="803,115" style="width: 68px; height: 68px;">
+                <img src="images/zyra.png" alt="Zyra" class="league-champ-avatar" />
+              </div>
+              <div class="league-champ-bubble" data-champ="Miss Fortune" data-pts="677K PTS" data-raw="677,420" style="width: 62px; height: 62px;">
+                <img src="images/missfortune.png" alt="Miss Fortune" class="league-champ-avatar" />
+              </div>
+              <div class="league-champ-bubble" data-champ="Diana" data-pts="467K PTS" data-raw="467,890" style="width: 56px; height: 56px;">
+                <img src="images/diana.png" alt="Diana" class="league-champ-avatar" />
+              </div>
+            </div>
           </div>
 
           <div class="dna-highlight-box">
