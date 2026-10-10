@@ -1212,8 +1212,100 @@
     }
 
 
-#platCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 99999; }
-.card-highlight-plat { outline: 3px solid #10b981 !important; box-shadow: 0 0 25px rgba(16, 185, 129, 0.5) !important; }
+#platCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 99999;
+}
+
+/* Broken-up Solid Platform Cards */
+.hero-card, .featured-project-card, .project-card, .timeline-card, .dna-card, .skill-card {
+  border: 2px solid rgba(99, 102, 241, 0.55) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6) !important;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.card-highlight-plat {
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 35px rgba(56, 189, 248, 0.6) !important;
+}
+
+/* Vertical Climbable Ladders on Left & Right Sides */
+.site-ladder {
+  position: absolute;
+  width: 36px;
+  z-index: 9000;
+  background: repeating-linear-gradient(
+    0deg,
+    #78350f,
+    #78350f 5px,
+    transparent 5px,
+    transparent 22px
+  );
+  border-left: 6px solid #b45309;
+  border-right: 6px solid #b45309;
+  box-shadow: 0 0 15px rgba(180, 83, 9, 0.4);
+  pointer-events: none;
+}
+.site-ladder-left { left: 16px; }
+.site-ladder-right { right: 16px; }
+
+.site-ladder-badge {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #b45309;
+  color: #fef3c7;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.52rem;
+  padding: 3px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* Stepping Stone Platforms between distant sections */
+.site-stepping-stone {
+  position: absolute;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border: 2px solid #38bdf8;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.58rem;
+  color: #38bdf8;
+  box-shadow: 0 4px 18px rgba(56, 189, 248, 0.35);
+  z-index: 8000;
+  pointer-events: auto;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Bounce Spring Pads */
+.site-bounce-pad {
+  position: absolute;
+  width: 90px;
+  height: 24px;
+  background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+  border: 2px solid #fff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.55rem;
+  color: #000;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.7);
+  z-index: 8500;
+  pointer-events: none;
+  transition: transform 0.15s ease;
+}
+.site-bounce-pad.compressed {
+  transform: translateX(-50%) scaleY(0.35) !important;
+}
 </style></head>
 
 <body>
@@ -1222,13 +1314,13 @@
   <div id="onsite-game-hud">
     <div class="hud-left">
       <a href="play.html" class="btn-hud">◀ Arcade Hub</a>
-      <span class="hud-mode-pill">🌐 ON-SITE RESKIN • DOM PLATFORMER</span>
+      <span class="hud-mode-pill">🌐 ON-SITE RESKIN • DOM PLATFORMER LEVEL</span>
     </div>
     <div class="hud-center">
-      <div class="hud-stat-chip">SCORE: <span id="platScore">0</span></div><div class="hud-stat-chip">COINS: <span id="platCoins">0/8</span></div>
+      <div class="hud-stat-chip">SCORE: <span id="platScore">0</span></div><div class="hud-stat-chip">GEMS: <span id="platGems">0/12</span></div><div class="hud-stat-chip">STATE: <span id="platState">AIRBORNE</span></div>
     </div>
     <div class="hud-right">
-      <span class="hud-hint">Move: A/D/Arrows | Jump: W/Space | Double Jump | Wheel to Scroll</span>
+      <span class="hud-hint">[A][D] Move • [W]/[SPACE] Jump/Climb • [⏫ SPRINGS] • [🪜 LADDERS]</span>
       <button class="btn-hud" id="btnAudioToggle">🔊 AUDIO: ON</button>
       <a href="platformer.html" class="btn-hud btn-hud-compare">🖥️ Standalone Version ▶</a>
       <a href="index.html" class="btn-hud">Standard Site ▶</a>
@@ -1942,6 +2034,7 @@
       });
     }
   </script>
+  <script src="easter_eggs.js"></script>
 
   </div>
   <script>
@@ -2021,17 +2114,81 @@ function resizePlat() {
 window.addEventListener('resize', resizePlat);
 resizePlat();
 
+const stageEl = document.getElementById('world-stage');
+
+// Create Ladders on Left and Right
+const leftLadder = document.createElement('div');
+leftLadder.className = 'site-ladder site-ladder-left';
+leftLadder.style.top = '140px';
+leftLadder.style.height = (stageEl.scrollHeight - 200) + 'px';
+leftLadder.innerHTML = '<span class="site-ladder-badge">🪜 LADDER (W/S)</span>';
+stageEl.appendChild(leftLadder);
+
+const rightLadder = document.createElement('div');
+rightLadder.className = 'site-ladder site-ladder-right';
+rightLadder.style.top = '140px';
+rightLadder.style.height = (stageEl.scrollHeight - 200) + 'px';
+rightLadder.innerHTML = '<span class="site-ladder-badge">🪜 LADDER (W/S)</span>';
+stageEl.appendChild(rightLadder);
+
+// Intermediate Stepping Stones
+const stepData = [
+  { top: 520, left: '22%', label: '⚔️ STEAM METROIDVANIA LEDGE' },
+  { top: 820, left: '68%', label: '🤖 GCP CLOUD BEAM' },
+  { top: 1150, left: '26%', label: '🏎️ FIRST ROBOTICS GIRDER' },
+  { top: 1480, left: '66%', label: '💎 DIAMOND APEX BALCONY' },
+  { top: 1820, left: '24%', label: '🎮 GODOT HITSTOP PLATFORM' },
+  { top: 2200, left: '64%', label: '⚡ UNITY PHYSX LEDGE' }
+];
+stepData.forEach(d => {
+  const step = document.createElement('div');
+  step.className = 'site-stepping-stone';
+  step.style.top = d.top + 'px';
+  step.style.left = d.left;
+  step.innerHTML = d.label + ' <span style="color:#fbbf24; font-size:0.55rem;">💎</span>';
+  stageEl.appendChild(step);
+});
+
+// Bounce Spring Pads
+const springData = [
+  { top: 620, left: '50%' },
+  { top: 1280, left: '46%' },
+  { top: 1940, left: '52%' }
+];
+const springEls = [];
+springData.forEach(sd => {
+  const pad = document.createElement('div');
+  pad.className = 'site-bounce-pad';
+  pad.style.top = sd.top + 'px';
+  pad.style.left = sd.left;
+  pad.style.transform = 'translateX(-50%)';
+  pad.innerHTML = '▲ SPRING ⏫';
+  stageEl.appendChild(pad);
+  springEls.push(pad);
+});
+
+// Collectible Gems
+const gemPositions = [
+  { x: 140, y: 380 }, { x: 320, y: 520 }, { x: 780, y: 780 },
+  { x: 440, y: 940 }, { x: 220, y: 1140 }, { x: 800, y: 1420 },
+  { x: 360, y: 1640 }, { x: 680, y: 1800 }, { x: 240, y: 2160 },
+  { x: 580, y: 2360 }, { x: 820, y: 2540 }, { x: 460, y: 2780 }
+];
+const gems = gemPositions.map((pos, idx) => ({ id: idx, x: pos.x, y: pos.y, collected: false }));
+
 const player = {
   x: window.innerWidth * 0.25,
   worldY: 180,
   vx: 0,
   vy: 0,
-  width: 24,
-  height: 34,
+  width: 26,
+  height: 36,
   grounded: false,
+  onLadder: false,
   jumpsLeft: 2,
   score: 0,
-  coinsCollected: 0
+  gemsCollected: 0,
+  jumpKeyHeld: false
 };
 
 const keys = {};
@@ -2041,119 +2198,172 @@ window.addEventListener('keydown', e => {
 });
 window.addEventListener('keyup', e => { keys[e.key] = false; });
 
-// Coins
-const coinTargets = document.querySelectorAll('.hero-card, .featured-project-card, .project-card, .skill-card');
-const coins = [];
-coinTargets.forEach((el, i) => {
-  if (i < 8) {
-    coins.push({ el, collected: false });
-  }
-});
-
 function updatePlat() {
-  // Movement
-  if (keys['a'] || keys['A'] || keys['ArrowLeft']) player.vx = -5.5;
-  else if (keys['d'] || keys['D'] || keys['ArrowRight']) player.vx = 5.5;
+  // Ladder Collision Check (within 70px of left/right margins)
+  const nearLeft = player.x < 70;
+  const nearRight = player.x > window.innerWidth - player.width - 70;
+  player.onLadder = (nearLeft || nearRight) && player.worldY > 120 && player.worldY < stageEl.scrollHeight - 100;
+
+  if (player.onLadder) {
+    player.vy = 0;
+    player.jumpsLeft = 2;
+    if (keys['w'] || keys['W'] || keys['ArrowUp']) {
+      player.worldY -= 6;
+      if (Math.random() < 0.15) sfx.playTone(280, 0.04, 'sine', 0.03);
+    } else if (keys['s'] || keys['S'] || keys['ArrowDown']) {
+      player.worldY += 6;
+      if (Math.random() < 0.15) sfx.playTone(240, 0.04, 'sine', 0.03);
+    }
+    // Jump off ladder
+    if ((keys[' '] || keys['w'] || keys['W']) && !player.jumpKeyHeld) {
+      if (keys['a'] || keys['A'] || keys['ArrowLeft']) {
+        player.vx = -6.5; player.vy = -11.5; player.onLadder = false;
+        player.jumpKeyHeld = true;
+        sfx.playTone(420, 0.08, 'square');
+      } else if (keys['d'] || keys['D'] || keys['ArrowRight']) {
+        player.vx = 6.5; player.vy = -11.5; player.onLadder = false;
+        player.jumpKeyHeld = true;
+        sfx.playTone(420, 0.08, 'square');
+      }
+    }
+  } else {
+    // Normal gravity
+    player.vy += 0.58;
+    if (player.vy > 14) player.vy = 14;
+  }
+
+  // Horizontal Movement
+  if (keys['a'] || keys['A'] || keys['ArrowLeft']) player.vx = -6.0;
+  else if (keys['d'] || keys['D'] || keys['ArrowRight']) player.vx = 6.0;
   else player.vx *= 0.8;
 
   // Jump
-  if ((keys['w'] || keys['W'] || keys['ArrowUp'] || keys[' ']) && player.jumpsLeft > 0) {
-    if (!player.jumpKeyHeld) {
-      player.vy = -12.5;
+  if (!player.onLadder && (keys['w'] || keys['W'] || keys['ArrowUp'] || keys[' '])) {
+    if (!player.jumpKeyHeld && player.jumpsLeft > 0) {
+      player.vy = -13.5;
       player.jumpsLeft--;
       player.jumpKeyHeld = true;
-      sfx.playTone(player.jumpsLeft === 1 ? 340 : 480, 0.1, 'square');
+      sfx.playTone(player.jumpsLeft === 1 ? 380 : 520, 0.1, 'square');
     }
   } else {
     player.jumpKeyHeld = false;
   }
 
-  // Gravity
-  player.vy += 0.58;
   player.x += player.vx;
   player.worldY += player.vy;
 
-  // Screen wrap X
   if (player.x < 10) player.x = 10;
   if (player.x > window.innerWidth - player.width - 10) player.x = window.innerWidth - player.width - 10;
+  if (player.worldY < 80) { player.worldY = 80; player.vy = 0; }
 
-  // Platform collision in world coordinates
+  // Bounce Springs Check
+  springEls.forEach(pad => {
+    const top = pad.offsetTop;
+    const left = pad.offsetLeft;
+    const width = pad.offsetWidth;
+    if (player.x + player.width > left && player.x < left + width) {
+      if (player.worldY + player.height >= top && player.worldY + player.height <= top + 32 && player.vy > 0) {
+        player.worldY = top - player.height;
+        player.vy = -19;
+        player.jumpsLeft = 2;
+        pad.classList.add('compressed');
+        setTimeout(() => pad.classList.remove('compressed'), 220);
+        sfx.playTone(660, 0.22, 'square', 0.12);
+        const stateEl = document.getElementById('platState');
+        if (stateEl) stateEl.textContent = 'SPRING BOOST! ⏫';
+      }
+    }
+  });
+
+  // Solid Platforms Collision
   player.grounded = false;
-  const cards = document.querySelectorAll('.hero-card, .featured-project-card, .project-card, .timeline-card, .brand-link');
-  cards.forEach(card => {
-    // Calculate world top/bottom
+  const solidCards = document.querySelectorAll('.hero-card, .featured-project-card, .project-card, .timeline-card, .dna-card, .skill-card, .site-stepping-stone');
+  solidCards.forEach(card => {
     const top = card.offsetTop;
     const height = card.offsetHeight;
     const left = card.offsetLeft;
     const width = card.offsetWidth;
 
     if (player.x + player.width > left && player.x < left + width) {
-      if (player.worldY + player.height >= top && player.worldY + player.height <= top + 22 && player.vy > 0) {
+      if (player.worldY + player.height >= top && player.worldY + player.height <= top + 24 && player.vy > 0) {
         player.worldY = top - player.height;
         player.vy = 0;
         player.grounded = true;
         player.jumpsLeft = 2;
         card.classList.add('card-highlight-plat');
-        setTimeout(() => card.classList.remove('card-highlight-plat'), 300);
+        setTimeout(() => card.classList.remove('card-highlight-plat'), 250);
       }
     }
   });
+
+  // Gem Collection
+  gems.forEach(g => {
+    if (!g.collected) {
+      if (Math.hypot(player.x - g.x, player.worldY - g.y) < 38) {
+        g.collected = true;
+        player.score += 100;
+        player.gemsCollected++;
+        sfx.playTone(880, 0.15, 'triangle');
+        const sc = document.getElementById('platScore');
+        const gc = document.getElementById('platGems');
+        if (sc) sc.textContent = player.score;
+        if (gc) gc.textContent = `${player.gemsCollected}/12`;
+      }
+    }
+  });
+
+  // Update HUD State
+  const stateEl = document.getElementById('platState');
+  if (stateEl) {
+    if (player.onLadder) stateEl.textContent = '🪜 ON LADDER';
+    else if (player.grounded) stateEl.textContent = '🟢 GROUNDED';
+    else stateEl.textContent = player.jumpsLeft === 1 ? '🟡 DOUBLE JUMP' : '🔵 AIRBORNE';
+  }
 
   // Smooth Virtual Camera Update (No scrollbars!)
   updateCamera(player.worldY);
-
-  // Coins
-  coins.forEach(c => {
-    if (!c.collected) {
-      const cx = c.el.offsetLeft + c.el.offsetWidth / 2;
-      const cy = c.el.offsetTop - 25;
-      if (Math.hypot(player.x - cx, player.worldY - cy) < 40) {
-        c.collected = true;
-        player.score += 100;
-        player.coinsCollected++;
-        sfx.playTone(880, 0.15, 'triangle');
-        document.getElementById('platScore').textContent = player.score;
-        document.getElementById('platCoins').textContent = `${player.coinsCollected}/8`;
-      }
-    }
-  });
 }
 
 function drawPlat() {
   pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
   const screenY = player.worldY - camY;
 
-  // Draw Coins
-  coins.forEach(c => {
-    if (!c.collected) {
-      const cx = c.el.offsetLeft + c.el.offsetWidth / 2;
-      const cy = c.el.offsetTop - 25 - camY;
-      if (cy > -50 && cy < window.innerHeight + 50) {
-        pCtx.fillStyle = '#fbbf24';
-        pCtx.shadowColor = '#fbbf24';
-        pCtx.shadowBlur = 10;
+  // Draw Gems
+  gems.forEach(g => {
+    if (!g.collected) {
+      const sy = g.y - camY;
+      if (sy > -40 && sy < window.innerHeight + 40) {
+        pCtx.save();
+        pCtx.shadowColor = '#38bdf8';
+        pCtx.shadowBlur = 12;
+        pCtx.fillStyle = '#38bdf8';
         pCtx.beginPath();
-        pCtx.arc(cx, cy, 10, 0, Math.PI * 2);
+        pCtx.arc(g.x, sy, 8, 0, Math.PI * 2);
         pCtx.fill();
-        pCtx.fillStyle = '#000';
+        pCtx.fillStyle = '#fff';
         pCtx.font = '10px sans-serif';
         pCtx.textAlign = 'center';
-        pCtx.fillText('★', cx, cy + 3);
-        pCtx.shadowBlur = 0;
+        pCtx.textBaseline = 'middle';
+        pCtx.fillText('★', g.x, sy);
+        pCtx.restore();
       }
     }
   });
 
-  // Draw Player Knight
-  pCtx.fillStyle = '#6366f1';
+  // Draw Knight Hero
+  pCtx.save();
   pCtx.shadowColor = '#6366f1';
-  pCtx.shadowBlur = 12;
+  pCtx.shadowBlur = 14;
+  pCtx.fillStyle = '#4f46e5';
   pCtx.fillRect(player.x, screenY, player.width, player.height);
+  // Visor
+  pCtx.fillStyle = '#fbbf24';
+  const visorOffset = player.vx >= 0 ? 14 : 4;
+  pCtx.fillRect(player.x + visorOffset, screenY + 6, 8, 5);
+  // Armor plate
   pCtx.fillStyle = '#94a3b8';
-  pCtx.fillRect(player.x + 2, screenY, player.width - 4, 14);
-  pCtx.fillStyle = '#38bdf8';
-  pCtx.fillRect(player.x + (player.vx >= 0 ? 12 : 4), screenY + 4, 6, 4);
-  pCtx.shadowBlur = 0;
+  pCtx.fillRect(player.x + 3, screenY + 16, player.width - 6, 12);
+  pCtx.restore();
 }
 
 function loopPlat() {
