@@ -139,6 +139,12 @@
       this.playTone(240, 0.1, 'sawtooth', 0.08);
       setTimeout(() => this.playTone(180, 0.15, 'square', 0.06), 80);
     }
+    playShinySparkle() {
+      this.init();
+      [1046.5, 1318.5, 1567.98, 2093].forEach((f, i) => {
+        setTimeout(() => this.playTone(f, 0.12, 'triangle', 0.08), i * 60);
+      });
+    }
     playWhistle() {
       this.init();
       this.playTone(1046.5, 0.15, 'square', 0.07);
@@ -667,6 +673,38 @@
       50% { opacity: 1; transform: scale(1.15); filter: brightness(2); }
       100% { opacity: 1; transform: scale(1); filter: brightness(1); }
     }
+    .pokemon-card.pokemon-respawn-burst .sparkle.s1,
+    .pokemon-card.show-sparkles .sparkle.s1 {
+      animation: shiny-sparkle-1 1.1s cubic-bezier(0.25, 1, 0.5, 1) infinite !important;
+    }
+    .pokemon-card.pokemon-respawn-burst .sparkle.s2,
+    .pokemon-card.show-sparkles .sparkle.s2 {
+      animation: shiny-sparkle-2 1.1s cubic-bezier(0.25, 1, 0.5, 1) infinite 0.16s !important;
+    }
+    .pokemon-card.pokemon-respawn-burst .sparkle.s3,
+    .pokemon-card.show-sparkles .sparkle.s3 {
+      animation: shiny-sparkle-3 1.1s cubic-bezier(0.25, 1, 0.5, 1) infinite 0.32s !important;
+    }
+    .pokemon-card.pokemon-respawn-burst .sparkle.s4,
+    .pokemon-card.show-sparkles .sparkle.s4 {
+      animation: shiny-sparkle-4 1.1s cubic-bezier(0.25, 1, 0.5, 1) infinite 0.48s !important;
+    }
+    .easter-shiny-star {
+      position: absolute !important;
+      top: 45%; left: 50%;
+      pointer-events: none;
+      font-size: 16px;
+      color: #fef08a;
+      text-shadow: 0 0 8px #f59e0b, 0 0 16px #ffffff;
+      z-index: 20;
+      animation: shinyStarBurst 1.1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+    @keyframes shinyStarBurst {
+      0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
+      25% { transform: translate(calc(-50% + var(--sx) * 0.6), calc(-50% + var(--sy) * 0.6)) scale(1.5) rotate(90deg); opacity: 1; }
+      75% { transform: translate(calc(-50% + var(--sx)), calc(-50% + var(--sy))) scale(1.1) rotate(180deg); opacity: 0.9; }
+      100% { transform: translate(calc(-50% + var(--sx) * 1.2), calc(-50% + var(--sy) * 1.2)) scale(0) rotate(270deg); opacity: 0; }
+    }
     .pokemon-fail-banner {
       position: absolute !important;
       bottom: 16px; left: 50%;
@@ -1118,10 +1156,42 @@
             const toRemove = bA.el;
             setTimeout(() => { if (toRemove && toRemove.parentNode) toRemove.remove(); }, 350);
             persistentBodies.splice(a, 1);
+
+            // Re-enable physics for any block that was resting above
+            for (let k = 0; k < persistentBodies.length; k++) {
+              const bK = persistentBodies[k];
+              if (bK.y + bK.h < floorY - 2) {
+                bK.settled = false;
+                bK.vy = Math.max(bK.vy, 0.5);
+              }
+            }
             continue;
           } else if (elapsed >= bA.lifespan - 1200) {
             // Fade out smoothly in final 1.2 seconds
             bA.el.style.opacity = ((bA.lifespan - elapsed) / 1200).toFixed(2);
+          }
+
+          // Active support check: if a settled block is above the floor, verify it still has a block directly beneath it!
+          if (bA.settled && (bA.y + bA.h < floorY - 2)) {
+            let hasSupport = false;
+            for (let b = 0; b < persistentBodies.length; b++) {
+              if (a === b) continue;
+              const bB = persistentBodies[b];
+              const verticalGap = Math.abs((bA.y + bA.h) - bB.y);
+              const minX = Math.max(bA.x, bB.x);
+              const maxX = Math.min(bA.x + bA.w, bB.x + bB.w);
+              const hOverlap = maxX - minX;
+
+              if (verticalGap <= 4 && hOverlap > 4) {
+                hasSupport = true;
+                break;
+              }
+            }
+            if (!hasSupport) {
+              bA.settled = false;
+              bA.vy = Math.max(bA.vy, 0.5);
+              activeMoving = true;
+            }
           }
 
           if (bA.settled) continue;
@@ -1751,6 +1821,24 @@
       "Darn! Almost had it!"
     ];
 
+    function triggerShinySparkles(targetMon) {
+      sfx.playShinySparkle();
+      targetMon.classList.add('show-sparkles');
+      const symbols = ['✦', '✨', '✦', '⭐', '✨', '✦'];
+      for (let i = 0; i < symbols.length; i++) {
+        const star = document.createElement('div');
+        star.className = 'easter-shiny-star';
+        star.textContent = symbols[i];
+        const angle = (i / symbols.length) * 2 * Math.PI;
+        const dist = 32 + (i % 2) * 10;
+        star.style.setProperty('--sx', `${Math.cos(angle) * dist}px`);
+        star.style.setProperty('--sy', `${Math.sin(angle) * dist}px`);
+        targetMon.appendChild(star);
+        setTimeout(() => star.remove(), 1100);
+      }
+      setTimeout(() => targetMon.classList.remove('show-sparkles'), 1600);
+    }
+
     const monCards = pokeCard.querySelectorAll('.pokemon-card');
     monCards.forEach(mon => {
       mon.addEventListener('mouseenter', () => {
@@ -1854,6 +1942,7 @@
                 mon.style.filter = '';
                 mon.style.opacity = '';
                 mon.style.transform = '';
+                triggerShinySparkles(mon);
 
                 const failBanner = document.createElement('div');
                 failBanner.className = 'pokemon-fail-banner';
@@ -1901,13 +1990,14 @@
                         mon.style.opacity = '';
                         mon.style.transform = '';
                         mon.classList.add('pokemon-respawn-burst');
+                        triggerShinySparkles(mon);
                         setTimeout(() => {
                           mon.classList.remove('pokemon-respawn-burst');
                           mon.style.filter = '';
                           mon.style.opacity = '';
                           mon.style.transform = '';
                           mon.dataset.ballActive = 'false';
-                        }, 800);
+                        }, 1200);
                       }, 4500);
                     }, 350);
                   }, 130);
