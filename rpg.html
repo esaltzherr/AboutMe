@@ -3,460 +3,812 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Elroy Saltzherr • 16-Bit Town RPG Overworld</title>
+  <title>Elroy Saltzherr • Pokémon-Style RPG Portfolio Town</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: #0f172a;
+    html, body {
+      background: #14532d;
       color: #fff;
       font-family: 'Press Start 2P', monospace;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      overflow: hidden !important;
+      height: 100vh !important;
+      width: 100vw !important;
+      user-select: none;
+      scrollbar-width: none !important;
     }
+    ::-webkit-scrollbar { display: none !important; }
 
-    #game-container {
-      position: relative;
-      width: 800px;
-      height: 600px;
-      border: 4px solid #334155;
-      border-radius: 12px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.3);
-      overflow: hidden;
-      background: #1e293b;
-    }
-
-    canvas {
+    #rpgCanvas {
       display: block;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       image-rendering: pixelated;
     }
 
     /* Top HUD */
     .top-hud {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      right: 12px;
+      position: fixed;
+      top: 14px;
+      left: 14px;
+      right: 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       pointer-events: none;
-      z-index: 10;
+      z-index: 1000;
       font-size: 0.65rem;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
     .hud-chip {
-      background: rgba(15, 23, 42, 0.85);
-      border: 2px solid #475569;
-      border-radius: 6px;
-      padding: 6px 12px;
-      color: #fbbf24;
+      background: rgba(15, 23, 42, 0.92);
+      border: 2px solid #22c55e;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+      border-radius: 8px;
+      padding: 8px 14px;
+      color: #facc15;
       pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .btn-exit {
-      background: rgba(239, 68, 68, 0.2);
-      border: 2px solid #ef4444;
-      color: #fca5a5;
+    .btn-nav-rpg {
+      background: rgba(15, 23, 42, 0.92);
+      border: 2px solid #475569;
+      color: #94a3b8;
       text-decoration: none;
-      padding: 6px 12px;
-      border-radius: 6px;
+      padding: 8px 14px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       pointer-events: auto;
+      transition: all 0.2s;
+    }
+    .btn-nav-rpg:hover {
+      border-color: #38bdf8;
+      color: #fff;
+      transform: translateY(-2px);
     }
 
     /* Retro Dialogue Box */
     #dialogue-box {
-      position: absolute;
-      bottom: 16px;
-      left: 16px;
-      right: 16px;
-      height: 150px;
-      background: rgba(15, 23, 42, 0.95);
-      border: 4px solid #fbbf24;
-      border-radius: 8px;
-      padding: 16px;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.95);
+      width: 90%;
+      max-width: 820px;
+      background: rgba(15, 23, 42, 0.97);
+      border: 4px solid #facc15;
+      border-radius: 14px;
+      padding: 20px 24px;
       display: none;
       flex-direction: column;
       justify-content: space-between;
-      z-index: 20;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      z-index: 2000;
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.9), 0 0 30px rgba(250, 204, 21, 0.3);
+      opacity: 0;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    #dialogue-box.active {
+      display: flex;
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
     }
 
     .dialogue-speaker {
       font-size: 0.75rem;
       color: #38bdf8;
       margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .dialogue-text {
-      font-size: 0.7rem;
-      line-height: 1.8;
-      color: #f8fafc;
-      flex-grow: 1;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      color: #f1f5f9;
+      line-height: 1.6;
+      margin-bottom: 14px;
+      min-height: 50px;
     }
 
-    .dialogue-actions {
+    .dialogue-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 8px;
-    }
-
-    .dialogue-link-btn {
-      background: #6366f1;
-      border: 2px solid #818cf8;
-      color: #fff;
-      padding: 6px 12px;
-      border-radius: 4px;
-      text-decoration: none;
-      font-size: 0.65rem;
-      cursor: pointer;
-    }
-
-    .dialogue-hint {
-      font-size: 0.55rem;
+      font-size: 0.58rem;
       color: #94a3b8;
     }
+
+    .btn-dialogue-close {
+      background: #facc15;
+      color: #000;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.58rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* On-Screen Mobile D-Pad */
+    .rpg-dpad {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      z-index: 1000;
+      grid-template-columns: repeat(3, 46px);
+      grid-template-rows: repeat(3, 46px);
+      gap: 6px;
+    }
+    @media (max-width: 768px) {
+      .rpg-dpad { display: grid; }
+    }
+    .dpad-btn {
+      background: rgba(15, 23, 42, 0.85);
+      border: 2px solid #475569;
+      color: #fff;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      user-select: none;
+    }
+    .dpad-btn:active { background: #22c55e; color: #000; }
   </style>
 </head>
 <body>
-  <div id="game-container">
-    <div class="top-hud">
-      <div class="hud-chip">📍 ELROY'S TOWN: OVERWORLD</div>
-      <div class="hud-chip" style="color: #38bdf8;">[WASD] WALK • [SPACE] TALK</div>
-      <a href="play.html" class="btn-exit">EXIT</a>
+  <div class="top-hud">
+    <div style="display: flex; gap: 8px;">
+      <a href="play.html" class="btn-nav-rpg">◀ Arcade Hub</a>
+      <a href="site-rpg.html" class="btn-nav-rpg" style="border-color: #38bdf8; color: #38bdf8;">🌐 On-Site Version ▶</a>
     </div>
 
-    <canvas id="rpg-canvas" width="800" height="600"></canvas>
+    <div class="hud-chip">
+      <span>🌲 POKÉMON PORTFOLIO TOWN</span>
+      <span>•</span>
+      <span id="buildingIndicator">CURRENT: OUTSIDE</span>
+    </div>
 
-    <!-- Retro Dialogue Window -->
-    <div id="dialogue-box">
-      <div>
-        <div class="dialogue-speaker" id="dialogue-speaker">NPC NAME</div>
-        <div class="dialogue-text" id="dialogue-text">Dialogue text goes here...</div>
-      </div>
-      <div class="dialogue-actions">
-        <a id="dialogue-btn" href="#" target="_blank" class="dialogue-link-btn" style="display: none;">VISIT LINK →</a>
-        <div class="dialogue-hint">PRESS [SPACE] OR [ESC] TO CLOSE</div>
-      </div>
+    <div style="display: flex; gap: 8px;">
+      <button class="btn-nav-rpg" id="btnAudio">🔊 AUDIO: ON</button>
+      <a href="index.html" class="btn-nav-rpg">Standard Site ▶</a>
     </div>
   </div>
 
-  <script>
-    // Web Audio Synthesizer for 8-bit text beeps & sparkles
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    let audioCtx = null;
+  <canvas id="rpgCanvas"></canvas>
 
-    function playBeep(freq = 440, duration = 0.05) {
-      try {
-        if (!audioCtx) audioCtx = new AudioCtx();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        const t = audioCtx.currentTime;
+  <!-- Typewriter Dialogue Box -->
+  <div id="dialogue-box">
+    <div>
+      <div class="dialogue-speaker" id="dialogue-speaker">NPC</div>
+      <div class="dialogue-text" id="dialogue-text">...</div>
+    </div>
+    <div class="dialogue-footer">
+      <span>Press [SPACE] or [E] to continue</span>
+      <button class="btn-dialogue-close" onclick="closeDialogue()">[SPACE] CLOSE</button>
+    </div>
+  </div>
+
+  <!-- Touch D-Pad -->
+  <div class="rpg-dpad">
+    <div></div>
+    <button class="dpad-btn" id="dpUp">▲</button>
+    <div></div>
+    <button class="dpad-btn" id="dpLeft">◀</button>
+    <button class="dpad-btn" id="dpAction" style="background:#facc15; color:#000;">E</button>
+    <button class="dpad-btn" id="dpRight">▶</button>
+    <div></div>
+    <button class="dpad-btn" id="dpDown">▼</button>
+    <div></div>
+  </div>
+
+  <script>
+    /* =========================================================
+       8-BIT RETRO AUDIO SYNTHESIZER
+       ========================================================= */
+    class RpgAudio {
+      constructor() { this.ctx = null; this.enabled = true; }
+      init() { if (!this.ctx) { const AC = window.AudioContext || window.webkitAudioContext; this.ctx = new AC(); } }
+      playChirp() {
+        if (!this.enabled || !this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(380 + Math.random() * 80, this.ctx.currentTime);
+        g.gain.setValueAtTime(0.04, this.ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+        osc.connect(g); g.connect(this.ctx.destination);
+        osc.start(); osc.stop(this.ctx.currentTime + 0.05);
+      }
+      playStep() {
+        if (!this.enabled || !this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(140, this.ctx.currentTime);
+        g.gain.setValueAtTime(0.02, this.ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.04);
+        osc.connect(g); g.connect(this.ctx.destination);
+        osc.start(); osc.stop(this.ctx.currentTime + 0.04);
+      }
+      playDoor() {
+        if (!this.enabled || !this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
         osc.type = 'square';
-        osc.frequency.setValueAtTime(freq, t);
-        gain.gain.setValueAtTime(0.08, t);
-        gain.gain.linearRampToValueAtTime(0, t + duration);
-        osc.start(t);
-        osc.stop(t + duration);
-      } catch (e) {}
+        osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.15);
+        g.gain.setValueAtTime(0.06, this.ctx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.15);
+        osc.connect(g); g.connect(this.ctx.destination);
+        osc.start(); osc.stop(this.ctx.currentTime + 0.15);
+      }
+      playFanfare() {
+        if (!this.enabled || !this.ctx) return;
+        [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+          setTimeout(() => {
+            const osc = this.ctx.createOscillator();
+            const g = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.value = f;
+            g.gain.setValueAtTime(0.09, this.ctx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.22);
+            osc.connect(g); g.connect(this.ctx.destination);
+            osc.start(); osc.stop(this.ctx.currentTime + 0.22);
+          }, i * 90);
+        });
+      }
     }
 
-    const canvas = document.getElementById('rpg-canvas');
+    const sfx = new RpgAudio();
+    document.addEventListener('click', () => sfx.init(), { once: true });
+    document.addEventListener('keydown', () => sfx.init(), { once: true });
+
+    document.getElementById('btnAudio').addEventListener('click', (e) => {
+      sfx.enabled = !sfx.enabled;
+      e.target.textContent = sfx.enabled ? '🔊 AUDIO: ON' : '🔇 AUDIO: OFF';
+    });
+
+    /* =========================================================
+       WORLD SETUP & BUILDINGS
+       ========================================================= */
+    const canvas = document.getElementById('rpgCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Player
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // Map Dimensions (Tiles: 32px each)
+    const TILE = 32;
+    const MAP_W = 60 * TILE; // 1920px wide
+    const MAP_H = 50 * TILE; // 1600px high
+
+    // Player Hero
     const player = {
-      x: 400,
-      y: 300,
+      x: 1000,
+      y: 800,
       w: 24,
-      h: 28,
-      speed: 3.5,
-      dir: 'down',
-      animStep: 0
+      h: 24,
+      speed: 4,
+      facing: 'down',
+      stepTick: 0,
+      inBuilding: null
     };
 
-    // NPCs & Zones
-    const npcs = [
+    // 6 Walk-In Pokémon Buildings with Smooth Transparent Roofs!
+    const buildings = [
       {
         id: 'darkthrone',
-        name: 'KNIGHT • DARK THRONE',
-        x: 400,
-        y: 120,
-        w: 26,
-        h: 30,
-        color: '#6366f1',
-        text: 'Greetings traveler! I am the protagonist of Dark Throne, shipped on Steam! Elroy designed my 2D combat loops, dash mechanics, and boss state machines.',
-        url: 'https://store.steampowered.com/app/2995790/Dark_Throne/',
-        btnText: 'VIEW ON STEAM'
+        name: 'Dark Throne Keep',
+        x: 240, y: 220, w: 280, h: 220,
+        doorX: 360, doorY: 440,
+        roofColor: '#dc2626', // Red Gym Roof
+        wallColor: '#1e293b',
+        floorColor: '#334155',
+        roofOpacity: 1.0,
+        npc: {
+          x: 380, y: 320, name: 'Sir Roland (Lead Combat Dev)', icon: '⚔️',
+          title: 'Steam Metroidvania: Dark Throne',
+          lines: [
+            "Halt, traveler! Within these walls lies Dark Throne: Blood & Gold, Elroy's shipped Steam title.",
+            "He engineered my 4-hit combo chains, custom hitbox triggers, stamina depletion curves, and fluid enemy AI state machines in Godot 4.3.",
+            "Every sword slash has sub-pixel collision precision and hitstop juice! Check it out on Steam!"
+          ]
+        },
+        furniture: [
+          { type: 'forge', x: 260, y: 250, label: 'WEAPON FORGE' },
+          { type: 'rack', x: 440, y: 250, label: 'SWORD RACKS' }
+        ]
       },
       {
-        id: 'cloud',
-        name: 'ROBOT DRONE • GCP CLOUD',
-        x: 650,
-        y: 280,
-        w: 24,
-        h: 24,
-        color: '#38bdf8',
-        text: 'BEEP BOOP! I represent the Google Cloud Run autonomous pipeline for Jambelles.nl & LongboardsUSA! Ingestion time reduced from hours to 10 minutes.',
-        url: 'https://github.com/esaltzherr',
-        btnText: 'VIEW GITHUB'
+        id: 'stocksbot',
+        name: 'StocksBot Cloud Foundry',
+        x: 740, y: 220, w: 280, h: 220,
+        doorX: 860, doorY: 440,
+        roofColor: '#0284c7', // Modern Blue Lab Roof
+        wallColor: '#0f172a',
+        floorColor: '#1e293b',
+        roofOpacity: 1.0,
+        npc: {
+          x: 880, y: 320, name: 'Cipher (Autonomous Cloud Drone)', icon: '🤖',
+          title: 'GCP Cloud Run: StocksBot Multi-Agent AI',
+          lines: [
+            "Beep boop! Systems nominal. You have entered the StocksBot Cloud Foundry!",
+            "I operate 24/7 on Google Cloud Run containers with automated Cloud Scheduler triggers.",
+            "I scrape Finviz volume outliers, run FinBERT sentiment scoring, and broadcast technical break-outs into Discord with sub-second delivery!"
+          ]
+        },
+        furniture: [
+          { type: 'server', x: 760, y: 250, label: 'GCP SERVER RACK' },
+          { type: 'terminal', x: 940, y: 250, label: 'FINVIZ MONITOR' }
+        ]
       },
       {
-        id: 'arena',
-        name: 'ARENA MASTER • LEAGUE',
-        x: 150,
-        y: 280,
-        w: 24,
-        h: 28,
-        color: '#f87171',
-        text: 'Welcome to the Summoner Arena! Elroy reached Diamond piloting off-meta carries: 2.4M mastery points on Taliyah, plus Zyra and Diana ADC.',
-        url: 'https://masterychart.com/profile/na/LRoy-Rocks',
-        btnText: 'MASTERY CHART'
+        id: 'robotics',
+        name: 'FRC Robotics Workshop',
+        x: 1260, y: 220, w: 300, h: 220,
+        doorX: 1390, doorY: 440,
+        roofColor: '#d97706', // Industrial Amber Roof
+        wallColor: '#1c1917',
+        floorColor: '#292524',
+        roofOpacity: 1.0,
+        npc: {
+          x: 1410, y: 320, name: 'Lead Machinist (FRC Driver)', icon: '🏎️',
+          title: 'Competitive FIRST Robotics Team 199',
+          lines: [
+            "Welcome to the machine shop! Watch your step around the CNC mill chips.",
+            "On the FRC tournament field, Elroy served as the primary drive team pilot under high-stakes countdown clocks.",
+            "He machined aluminum drivetrains, milled gearboxes, and drafted rapid CAD prototypes under strict 6-week build constraints!"
+          ]
+        },
+        furniture: [
+          { type: 'cnc', x: 1280, y: 250, label: 'CNC MILL' },
+          { type: 'robot', x: 1480, y: 250, label: '120LB FRC BOT' }
+        ]
       },
       {
-        id: 'pokemon_meadow',
-        name: 'SHINY POKÉMON RANGER',
-        x: 400,
-        y: 480,
-        w: 24,
-        h: 28,
-        color: '#34d399',
-        text: 'Look at the meadow! Marshadow, Wishiwashi School Form, Perrserker, Mega Golisopod, Cramorant, and Litten are all roaming peacefully!',
-        url: 'index.html#philosophy',
-        btnText: 'SEE SHINIES'
+        id: 'jambelles',
+        name: 'Jambelles Skate Emporium',
+        x: 240, y: 650, w: 280, h: 220,
+        doorX: 360, doorY: 870,
+        roofColor: '#9333ea', // Purple Striped Shop Roof
+        wallColor: '#1e1b4b',
+        floorColor: '#312e81',
+        roofOpacity: 1.0,
+        npc: {
+          x: 380, y: 750, name: 'Store Manager', icon: '🛹',
+          title: 'High-Volume E-Commerce & Retail Ops',
+          lines: [
+            "Hey skater! Welcome to the Longboards & Jambelles storefront!",
+            "Elroy scaled our e-commerce workflows, integrated AI-assisted cataloging pipelines, and optimized order fulfillment.",
+            "Automating repetitive publishing routines cut multi-hour manual backlogs down to 10 minutes!"
+          ]
+        },
+        furniture: [
+          { type: 'boards', x: 260, y: 680, label: 'LONGBOARD RACKS' },
+          { type: 'register', x: 440, y: 680, label: 'POS REGISTER' }
+        ]
+      },
+      {
+        id: 'diamond',
+        name: 'Diamond Dojo & Arena',
+        x: 740, y: 650, w: 280, h: 220,
+        doorX: 860, doorY: 870,
+        roofColor: '#2563eb', // Blue Pagoda Gym Roof
+        wallColor: '#082f49',
+        floorColor: '#0c4a6e',
+        roofOpacity: 1.0,
+        npc: {
+          x: 880, y: 750, name: 'Diamond Grandmaster', icon: '💎',
+          title: 'Top 1% Diamond Acumen & 15 Yrs Athletics',
+          lines: [
+            "Welcome, challenger. You stand inside the Apex Arena!",
+            "Elroy conquered the Top 1% Diamond rank in League of Legends (LRoy#Rocks) piloting unconventional carries like Taliyah and Diana.",
+            "Backed by 15 straight years of competitive soccer and multi-sport endurance, his split-second spatial vision directly drives his game feel tuning!"
+          ]
+        },
+        furniture: [
+          { type: 'trophy', x: 760, y: 680, label: 'DIAMOND TROPHIES' },
+          { type: 'mats', x: 940, y: 680, label: 'SPARRING MATS' }
+        ]
+      },
+      {
+        id: 'mtg',
+        name: 'MTG Sanctum & Daycare',
+        x: 1260, y: 650, w: 300, h: 220,
+        doorX: 1390, doorY: 870,
+        roofColor: '#059669', // Emerald Cottage Roof
+        wallColor: '#064e3b',
+        floorColor: '#065f46',
+        roofOpacity: 1.0,
+        npc: {
+          x: 1410, y: 750, name: 'Curator of Synergies', icon: '🃏',
+          title: '100-Card EDH Recursion & Moxfield',
+          lines: [
+            "Greetings! You have discovered the Strategy Sanctum.",
+            "Elroy curates intricate 100-card EDH synergy engines on Moxfield within strict budget caps, proving game economy insight beats raw dollar spending.",
+            "Outside in the garden meadow, you can visit his signature all-shiny Pokémon team! Go pet them!"
+          ]
+        },
+        furniture: [
+          { type: 'cards', x: 1280, y: 680, label: 'COMMANDER TABLE' },
+          { type: 'crystal', x: 1480, y: 680, label: 'MANA ORB' }
+        ]
       }
     ];
 
-    // Shiny Pokemon roaming in the bottom meadow
-    const shinies = [
-      { name: 'Marshadow ✨', x: 280, y: 460, color: '#a855f7' },
-      { name: 'Wishiwashi ✨', x: 340, y: 510, color: '#38bdf8' },
-      { name: 'Mega Golisopod ✨', x: 460, y: 450, color: '#e2e8f0' },
-      { name: 'Cramorant ✨', x: 520, y: 500, color: '#fb923c' },
-      { name: 'Litten ✨', x: 480, y: 530, color: '#f87171' },
-      { name: 'Perrserker ✨', x: 310, y: 520, color: '#fbbf24' }
+    // Roaming Shiny Pokémon in the central meadow & garden!
+    const shinyPokemon = [
+      { name: 'Marshadow ✨ (Purple Hat)', icon: '🥊', x: 900, y: 530, vx: 0.5, vy: 0, petText: 'Marshadow tips its purple Zenith hat and emits golden sparks! ✦' },
+      { name: 'Wishiwashi ✨ (School Form)', icon: '🐟', x: 1100, y: 980, vx: -0.4, vy: 0.3, petText: 'Wishiwashi forms a mighty glittering school of fish! ✦' },
+      { name: 'Perrserker ✨', icon: '⚔️', x: 620, y: 540, vx: 0, vy: -0.5, petText: 'Perrserker clinks its Viking iron claws happily! ✦' },
+      { name: 'Mega Golisopod ✨', icon: '🛡️', x: 1350, y: 950, vx: 0.3, vy: -0.3, petText: 'Mega Golisopod gleams with white armored carapace! ✦' },
+      { name: 'Cramorant ✨ (Gorging)', icon: '🦆', x: 1150, y: 550, vx: -0.5, vy: 0, petText: 'Cramorant gulps proudly with a glowing Pikachu! ✦' },
+      { name: 'Litten ✨', icon: '🐱', x: 450, y: 530, vx: 0.4, vy: 0.2, petText: 'Shiny Litten purrs softly with white and red fur! ✦' }
     ];
 
+    /* =========================================================
+       INPUT HANDLING
+       ========================================================= */
     const keys = {};
-    let activeDialogue = false;
-
     window.addEventListener('keydown', e => {
-      keys[e.code] = true;
-      if (e.code === 'Space') {
-        e.preventDefault();
-        if (activeDialogue) {
-          closeDialogue();
-        } else {
-          checkInteract();
-        }
-      }
-      if (e.code === 'Escape') {
-        closeDialogue();
+      sfx.init();
+      keys[e.key] = true;
+      if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) e.preventDefault();
+      if ((e.key === ' ' || e.key === 'e' || e.key === 'E') && isDialogueOpen) {
+        advanceDialogue();
+      } else if (e.key === ' ' || e.key === 'e' || e.key === 'E') {
+        checkInteractions();
       }
     });
+    window.addEventListener('keyup', e => { keys[e.key] = false; });
 
-    window.addEventListener('keyup', e => {
-      keys[e.code] = false;
+    // Touch D-Pad
+    const setupDpad = (id, k) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('touchstart', e => { e.preventDefault(); sfx.init(); keys[k] = true; });
+      el.addEventListener('touchend', e => { e.preventDefault(); keys[k] = false; });
+      el.addEventListener('mousedown', e => { e.preventDefault(); sfx.init(); keys[k] = true; });
+      el.addEventListener('mouseup', e => { e.preventDefault(); keys[k] = false; });
+    };
+    setupDpad('dpUp', 'ArrowUp');
+    setupDpad('dpDown', 'ArrowDown');
+    setupDpad('dpLeft', 'ArrowLeft');
+    setupDpad('dpRight', 'ArrowRight');
+    document.getElementById('dpAction').addEventListener('click', () => {
+      sfx.init();
+      if (isDialogueOpen) advanceDialogue();
+      else checkInteractions();
     });
 
-    function checkInteract() {
-      // Find closest NPC
-      for (const npc of npcs) {
-        const dist = Math.hypot((player.x + player.w/2) - (npc.x + npc.w/2), (player.y + player.h/2) - (npc.y + npc.h/2));
-        if (dist < 48) {
-          openDialogue(npc);
-          return;
-        }
-      }
+    /* =========================================================
+       DIALOGUE SYSTEM
+       ========================================================= */
+    const dialogueBox = document.getElementById('dialogue-box');
+    const speakerEl = document.getElementById('dialogue-speaker');
+    const textEl = document.getElementById('dialogue-text');
+    let isDialogueOpen = false;
+    let currentLines = [];
+    let currentLineIdx = 0;
+    let typeInterval = null;
 
-      // Check shiny pokemon
-      for (const s of shinies) {
-        const dist = Math.hypot((player.x + player.w/2) - s.x, (player.y + player.h/2) - s.y);
-        if (dist < 38) {
-          playBeep(880, 0.1);
-          openDialogue({
-            name: s.name,
-            text: `You encountered ${s.name}! It shines brilliantly with a sparkling aura!`,
-            url: 'index.html#philosophy',
-            btnText: 'VIEW FAVORITES'
-          });
-          return;
-        }
-      }
+    function openDialogue(speaker, title, lines) {
+      isDialogueOpen = true;
+      speakerEl.innerHTML = `<span>${speaker}</span> <span style="font-size:0.6rem; color:#facc15;">• ${title}</span>`;
+      currentLines = lines;
+      currentLineIdx = 0;
+      dialogueBox.classList.add('active');
+      typeLine(currentLines[currentLineIdx]);
+      sfx.playFanfare();
     }
 
-    function openDialogue(npc) {
-      activeDialogue = true;
-      const box = document.getElementById('dialogue-box');
-      document.getElementById('dialogue-speaker').textContent = npc.name;
-      document.getElementById('dialogue-text').textContent = npc.text;
-      const btn = document.getElementById('dialogue-btn');
-      if (npc.url) {
-        btn.href = npc.url;
-        btn.textContent = npc.btnText || 'VISIT LINK →';
-        btn.style.display = 'inline-block';
+    function typeLine(str) {
+      clearInterval(typeInterval);
+      textEl.textContent = '';
+      let charIdx = 0;
+      typeInterval = setInterval(() => {
+        textEl.textContent += str[charIdx];
+        sfx.playChirp();
+        charIdx++;
+        if (charIdx >= str.length) {
+          clearInterval(typeInterval);
+        }
+      }, 22);
+    }
+
+    function advanceDialogue() {
+      if (currentLineIdx < currentLines.length - 1) {
+        currentLineIdx++;
+        typeLine(currentLines[currentLineIdx]);
       } else {
-        btn.style.display = 'none';
+        closeDialogue();
       }
-      box.style.display = 'flex';
-      playBeep(587.33, 0.08); // D5
     }
 
     function closeDialogue() {
-      activeDialogue = false;
-      document.getElementById('dialogue-box').style.display = 'none';
+      clearInterval(typeInterval);
+      dialogueBox.classList.remove('active');
+      isDialogueOpen = false;
     }
 
-    function update() {
-      if (activeDialogue) return;
-
-      let moved = false;
-      if (keys['KeyW'] || keys['ArrowUp']) {
-        player.y -= player.speed;
-        player.dir = 'up';
-        moved = true;
-      }
-      if (keys['KeyS'] || keys['ArrowDown']) {
-        player.y += player.speed;
-        player.dir = 'down';
-        moved = true;
-      }
-      if (keys['KeyA'] || keys['ArrowLeft']) {
-        player.x -= player.speed;
-        player.dir = 'left';
-        moved = true;
-      }
-      if (keys['KeyD'] || keys['ArrowRight']) {
-        player.x += player.speed;
-        player.dir = 'right';
-        moved = true;
-      }
-
-      if (moved) {
-        player.animStep = (player.animStep + 0.15) % Math.PI;
-      }
-
-      // World bounds
-      player.x = Math.max(30, Math.min(canvas.width - 50, player.x));
-      player.y = Math.max(50, Math.min(canvas.height - 50, player.y));
-    }
-
-    function render() {
-      // 1. Draw Map (Grass / Paths / Water)
-      ctx.fillStyle = '#064e3b'; // Meadow green
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Cobblestone town square
-      ctx.fillStyle = '#1e293b';
-      ctx.fillRect(250, 180, 300, 240);
-
-      // Path North to Castle
-      ctx.fillRect(360, 40, 80, 150);
-      // Path East to Cloud
-      ctx.fillRect(540, 260, 180, 80);
-      // Path West to Arena
-      ctx.fillRect(80, 260, 180, 80);
-      // Path South to Meadow
-      ctx.fillRect(360, 410, 80, 120);
-
-      // Buildings / Zones
-      // North: Dark Throne Keep
-      ctx.fillStyle = '#312e81';
-      ctx.fillRect(330, 40, 140, 70);
-      ctx.fillStyle = '#4338ca';
-      ctx.fillRect(370, 75, 60, 35); // Gate
-
-      // East: Cloud Foundry
-      ctx.fillStyle = '#0369a1';
-      ctx.fillRect(630, 200, 120, 70);
-
-      // West: Colosseum
-      ctx.fillStyle = '#881337';
-      ctx.fillRect(50, 200, 120, 70);
-
-      // Center Fountain / Statue
-      ctx.fillStyle = '#0284c7';
-      ctx.beginPath();
-      ctx.arc(400, 300, 24, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#38bdf8';
-      ctx.beginPath();
-      ctx.arc(400, 300, 12, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Draw NPCs
-      for (const npc of npcs) {
-        ctx.fillStyle = npc.color;
-        ctx.fillRect(npc.x, npc.y, npc.w, npc.h);
-        // Interaction exclamation mark if near
-        const dist = Math.hypot((player.x + player.w/2) - (npc.x + npc.w/2), (player.y + player.h/2) - (npc.y + npc.h/2));
-        if (dist < 55) {
-          ctx.fillStyle = '#fbbf24';
-          ctx.font = '10px "Press Start 2P"';
-          ctx.fillText('!', npc.x + 8, npc.y - 8);
+    function checkInteractions() {
+      // Check NPCs inside current building
+      if (player.inBuilding) {
+        const b = buildings.find(x => x.id === player.inBuilding);
+        if (b && Math.hypot(player.x - b.npc.x, player.y - b.npc.y) < 70) {
+          openDialogue(`${b.npc.icon} ${b.npc.name}`, b.npc.title, b.npc.lines);
+          return;
         }
       }
 
-      // Draw Shinies in Meadow
-      for (const s of shinies) {
-        ctx.fillStyle = s.color;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, 8, 0, Math.PI * 2);
-        ctx.fill();
-        // Sparkle glint
-        ctx.fillStyle = '#fbbf24';
-        ctx.fillText('✦', s.x + 8, s.y - 4);
+      // Check Shiny Pokémon in the wild
+      shinyPokemon.forEach(p => {
+        if (Math.hypot(player.x - p.x, player.y - p.y) < 55) {
+          openDialogue(`${p.icon} ${p.name}`, "Shiny Pokémon Companion", [p.petText]);
+        }
+      });
+    }
+
+    /* =========================================================
+       UPDATE LOOP (Movement, Collisions, Roof Transparency)
+       ========================================================= */
+    function update() {
+      if (isDialogueOpen) return;
+
+      let dx = 0, dy = 0;
+      if (keys['w'] || keys['W'] || keys['ArrowUp']) { dy -= 1; player.facing = 'up'; }
+      if (keys['s'] || keys['S'] || keys['ArrowDown']) { dy += 1; player.facing = 'down'; }
+      if (keys['a'] || keys['A'] || keys['ArrowLeft']) { dx -= 1; player.facing = 'left'; }
+      if (keys['d'] || keys['D'] || keys['ArrowRight']) { dx += 1; player.facing = 'right'; }
+
+      if (dx !== 0 && dy !== 0) {
+        dx *= 0.7071; dy *= 0.7071;
       }
 
-      // Draw Player
+      const nextX = player.x + dx * player.speed;
+      const nextY = player.y + dy * player.speed;
+
+      // Keep within map bounds
+      player.x = Math.max(30, Math.min(MAP_W - 30, nextX));
+      player.y = Math.max(30, Math.min(MAP_H - 30, nextY));
+
+      if (dx !== 0 || dy !== 0) {
+        player.stepTick++;
+        if (player.stepTick % 18 === 0) sfx.playStep();
+      }
+
+      // Building Walk-In & Roof Transparency Logic
+      let insideAny = null;
+      buildings.forEach(b => {
+        const inside = (
+          player.x >= b.x + 10 && player.x <= b.x + b.w - 10 &&
+          player.y >= b.y + 10 && player.y <= b.y + b.h - 10
+        );
+
+        if (inside) {
+          insideAny = b.id;
+          // Smoothly fade roof to transparent!
+          b.roofOpacity = Math.max(0.08, b.roofOpacity - 0.08);
+        } else {
+          // Fade roof back to solid
+          b.roofOpacity = Math.min(1.0, b.roofOpacity + 0.08);
+        }
+      });
+
+      if (insideAny !== player.inBuilding) {
+        player.inBuilding = insideAny;
+        sfx.playDoor();
+        const indicator = document.getElementById('buildingIndicator');
+        if (insideAny) {
+          const b = buildings.find(x => x.id === insideAny);
+          indicator.textContent = `INSIDE: ${b.name.toUpperCase()}`;
+          indicator.style.color = '#38bdf8';
+        } else {
+          indicator.textContent = `CURRENT: OUTSIDE MEADOW`;
+          indicator.style.color = '#facc15';
+        }
+      }
+
+      // Roaming Shiny Pokémon AI
+      shinyPokemon.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (Math.random() < 0.02) {
+          p.vx = (Math.random() - 0.5) * 0.8;
+          p.vy = (Math.random() - 0.5) * 0.8;
+        }
+      });
+    }
+
+    /* =========================================================
+       DRAW LOOP (Pokemon Town Canvas Graphics)
+       ========================================================= */
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Camera Offset (centers player)
+      const camX = canvas.width / 2 - player.x;
+      const camY = canvas.height / 2 - player.y;
+
       ctx.save();
-      ctx.translate(player.x, player.y);
-      // Shadow
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-      ctx.beginPath();
-      ctx.ellipse(player.w/2, player.h + 2, player.w/2, 4, 0, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.translate(camX, camY);
 
-      // Body (Hero in Red / White)
-      ctx.fillStyle = '#ef4444';
-      ctx.fillRect(4, 10, player.w - 8, player.h - 10);
-      // Head
-      ctx.fillStyle = '#fde047';
-      ctx.fillRect(4, 0, player.w - 8, 12);
-      // Eyes based on direction
-      ctx.fillStyle = '#000';
-      if (player.dir === 'down') {
-        ctx.fillRect(8, 6, 2, 4);
-        ctx.fillRect(14, 6, 2, 4);
-      } else if (player.dir === 'up') {
-        // Back of head
-      } else if (player.dir === 'left') {
-        ctx.fillRect(6, 6, 2, 4);
-      } else if (player.dir === 'right') {
-        ctx.fillRect(16, 6, 2, 4);
+      // 1. Lush Green Grass Meadow Background
+      ctx.fillStyle = '#15803d'; // Rich Pokemon Grass
+      ctx.fillRect(0, 0, MAP_W, MAP_H);
+
+      // Subtle grass texture checker
+      ctx.fillStyle = '#16a34a';
+      for (let r = 0; r < MAP_H; r += TILE * 2) {
+        for (let c = 0; c < MAP_W; c += TILE * 2) {
+          ctx.fillRect(c, r, TILE, TILE);
+        }
       }
+
+      // 2. Cobblestone Paths connecting all buildings
+      ctx.fillStyle = '#cbd5e1';
+      // Main central horizontal road
+      ctx.fillRect(200, 500, 1400, 50);
+      // Vertical roads to buildings
+      ctx.fillRect(360, 440, 40, 100);
+      ctx.fillRect(860, 440, 40, 100);
+      ctx.fillRect(1390, 440, 40, 100);
+      ctx.fillRect(360, 550, 40, 320);
+      ctx.fillRect(860, 550, 40, 320);
+      ctx.fillRect(1390, 550, 40, 320);
+
+      // 3. Flower Patches & Picket Fences
+      ctx.font = '16px sans-serif';
+      ctx.fillText('🌸', 600, 480);
+      ctx.fillText('🌼', 630, 485);
+      ctx.fillText('🌷', 660, 475);
+      ctx.fillText('🌸', 1150, 480);
+      ctx.fillText('🌼', 1180, 485);
+      ctx.fillText('🌷', 1210, 475);
+      ctx.fillText('🌳', 150, 150);
+      ctx.fillText('🌳', 640, 150);
+      ctx.fillText('🌳', 1140, 150);
+      ctx.fillText('🌳', 1650, 150);
+
+      // 4. Buildings: Interior & Transparent Roof Layers
+      buildings.forEach(b => {
+        // --- INTERIOR (Floors, walls, furniture, NPC) ---
+        ctx.fillStyle = b.floorColor;
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+
+        // Interior Wall Border
+        ctx.strokeStyle = '#475569';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(b.x + 4, b.y + 4, b.w - 8, b.h - 8);
+
+        // Furniture
+        b.furniture.forEach(f => {
+          ctx.fillStyle = '#0f172a';
+          ctx.fillRect(f.x, f.y, 60, 35);
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(f.x, f.y, 60, 35);
+          ctx.fillStyle = '#f8fafc';
+          ctx.font = '6px "Press Start 2P"';
+          ctx.textAlign = 'center';
+          ctx.fillText(f.label, f.x + 30, f.y + 20);
+        });
+
+        // Inside NPC
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath(); ctx.arc(b.npc.x, b.npc.y, 16, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#facc15'; ctx.lineWidth = 2; ctx.stroke();
+        ctx.font = '18px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(b.npc.icon, b.npc.x, b.npc.y);
+
+        // Interaction Prompt when near NPC
+        if (Math.hypot(player.x - b.npc.x, player.y - b.npc.y) < 70) {
+          ctx.fillStyle = '#fbbf24';
+          ctx.font = '8px "Press Start 2P"';
+          ctx.fillText('[SPACE TO TALK]', b.npc.x, b.npc.y - 26);
+        }
+
+        // --- EXTERIOR / ROOF LAYER (With dynamic opacity transition!) ---
+        if (b.roofOpacity > 0.05) {
+          ctx.save();
+          ctx.globalAlpha = b.roofOpacity;
+
+          // Building Walls
+          ctx.fillStyle = b.wallColor;
+          ctx.fillRect(b.x, b.y + 40, b.w, b.h - 40);
+
+          // Roof (Angled Pokémon Gym / Mart style)
+          ctx.fillStyle = b.roofColor;
+          ctx.beginPath();
+          ctx.moveTo(b.x - 10, b.y + 45);
+          ctx.lineTo(b.x + b.w / 2, b.y - 15);
+          ctx.lineTo(b.x + b.w + 10, b.y + 45);
+          ctx.closePath();
+          ctx.fill();
+
+          ctx.strokeStyle = '#000';
+          ctx.lineWidth = 3;
+          ctx.stroke();
+
+          // Building Nameplate Sign
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+          ctx.fillRect(b.x + 20, b.y + 55, b.w - 40, 26);
+          ctx.strokeStyle = '#facc15';
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(b.x + 20, b.y + 55, b.w - 40, 26);
+
+          ctx.fillStyle = '#fff';
+          ctx.font = '8px "Press Start 2P"';
+          ctx.textAlign = 'center';
+          ctx.fillText(b.name, b.x + b.w / 2, b.y + 72);
+
+          // Front Doorway
+          ctx.fillStyle = '#0f172a';
+          ctx.fillRect(b.doorX, b.doorY - 35, 40, 35);
+          ctx.fillStyle = '#facc15';
+          ctx.fillRect(b.doorX, b.doorY - 5, 40, 5); // Welcome doormat
+
+          ctx.restore();
+        }
+      });
+
+      // 5. Roaming Shiny Pokémon
+      shinyPokemon.forEach(p => {
+        ctx.font = '22px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(p.icon, p.x, p.y);
+
+        // Golden Sparkles
+        ctx.fillStyle = '#fef08a';
+        ctx.font = '10px sans-serif';
+        ctx.fillText('✦', p.x + 14, p.y - 12);
+
+        // Petting prompt
+        if (Math.hypot(player.x - p.x, player.y - p.y) < 55) {
+          ctx.fillStyle = '#fbbf24';
+          ctx.font = '7px "Press Start 2P"';
+          ctx.fillText('[SPACE TO PET]', p.x, p.y - 24);
+        }
+      });
+
+      // 6. Player Hero Sprite (Pokemon Trainer)
+      ctx.fillStyle = '#ef4444'; // Red cap
+      ctx.beginPath(); ctx.arc(player.x, player.y - 6, 9, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#3b82f6'; // Blue trainer jacket
+      ctx.fillRect(player.x - 7, player.y, 14, 16);
+      ctx.fillStyle = '#0f172a'; // Shoes
+      ctx.fillRect(player.x - 6, player.y + 16, 4, 4);
+      ctx.fillRect(player.x + 2, player.y + 16, 4, 4);
+
       ctx.restore();
     }
 
+    /* =========================================================
+       MAIN GAME LOOP
+       ========================================================= */
     function loop() {
       update();
-      render();
+      draw();
       requestAnimationFrame(loop);
     }
-    loop();
+    requestAnimationFrame(loop);
   </script>
 </body>
 </html>
