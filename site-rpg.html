@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Elroy Saltzherr • Gameplay Programmer & Technical Designer</title>
+  <meta name="description" content="Portfolio of Elroy Saltzherr — Shipped Steam developer (Dark Throne), UCSC Game Design graduate, Gameplay Programmer & Technical Designer specializing in Unity (C#), Unreal Engine, and Game Systems." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --bg-surface: #0f172a;
+      --card-bg: #131c31;
+      --card-border: #1e293b;
+      --card-hover: #1a2540;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.25);
+      --emerald: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.2);
+      --cyan: #06b6d4;
+      --rose: #f43f5e;
+      --amber: #f59e0b;
+      --gold: #fbbf24;
+      --purple: #a855f7;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header Nav */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .brand-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-role {
+      font-size: 0.72rem;
+      color: var(--cyan);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .btn-nav-cta {
+      background: linear-gradient(135deg, var(--accent) 0%, #4f46e5 100%);
+      color: #ffffff !important;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-size: 0.86rem !important;
+      box-shadow: 0 4px 14px var(--accent-glow);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .btn-nav-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 80px 0 60px 0;
+      position: relative;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 650px;
+      height: 380px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(6, 182, 212, 0.08) 50%, transparent 70%);
+      filter: blur(80px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      display: grid;
+      grid-template-columns: 1.3fr 0.9fr;
+      align-items: center;
+      gap: 50px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      margin-bottom: 20px;
+    }
+
+    .badge-pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    .hero h1 {
+      font-size: 3.2rem;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+
+    .hero-gradient-text {
+      background: linear-gradient(135deg, #ffffff 30%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-bottom: 30px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, #4338ca 100%);
+      color: #ffffff;
+      box-shadow: 0 6px 20px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 26px rgba(99, 102, 241, 0.45);
+    }
+
+    .btn-secondary {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--card-hover);
+      border-color: #334155;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-outline:hover {
+      color: var(--text);
+      border-color: #475569;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .stat-item h3 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+
+    .stat-item p {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-bottom: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    /* Hero Profile Card */
+    .hero-card {
+      background: linear-gradient(145deg, #131c31 0%, #0c1220 100%);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 26px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      position: relative;
+    }
+
+    .hero-card-img-wrapper {
+      position: relative;
+      width: 100%;
+      height: 290px;
+      border-radius: 18px;
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+
+    .hero-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+    }
+
+    .hero-card-tag {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      background: rgba(9, 13, 22, 0.88);
+      backdrop-filter: blur(8px);
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.75rem;
+      color: #e2e8f0;
+      font-weight: 600;
+    }
+
+    .hero-card-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.84rem;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .meta-row:last-child {
+      border-bottom: none;
+    }
+
+    .meta-label {
+      color: var(--text-dim);
+    }
+
+    .meta-val {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Sections Shared */
+    section {
+      padding: 70px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .section-header {
+      margin-bottom: 40px;
+    }
+
+    .section-eyebrow {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--cyan);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .section-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    .section-subtitle {
+      font-size: 1.02rem;
+      color: var(--text-muted);
+      max-width: 680px;
+    }
+
+    /* Flagship Project: Dark Throne */
+    .featured-project-card {
+      background: linear-gradient(135deg, #131c31 0%, #0d1424 100%);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 24px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35), 0 0 40px rgba(99, 102, 241, 0.1);
+      margin-bottom: 40px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .featured-project-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .featured-media {
+      position: relative;
+      min-height: 380px;
+      background: #000;
+      overflow: hidden;
+    }
+
+    .featured-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .featured-project-card:hover .featured-img {
+      transform: scale(1.03);
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      background: rgba(16, 185, 129, 0.9);
+      color: #0f172a;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .featured-body {
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .featured-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+
+    .featured-role {
+      font-size: 0.9rem;
+      color: var(--cyan);
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .featured-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    .tech-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .tech-pill {
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #cbd5e1;
+    }
+
+    /* Projects Grid */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-btn:hover {
+      color: var(--text);
+      border-color: #334155;
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
+    }
+
+    .project-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      border-color: #334155;
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25);
+    }
+
+    .project-card-media {
+      height: 200px;
+      background: #090e18;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .project-card:hover .project-card-img {
+      transform: scale(1.04);
+    }
+
+    .project-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      text-transform: uppercase;
+    }
+
+    .project-card-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .project-card-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .project-card-sub {
+      font-size: 0.82rem;
+      color: var(--cyan);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .project-card-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 18px;
+      flex-grow: 1;
+    }
+
+    .project-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .project-link-btn {
+      color: #38bdf8;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: gap 0.15s;
+    }
+
+    .project-link-btn:hover {
+      gap: 8px;
+      color: #7dd3fc;
+    }
+
+    /* Skills Grid */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .skill-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: border-color 0.2s;
+    }
+
+    .skill-card:hover {
+      border-color: #334155;
+    }
+
+    .skill-card-icon {
+      font-size: 1.8rem;
+      margin-bottom: 14px;
+    }
+
+    .skill-card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    .skill-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .skill-list li {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .skill-bullet {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Experience Timeline */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      position: relative;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      bottom: 10px;
+      left: 20px;
+      width: 2px;
+      background: var(--card-border);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 56px;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: 13px;
+      top: 4px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 3px solid var(--bg);
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .timeline-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .timeline-role {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .timeline-company {
+      font-size: 0.95rem;
+      color: var(--cyan);
+      font-weight: 600;
+    }
+
+    .timeline-date {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .timeline-points {
+      margin-top: 14px;
+      padding-left: 20px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    /* Gamer DNA & Systems Philosophy Section */
+    .dna-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .dna-card {
+      background: linear-gradient(145deg, #131c31 0%, #0c1220 100%);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .dna-card:hover {
+      transform: translateY(-3px);
+      border-color: #334155;
+    }
+
+    .dna-card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .dna-icon-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .dna-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .dna-sub {
+      font-size: 0.8rem;
+      color: var(--cyan);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .dna-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .dna-highlight-box {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 0.84rem;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+
+    .mastery-chart-box a:hover img {
+      transform: scale(1.03);
+    }
+
+    .dna-highlight-title {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .pokemon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .pokemon-card {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(251, 191, 36, 0.25);
+      border-radius: 12px;
+      padding: 12px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 8px;
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pokemon-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(251, 191, 36, 0.28);
+    }
+
+    .pokemon-img-wrap {
+      position: relative;
+      width: 58px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pokemon-img {
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+      filter: drop-shadow(0 3px 10px rgba(251, 191, 36, 0.25));
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .pokemon-card:hover .pokemon-img {
+      transform: scale(1.12) translateY(-2px);
+      filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.75)) brightness(1.1);
+    }
+
+    /* Shiny Sparkle Stars */
+    .sparkle {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0;
+      font-size: 15px;
+      line-height: 1;
+      color: #fef08a;
+      text-shadow: 0 0 6px #f59e0b, 0 0 12px #ffffff;
+      z-index: 3;
+      user-select: none;
+    }
+
+    .pokemon-card:hover .sparkle.s1 {
+      animation: shiny-sparkle-1 1.1s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+    }
+
+    .pokemon-card:hover .sparkle.s2 {
+      animation: shiny-sparkle-2 1.1s cubic-bezier(0.25, 1, 0.5, 1) infinite 0.16s;
+    }
+
+    .pokemon-card:hover .sparkle.s3 {
+      animation: shiny-sparkle-3 1.1s cubic-bezier(0.25, 1, 0.5, 1) infinite 0.32s;
+    }
+
+    .pokemon-card:hover .sparkle.s4 {
+      animation: shiny-sparkle-4 1.1s cubic-bezier(0.25, 1, 0.5, 1) infinite 0.48s;
+    }
+
+    @keyframes shiny-sparkle-1 {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0) rotate(0deg);
+      }
+      20% {
+        opacity: 1;
+        transform: translate(-18px, -18px) scale(1.4) rotate(45deg);
+      }
+      70% {
+        opacity: 0.9;
+        transform: translate(-26px, -24px) scale(1) rotate(90deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-30px, -28px) scale(0.2) rotate(135deg);
+      }
+    }
+
+    @keyframes shiny-sparkle-2 {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0) rotate(0deg);
+      }
+      20% {
+        opacity: 1;
+        transform: translate(18px, -16px) scale(1.3) rotate(-30deg);
+      }
+      70% {
+        opacity: 0.9;
+        transform: translate(25px, -22px) scale(0.9) rotate(-75deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(30px, -26px) scale(0.2) rotate(-120deg);
+      }
+    }
+
+    @keyframes shiny-sparkle-3 {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0) rotate(0deg);
+      }
+      20% {
+        opacity: 1;
+        transform: translate(16px, 14px) scale(1.2) rotate(30deg);
+      }
+      70% {
+        opacity: 0.9;
+        transform: translate(24px, 20px) scale(0.85) rotate(75deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(28px, 24px) scale(0.2) rotate(120deg);
+      }
+    }
+
+    @keyframes shiny-sparkle-4 {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0) rotate(0deg);
+      }
+      20% {
+        opacity: 1;
+        transform: translate(-16px, 14px) scale(1.3) rotate(-45deg);
+      }
+      70% {
+        opacity: 0.9;
+        transform: translate(-22px, 20px) scale(0.95) rotate(-90deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-26px, 24px) scale(0.2) rotate(-135deg);
+      }
+    }
+
+    .pokemon-info-name {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.25;
+      text-align: center;
+      max-width: 100%;
+      display: block;
+    }
+
+    /* Resume Downloads Bar */
+    .resume-bar {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 20px;
+      padding: 32px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin: 40px 0;
+    }
+
+    .resume-bar-info h3 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .resume-bar-info p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    .resume-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* Contact / Footer */
+    footer {
+      background: #070a12;
+      border-top: 1px solid var(--card-border);
+      padding: 60px 0 40px 0;
+      text-align: center;
+    }
+
+    .footer-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    .footer-sub {
+      font-size: 1rem;
+      color: var(--text-muted);
+      max-width: 500px;
+      margin: 0 auto 30px auto;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .footer-social-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+
+    .footer-social-btn:hover {
+      background: var(--card-hover);
+      border-color: #475569;
+      transform: translateY(-2px);
+    }
+
+    .footer-copy {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+
+    @media (max-width: 900px) {
+      .hero-content { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 2.5rem; }
+      .featured-project-card { grid-template-columns: 1fr; }
+      .featured-media { min-height: 250px; }
+      .nav-links { display: none; }
+      .pokemon-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+<style>
+    /* On-Site Game HUD Common Styling */
+    #onsite-game-hud {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100000;
+      background: rgba(9, 13, 22, 0.94);
+      backdrop-filter: blur(14px);
+      border-bottom: 2px solid #6366f1;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.65rem;
+      box-shadow: 0 4px 25px rgba(0, 0, 0, 0.7);
+    }
+    .hud-left, .hud-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .hud-center {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .btn-hud {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px;
+      color: #cbd5e1;
+      padding: 7px 12px;
+      text-decoration: none;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.58rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .btn-hud:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+    .btn-hud-compare {
+      border-color: #38bdf8;
+      color: #38bdf8;
+    }
+    .btn-hud-compare:hover {
+      background: rgba(56, 189, 248, 0.2);
+    }
+    .hud-mode-pill {
+      background: rgba(99, 102, 241, 0.2);
+      border: 1px solid #6366f1;
+      color: #818cf8;
+      padding: 5px 10px;
+      border-radius: 6px;
+    }
+    .hud-stat-chip {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 5px 10px;
+      border-radius: 6px;
+      color: #fbbf24;
+    }
+    .hud-hint {
+      color: #94a3b8;
+      font-size: 0.55rem;
+    }
+    body {
+      padding-top: 56px;
+    }
+
+
+#rpgCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 99999; }
+.rpg-npc-marker { position: absolute; pointer-events: auto; z-index: 50; cursor: pointer; text-align: center; }
+.rpg-speech-bubble {
+  position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.96); border: 3px solid #38bdf8; border-radius: 14px;
+  padding: 18px 24px; max-width: 600px; width: 90%; color: #fff; z-index: 100001;
+  font-family: 'Plus Jakarta Sans', sans-serif; box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+  display: none;
+}
+.rpg-speech-bubble.active { display: block; animation: popUp 0.2s ease; }
+@keyframes popUp { from { transform: translate(-50%, 20px) scale(0.95); opacity: 0; } to { transform: translate(-50%, 0) scale(1); opacity: 1; } }
+</style></head>
+<body>
+
+  <!-- ON-SITE RESKIN TOP HUD -->
+  <div id="onsite-game-hud">
+    <div class="hud-left">
+      <a href="play.html" class="btn-hud">◀ Arcade Hub</a>
+      <span class="hud-mode-pill">🌐 ON-SITE RESKIN • 16-BIT TOWN RPG</span>
+    </div>
+    <div class="hud-center">
+      <div class="hud-stat-chip">NPCS MET: <span id="rpgMet">0/4</span></div>
+    </div>
+    <div class="hud-right">
+      <span class="hud-hint">Move: WASD/Arrows | Talk: Space / Click NPC</span>
+      <button class="btn-hud" id="btnAudioToggle">🔊 AUDIO: ON</button>
+      <a href="rpg.html" class="btn-hud btn-hud-compare">🖥️ Standalone Version ▶</a>
+      <a href="index.html" class="btn-hud">Standard Site ▶</a>
+    </div>
+  </div>
+
+
+  <!-- Sticky Top Nav -->
+  <header>
+    <div class="container nav-inner">
+      <a href="#top" class="brand-link">
+        <img src="images/ProfilePic.jpg" alt="Elroy Saltzherr" class="brand-avatar" />
+        <div>
+          <div class="brand-title">Elroy Saltzherr</div>
+          <div class="brand-role">Gameplay Programmer & Technical Designer</div>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="play.html" style="color: #34d399; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">🕹️ Play Modes</a></li>
+        <li><a href="#featured">Steam Project</a></li>
+        <li><a href="#projects">Games & Systems</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#philosophy">Systems & DNA</a></li>
+        <li><a href="#resumes">Resumes</a></li>
+        <li><a href="mailto:lsaltzherr@gmail.com" class="btn-nav-cta">Get in Touch</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="top">
+    <div class="hero-glow"></div>
+    <div class="container">
+      <div class="hero-content">
+        <div>
+          <div class="badge-pill">
+            <span class="badge-pill-dot"></span> Shipped Steam Developer & UCSC Game Design Alum
+          </div>
+          <h1>
+            Engineering responsive, scalable <span class="hero-gradient-text">gameplay systems</span> & immersive combat.
+          </h1>
+          <p>
+            Hi, I’m <strong>Elroy Saltzherr</strong>. I design and program combat architectures, progression loops, and custom designer tools in Unity (C#) and Unreal Engine. Lead Developer of <em>Dark Throne</em> on Steam with a passion for combat feel, balance tuning, AI pipelines, and cloud automation.
+          </p>
+          <div class="hero-actions">
+            <a href="play.html" class="btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; font-weight: 800; box-shadow: 0 4px 18px rgba(16, 185, 129, 0.45); display: inline-flex; align-items: center; gap: 8px;">🕹️ Play This Site</a>
+            <a href="#featured" class="btn btn-primary">🎮 View Shipped Work</a>
+            <a href="#resumes" class="btn btn-secondary">📄 Download Resumes</a>
+            <a href="https://github.com/esaltzherr" target="_blank" class="btn btn-outline">💻 GitHub</a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <h3>Steam</h3>
+              <p>Published Game</p>
+            </div>
+            <div class="stat-item">
+              <h3>6+</h3>
+              <p>Games Shipped</p>
+            </div>
+            <div class="stat-item">
+              <h3>BS CS</h3>
+              <p>Game Design @ UCSC</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Card -->
+        <div class="hero-card">
+          <div class="hero-card-img-wrapper">
+            <img src="images/ProfilePic.jpg" alt="Elroy Saltzherr" class="hero-card-img" />
+            <div class="hero-card-tag">Redwood City, CA • Open to Remote & On-Site</div>
+          </div>
+          <div class="hero-card-meta">
+            <div class="meta-row">
+              <span class="meta-label">Primary Stack:</span>
+              <span class="meta-val mono">C# • Unity • C++ • Python</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Design Specialization:</span>
+              <span class="meta-val">Combat Tuning & Systems Design</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">Competitive DNA:</span>
+              <span class="meta-val">League (Diamond) • Robotics • Sports</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Steam Project -->
+  <section id="featured">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Flagship Shipped Title</span>
+        <h2 class="section-title">Dark Throne on Steam</h2>
+        <p class="section-subtitle">
+          Published 2D action Metroidvania featuring high-intensity melee combat, modular ability unlock trees, and customized designer tooling.
+        </p>
+      </div>
+
+      <div class="featured-project-card">
+        <div class="featured-media">
+          <img src="images/DarkThrone.png" alt="Dark Throne Steam Game" class="featured-img" />
+          <div class="featured-badge">🌟 Shipped on Steam</div>
+        </div>
+        <div class="featured-body">
+          <h3 class="featured-title">Dark Throne</h3>
+          <div class="featured-role">Lead Programmer & Project Lead • 5-Person Team • 6 Months</div>
+          <p class="featured-desc">
+            A trapped knight fights through grueling dungeon depths. Engineered core player controller, dynamic combo strings, responsive dash mechanics, custom save/load persistence architecture, boss encounter state machines, and native Steamworks SDK integration.
+          </p>
+          <div class="tech-pill-row">
+            <span class="tech-pill">Unity</span>
+            <span class="tech-pill">C#</span>
+            <span class="tech-pill">Combat Tuning</span>
+            <span class="tech-pill">State Machines</span>
+            <span class="tech-pill">Steamworks API</span>
+            <span class="tech-pill">Custom Save System</span>
+          </div>
+          <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+            <a href="https://store.steampowered.com/app/2995790/Dark_Throne/" target="_blank" class="btn btn-primary">
+              ▶ Play on Steam
+            </a>
+            <a href="https://github.com/esaltzherr/Dark-Throne" target="_blank" class="btn btn-secondary">
+              💻 Source Code
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Grid -->
+  <section id="projects">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Portfolio Work</span>
+        <h2 class="section-title">Games, Systems & Automation</h2>
+        <p class="section-subtitle">
+          From fast-paced browser games to competitive game jam prototypes and high-throughput enterprise automation.
+        </p>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterProjects('all')">All Projects</button>
+        <button class="filter-btn" onclick="filterProjects('jam')">Game Jams</button>
+        <button class="filter-btn" onclick="filterProjects('browser')">Browser & Web</button>
+        <button class="filter-btn" onclick="filterProjects('tools')">Cloud & Automation</button>
+      </div>
+
+      <div class="projects-grid">
+        <!-- Project: Where's My Gun? -->
+        <div class="project-card" data-category="browser">
+          <div class="project-card-media">
+            <img src="images/WheresMyGun.png" alt="Where's My Gun?" class="project-card-img" />
+            <span class="project-tag">Browser / Web</span>
+          </div>
+          <div class="project-card-body">
+            <h3 class="project-card-title">Where's My Gun?</h3>
+            <div class="project-card-sub">Wave Survival • Phaser.js / JavaScript</div>
+            <p class="project-card-desc">
+              Strategic wave survival game featuring a unique risk-reward progression mechanic: upgrading one ability temporarily disables the non-selected ability for the subsequent wave.
+            </p>
+            <div class="tech-pill-row">
+              <span class="tech-pill">Phaser.js</span>
+              <span class="tech-pill">JavaScript</span>
+              <span class="tech-pill">Progression Loops</span>
+            </div>
+            <div class="project-card-footer">
+              <a href="https://esaltzherr.github.io/120FinalGame/" target="_blank" class="project-link-btn">Play in Browser →</a>
+              <a href="https://github.com/esaltzherr/120FinalGame" target="_blank" style="color: var(--text-dim); text-decoration: none; font-size: 0.8rem;">GitHub</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project: Pencil Pusher -->
+        <div class="project-card" data-category="browser">
+          <div class="project-card-media">
+            <img src="images/PencilPusher.png" alt="Pencil Pusher" class="project-card-img" />
+            <span class="project-tag">Browser / Web</span>
+          </div>
+          <div class="project-card-body">
+            <h3 class="project-card-title">Pencil Pusher</h3>
+            <div class="project-card-sub">Action Runner • Phaser.js / JavaScript</div>
+            <p class="project-card-desc">
+              Endless runner where the player collects falling letters across a lined notebook to dynamically build words and outrun an encroaching giant eraser.
+            </p>
+            <div class="tech-pill-row">
+              <span class="tech-pill">Phaser.js</span>
+              <span class="tech-pill">Dynamic Dictionaries</span>
+              <span class="tech-pill">Enemy Pacing</span>
+            </div>
+            <div class="project-card-footer">
+              <a href="https://esaltzherr.github.io/EndlessRunner/" target="_blank" class="project-link-btn">Play in Browser →</a>
+              <a href="https://github.com/esaltzherr/EndlessRunner" target="_blank" style="color: var(--text-dim); text-decoration: none; font-size: 0.8rem;">GitHub</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project: Building Scaler (GMTK Jam) -->
+        <div class="project-card" data-category="jam">
+          <div class="project-card-media">
+            <img src="images/GMTKJam.png" alt="Building Scaler GMTK Jam" class="project-card-img" />
+            <span class="project-tag">GMTK Jam 2024</span>
+          </div>
+          <div class="project-card-body">
+            <h3 class="project-card-title">Building Scaler</h3>
+            <div class="project-card-sub">Physics Climber • Unity / C# • Solo 48h</div>
+            <p class="project-card-desc">
+              Built under the "Built to Scale" jam theme. Stack unstable geometric Tetris structures as high as possible, then scale the physics-simulated tower you just constructed.
+            </p>
+            <div class="tech-pill-row">
+              <span class="tech-pill">Unity</span>
+              <span class="tech-pill">2D Physics</span>
+              <span class="tech-pill">Rapid Prototyping</span>
+            </div>
+            <div class="project-card-footer">
+              <a href="https://esaltzherr.itch.io/building-scaler" target="_blank" class="project-link-btn">Play on Itch.io →</a>
+              <a href="https://github.com/esaltzherr/GMTK-Jam-2024" target="_blank" style="color: var(--text-dim); text-decoration: none; font-size: 0.8rem;">GitHub</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project: The Last Ember (Brackeys Jam) -->
+        <div class="project-card" data-category="jam">
+          <div class="project-card-media">
+            <img src="images/BrackeysJam.png" alt="The Last Ember" class="project-card-img" />
+            <span class="project-tag">Brackeys Jam 2024</span>
+          </div>
+          <div class="project-card-body">
+            <h3 class="project-card-title">The Last Ember</h3>
+            <div class="project-card-sub">Survival Platformer • Unity / C# • 4-Person Team</div>
+            <p class="project-card-desc">
+              Atmospheric horror platformer where survival hinges on a decaying campfire. Managed UI feedback, dynamic audio balancing, and integrated lighting systems.
+            </p>
+            <div class="tech-pill-row">
+              <span class="tech-pill">Unity</span>
+              <span class="tech-pill">Dynamic 2D Light</span>
+              <span class="tech-pill">Audio Feedback</span>
+            </div>
+            <div class="project-card-footer">
+              <a href="https://esaltzherr.itch.io/the-last-ember" target="_blank" class="project-link-btn">Play on Itch.io →</a>
+              <a href="https://github.com/esaltzherr/Brackeys-Jam-2024" target="_blank" style="color: var(--text-dim); text-decoration: none; font-size: 0.8rem;">GitHub</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project: Possession Escape (Pizza Jam) -->
+        <div class="project-card" data-category="jam">
+          <div class="project-card-media">
+            <img src="images/PizzaJam.png" alt="Possession Escape" class="project-card-img" />
+            <span class="project-tag">Pizza Jam Solo</span>
+          </div>
+          <div class="project-card-body">
+            <h3 class="project-card-title">Possession Escape</h3>
+            <div class="project-card-sub">Roguelike Brawler • Unity / C# • Solo</div>
+            <p class="project-card-desc">
+              Twin-stick spectral brawler. Fight through haunted chambers with customizable laser-fused melee combos and upgrade trees to liberate your ghost partner.
+            </p>
+            <div class="tech-pill-row">
+              <span class="tech-pill">Unity</span>
+              <span class="tech-pill">Roguelike Upgrades</span>
+              <span class="tech-pill">Combat Feel</span>
+            </div>
+            <div class="project-card-footer">
+              <a href="https://esaltzherr.itch.io/possession-escape" target="_blank" class="project-link-btn">Play on Itch.io →</a>
+              <a href="https://github.com/esaltzherr/PizzaJam" target="_blank" style="color: var(--text-dim); text-decoration: none; font-size: 0.8rem;">GitHub</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project: E-Commerce AI & Automation Pipeline -->
+        <div class="project-card" data-category="tools">
+          <div class="project-card-media" style="background: linear-gradient(135deg, #064e3b 0%, #0c1222 100%); display: flex; align-items: center; justify-content: center; font-size: 3rem;">
+            ⚡
+            <span class="project-tag">AI & Cloud Pipeline</span>
+          </div>
+          <div class="project-card-body">
+            <h3 class="project-card-title">E-Commerce AI & Automation</h3>
+            <div class="project-card-sub">Cloud Microservice • Python & AI Integration</div>
+            <p class="project-card-desc">
+              High-throughput automation suite for international retail stores (Jambelles & LongboardsUSA). Built and deployed a containerized Google Cloud Run service serving ~900 users across 3,000+ interactions, slashing multi-hour catalog tasks to 10 minutes with AI-assisted data validation and webhook orchestration.
+            </p>
+            <div class="tech-pill-row">
+              <span class="tech-pill">Python</span>
+              <span class="tech-pill">Google Cloud Run</span>
+              <span class="tech-pill">AI Automation</span>
+              <span class="tech-pill">REST APIs</span>
+            </div>
+            <div class="project-card-footer">
+              <span class="mono" style="font-size: 0.85rem; color: #34d399; font-weight: 700;">Deployed on GCP</span>
+              <span class="mono" style="font-size: 0.76rem; color: var(--text-dim);">~900 Users</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technical Skills -->
+  <section id="skills">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Core Competencies</span>
+        <h2 class="section-title">Technical Skills & Toolset</h2>
+        <p class="section-subtitle">
+          Solid computer science foundation backed by hands-on game development, AI pipelines, and systems engineering.
+        </p>
+      </div>
+
+      <div class="skills-grid">
+        <div class="skill-card">
+          <div class="skill-card-icon">⚡</div>
+          <h3 class="skill-card-title">Languages</h3>
+          <ul class="skill-list">
+            <li><span class="skill-bullet"></span> C# (Primary Engine Language)</li>
+            <li><span class="skill-bullet"></span> C++ (Game Systems & Data Structs)</li>
+            <li><span class="skill-bullet"></span> Python (Automation, AI, Scripting)</li>
+            <li><span class="skill-bullet"></span> JavaScript / TypeScript</li>
+            <li><span class="skill-bullet"></span> SQL (Database & State Persistence)</li>
+          </ul>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-icon">🎮</div>
+          <h3 class="skill-card-title">Engines & Tech</h3>
+          <ul class="skill-list">
+            <li><span class="skill-bullet"></span> Unity (2D / 3D, Physics, Animation)</li>
+            <li><span class="skill-bullet"></span> Unreal Engine (Blueprints & C++)</li>
+            <li><span class="skill-bullet"></span> Phaser.js / HTML5 Canvas</li>
+            <li><span class="skill-bullet"></span> ShaderLab / Custom Shaders</li>
+            <li><span class="skill-bullet"></span> Steamworks SDK Integration</li>
+          </ul>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-icon">🎯</div>
+          <h3 class="skill-card-title">Gameplay & Design</h3>
+          <ul class="skill-list">
+            <li><span class="skill-bullet"></span> Combat Cadence & Ability Tuning</li>
+            <li><span class="skill-bullet"></span> Progression & Economy Balancing</li>
+            <li><span class="skill-bullet"></span> Finite State Machines & Behavior Trees</li>
+            <li><span class="skill-bullet"></span> Custom In-Engine Designer Tools</li>
+            <li><span class="skill-bullet"></span> Playtest Telemetry & Bug Tracking</li>
+          </ul>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-icon">🛠️</div>
+          <h3 class="skill-card-title">AI, Cloud & Tools</h3>
+          <ul class="skill-list">
+            <li><span class="skill-bullet"></span> AI-Driven Workflows & Automation</li>
+            <li><span class="skill-bullet"></span> Git / GitHub (Version Control)</li>
+            <li><span class="skill-bullet"></span> Google Cloud Platform (VM, Cloud Run)</li>
+            <li><span class="skill-bullet"></span> Visual Studio / VS Code</li>
+            <li><span class="skill-bullet"></span> Linux / Docker / Shell Scripting</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Work Experience -->
+  <section id="experience">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Work History</span>
+        <h2 class="section-title">Industry & Engineering Experience</h2>
+        <p class="section-subtitle">
+          Proven track record in autonomous systems, robotics, AI-driven automation, and shipped titles.
+        </p>
+      </div>
+
+      <div class="timeline">
+        <!-- Experience: Skild.AI -->
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <div>
+                <div class="timeline-role">VR Robot Operator</div>
+                <div class="timeline-company">Skild.AI • San Mateo, CA</div>
+              </div>
+              <div class="timeline-date">Jan 2026 – Present</div>
+            </div>
+            <ul class="timeline-points">
+              <li>Operate and monitor advanced VR-controlled robotic systems in dynamic real-time environments.</li>
+              <li>Troubleshoot system anomalies, identifying discrepancies in tele-operation and validating robotic AI policy behavior.</li>
+              <li>Train new operators on performance standards, data validation workflows, and safety procedures.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Experience: Dark Throne -->
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <div>
+                <div class="timeline-role">Lead Programmer & Game Designer</div>
+                <div class="timeline-company">Steam Release (Dark Throne) • Santa Cruz, CA</div>
+              </div>
+              <div class="timeline-date">Mar 2024 – Jun 2024</div>
+            </div>
+            <ul class="timeline-points">
+              <li>Architected and shipped a complete 2D Metroidvania on Steam with "Mostly Positive" user reviews.</li>
+              <li>Authored modular combat systems, player movement abilities, enemy AI behavior graphs, and custom save states.</li>
+              <li>Conducted structured playtesting sessions to iterate on difficulty curves, combat frame pacing, and boss mechanics.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Experience: Jambelles / LongboardsUSA -->
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <div>
+                <div class="timeline-role">Automation Engineer</div>
+                <div class="timeline-company">Jambelles.nl & LongboardsUSA.com • Remote</div>
+              </div>
+              <div class="timeline-date">May 2025 – Jan 2026</div>
+            </div>
+            <ul class="timeline-points">
+              <li>Engineered Python automation scripts and AI workflows that reduced multi-hour manual publishing pipelines down to 10 minutes.</li>
+              <li>Architected and deployed a containerized Google Cloud Run feature serving ~900 users across 3,000+ interactions.</li>
+              <li>Built data-validation pipelines to ensure cross-platform catalog integrity and automated QA test passes.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Education: UC Santa Cruz -->
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--cyan);"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <div>
+                <div class="timeline-role">B.S. in Computer Science: Game Design</div>
+                <div class="timeline-company">University of California, Santa Cruz (UCSC)</div>
+              </div>
+              <div class="timeline-date">Sep 2020 – Jun 2024</div>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 10px;">
+              Rigorous game development curriculum spanning gameplay engineering, creative coding, game AI, procedural generation, sound design, and interdisciplinary team game production.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gamer DNA & Systems Philosophy (Placed near bottom) -->
+  <section id="philosophy" style="background: rgba(15, 23, 42, 0.45);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Player DNA & Design Mindset</span>
+        <h2 class="section-title">Systems Philosophy & Competitive Acumen</h2>
+        <p class="section-subtitle">
+          Great game designers and gameplay programmers don't just write code — they understand player psychology, frame data, economy loops, and the feel of competition.
+        </p>
+      </div>
+
+      <div class="dna-grid">
+        <!-- Card 1: League of Legends -->
+        <div class="dna-card">
+          <div class="dna-card-header">
+            <div class="dna-icon-badge" style="background: rgba(239, 68, 68, 0.15); color: #f87171;">⚔️</div>
+            <div>
+              <div class="dna-title">League of Legends</div>
+              <div class="dna-sub">Diamond Rank • Off-Meta Theorycrafting</div>
+            </div>
+          </div>
+          <p class="dna-desc">
+            Reached <strong>Diamond rank</strong> primarily piloting unconventional, off-meta bottom lane / ADC carries: <strong>Taliyah</strong>, <strong>Zyra</strong>, and <strong>Diana ADC</strong>.
+          </p>
+
+          <!-- Top 4 Mastery Bubble Chart -->
+          <div class="mastery-chart-box" style="margin: 14px 0 16px 0; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 14px; padding: 14px; text-align: center;">
+            <div style="font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 8px;">
+              Top 4 Champion Mastery (<a href="https://masterychart.com/profile/na/LRoy-Rocks" target="_blank" style="color: var(--cyan); text-decoration: none;">LRoy#Rocks</a>)
+            </div>
+            <a href="https://masterychart.com/profile/na/LRoy-Rocks" target="_blank" title="View full Mastery Chart for LRoy#Rocks" style="display: block; text-decoration: none;">
+              <img src="images/league_mastery_top4.png" alt="Top 4 Mastery Chart (Taliyah 2.4M, Zyra 803k, Miss Fortune 677k, Diana 467k)" style="width: 100%; max-width: 270px; height: auto; display: block; margin: 0 auto; filter: drop-shadow(0 4px 16px rgba(56, 189, 248, 0.22)); transition: transform 0.2s;" />
+            </a>
+          </div>
+
+          <div class="dna-highlight-box">
+            <div class="dna-highlight-title">Systems & Balance Insight:</div>
+            Theorycrafting non-standard champions exposes combat math: ability scaling breakpoints, wave state leverage, projectile hitbox exploitation, and ability cooldown windows that punish standard meta play.
+          </div>
+        </div>
+
+        <!-- Card 2: Magic The Gathering -->
+        <div class="dna-card">
+          <div class="dna-card-header">
+            <div class="dna-icon-badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">🃏</div>
+            <div>
+              <div class="dna-title">Magic: The Gathering</div>
+              <div class="dna-sub">Resilient Deckbuilding • Budget ~$100 Cap</div>
+            </div>
+          </div>
+          <p class="dna-desc">
+            Avid deckbuilder specializing in <strong>Bracket 2–3 casual/Commander</strong> play. Passionate about building highly resilient, synergistic engines on a strict <strong>~$100 budget cap</strong>.
+          </p>
+          <div class="dna-highlight-box" style="margin-bottom: 14px;">
+            <div class="dna-highlight-title">Game Economy & Synergy Insight:</div>
+            Budget constraints force genuine game design thinking: instead of relying on expensive generic staples, decks win through non-linear recursion, resource redundancy, and table-wide interactive puzzle solving.
+          </div>
+          <a href="https://moxfield.com/lists/y70W4-favorite-decks" target="_blank" class="btn btn-secondary" style="width: 100%; justify-content: center; font-size: 0.82rem; padding: 10px 14px; border-color: rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.08); color: #fbbf24; text-decoration: none;">
+            🃏 View Favorite Decks on Moxfield →
+          </a>
+        </div>
+
+        <!-- Card 3: Pokemon & Shiny Hunting -->
+        <div class="dna-card">
+          <div class="dna-card-header">
+            <div class="dna-icon-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">⚡</div>
+            <div>
+              <div class="dna-title">Pokémon & Encounter Design</div>
+              <div class="dna-sub">Dedicated Shiny Hunter • Mechanics Enthusiast</div>
+            </div>
+          </div>
+          <p class="dna-desc">
+            Lifelong Pokémon player fascinated by encounter probability, shiny odds distribution curves, and unique battle gimmick mechanics (stat thresholds, ability triggers, form changes).
+          </p>
+          <div class="dna-highlight-box">
+            <div class="dna-highlight-title" style="text-align: center;">Favorite Pokémon (All Shiny)</div>
+            <div class="pokemon-grid">
+              <!-- Marshadow -->
+              <div class="pokemon-card">
+                <div class="pokemon-img-wrap">
+                  <img src="images/pokemon/marshadow_highres.png" alt="Shiny Zenith Marshadow" class="pokemon-img" />
+                  <span class="sparkle s1">✦</span>
+                  <span class="sparkle s2">✦</span>
+                  <span class="sparkle s3">✦</span>
+                  <span class="sparkle s4">✦</span>
+                </div>
+                <span class="pokemon-info-name">Marshadow ✨</span>
+              </div>
+              <!-- Wishiwashi -->
+              <div class="pokemon-card">
+                <div class="pokemon-img-wrap">
+                  <img src="images/pokemon/wishiwashi_highres.png" alt="Shiny Wishiwashi (School Form)" class="pokemon-img" />
+                  <span class="sparkle s1">✦</span>
+                  <span class="sparkle s2">✦</span>
+                  <span class="sparkle s3">✦</span>
+                  <span class="sparkle s4">✦</span>
+                </div>
+                <span class="pokemon-info-name">Wishiwashi ✨</span>
+              </div>
+              <!-- Perrserker -->
+              <div class="pokemon-card">
+                <div class="pokemon-img-wrap">
+                  <img src="images/pokemon/perrserker_highres.png" alt="Shiny Perrserker" class="pokemon-img" />
+                  <span class="sparkle s1">✦</span>
+                  <span class="sparkle s2">✦</span>
+                  <span class="sparkle s3">✦</span>
+                  <span class="sparkle s4">✦</span>
+                </div>
+                <span class="pokemon-info-name">Perrserker ✨</span>
+              </div>
+              <!-- Mega Golisopod -->
+              <div class="pokemon-card">
+                <div class="pokemon-img-wrap">
+                  <img src="images/pokemon/golisopod_highres.png" alt="Shiny Mega Golisopod" class="pokemon-img" />
+                  <span class="sparkle s1">✦</span>
+                  <span class="sparkle s2">✦</span>
+                  <span class="sparkle s3">✦</span>
+                  <span class="sparkle s4">✦</span>
+                </div>
+                <span class="pokemon-info-name">Mega Golisopod ✨</span>
+              </div>
+              <!-- Cramorant (Gorging) -->
+              <div class="pokemon-card">
+                <div class="pokemon-img-wrap">
+                  <img src="images/pokemon/cramorant_highres.png" alt="Shiny Cramorant (Gorging Form)" class="pokemon-img" />
+                  <span class="sparkle s1">✦</span>
+                  <span class="sparkle s2">✦</span>
+                  <span class="sparkle s3">✦</span>
+                  <span class="sparkle s4">✦</span>
+                </div>
+                <span class="pokemon-info-name">Cramorant ✨</span>
+              </div>
+              <!-- Litten -->
+              <div class="pokemon-card">
+                <div class="pokemon-img-wrap">
+                  <img src="images/pokemon/litten_highres.png" alt="Shiny Litten" class="pokemon-img" />
+                  <span class="sparkle s1">✦</span>
+                  <span class="sparkle s2">✦</span>
+                  <span class="sparkle s3">✦</span>
+                  <span class="sparkle s4">✦</span>
+                </div>
+                <span class="pokemon-info-name">Litten ✨</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Competitive Robotics -->
+        <div class="dna-card">
+          <div class="dna-card-header">
+            <div class="dna-icon-badge" style="background: rgba(168, 85, 247, 0.15); color: #c084fc;">🤖</div>
+            <div>
+              <div class="dna-title">Competitive Robotics</div>
+              <div class="dna-sub">FRC Team 199 • Robot Driver • Team Lead • Fabrication</div>
+            </div>
+          </div>
+          <p class="dna-desc">
+            Competed in high-level <strong>FIRST Robotics (FRC Team 199 Deep Blue)</strong> as the official <strong>Robot Driver</strong>, <strong>Team Lead</strong>, and mechanical fabrication specialist. Led rapid CAD drafting, CNC/metal machining, and mechanism prototyping under strict 6-week build seasons.
+          </p>
+          <div class="dna-highlight-box">
+            <div class="dna-highlight-title">Real-Time Control & Hardware Physics:</div>
+            Piloting 120-lb competitive robots at full speed under intense tournament pressure honed deep intuition for control loop response, input latency, deadzones, physical momentum, and mechanical failure tolerances.
+          </div>
+        </div>
+
+        <!-- Card 5: Sports & Multi-Sport -->
+        <div class="dna-card">
+          <div class="dna-card-header">
+            <div class="dna-icon-badge" style="background: rgba(6, 182, 212, 0.15); color: #38bdf8;">⚽</div>
+            <div>
+              <div class="dna-title">Sports & Multi-Sport</div>
+              <div class="dna-sub">15+ Years Soccer • Basketball, Baseball & Swimming</div>
+            </div>
+          </div>
+          <p class="dna-desc">
+            Competed in organized <strong>soccer for over 15 years</strong>, building foundational athletic endurance alongside competitive multi-sport experience in <strong>basketball</strong>, <strong>baseball</strong>, and <strong>swimming</strong>.
+          </p>
+          <div class="dna-highlight-box">
+            <div class="dna-highlight-title">Spatial Vision & Reaction Dynamics:</div>
+            15 years on the pitch developed instinctual field vision, predictive trajectory tracking, transition velocity, and rapid non-verbal team coordination—translating directly into game feel, camera dynamics, and fluid gameplay loops.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Resume Section -->
+  <section id="resumes">
+    <div class="container">
+      <div class="resume-bar">
+        <div class="resume-bar-info">
+          <h3>Ready to Review Credentials?</h3>
+          <p>Download targeted resumes formatted specifically for technical and design roles.</p>
+        </div>
+        <div class="resume-buttons">
+          <a href="images/GameplayProgrammerResume.pdf" target="_blank" class="btn btn-primary">
+            📥 Gameplay Programmer Resume (PDF)
+          </a>
+          <a href="images/GameDesignerResume.pdf" target="_blank" class="btn btn-secondary">
+            📥 Technical Designer Resume (PDF)
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer / Contact -->
+  <footer>
+    <div class="container">
+      <h2 class="footer-title">Let's Build Great Games Together</h2>
+      <p class="footer-sub">
+        Actively interviewing for Gameplay Programmer, Technical Designer, and QA Automation roles in the games industry.
+      </p>
+      <div class="footer-links">
+        <a href="mailto:lsaltzherr@gmail.com" class="footer-social-btn">
+          ✉️ lsaltzherr@gmail.com
+        </a>
+        <a href="https://www.linkedin.com/in/elroy-saltzherr" target="_blank" class="footer-social-btn">
+          💼 LinkedIn
+        </a>
+        <a href="https://github.com/esaltzherr" target="_blank" class="footer-social-btn">
+          💻 GitHub
+        </a>
+        <a href="https://esaltzherr.itch.io/" target="_blank" class="footer-social-btn">
+          🕹️ Itch.io
+        </a>
+        <a href="https://store.steampowered.com/app/2995790/Dark_Throne/" target="_blank" class="footer-social-btn">
+          🎮 Steam
+        </a>
+      </div>
+      <p class="footer-copy">
+        © 2026 Elroy Saltzherr • Hosted on GitHub Pages ([github.com/esaltzherr/AboutMe](https://github.com/esaltzherr/AboutMe))
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    function filterProjects(cat) {
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        b.classList.remove('active');
+        if (b.getAttribute('onclick').includes(cat)) {
+          b.classList.add('active');
+        }
+      });
+
+      const cards = document.querySelectorAll('.project-card');
+      cards.forEach(card => {
+        const itemCat = card.getAttribute('data-category');
+        if (cat === 'all' || itemCat === cat) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+  </script>
+<script>
+
+class NativeAudio {
+  constructor() { this.ctx = null; this.enabled = true; }
+  init() { if (!this.ctx) { const AC = window.AudioContext || window.webkitAudioContext; this.ctx = new AC(); } }
+  playTone(freq, duration = 0.1, type = 'sine', gainVal = 0.08) {
+    if (!this.enabled || !this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+    g.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+    osc.connect(g); g.connect(this.ctx.destination);
+    osc.start(); osc.stop(this.ctx.currentTime + duration);
+  }
+  playFanfare() {
+    if (!this.enabled || !this.ctx) return;
+    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+      setTimeout(() => this.playTone(f, 0.2, 'triangle', 0.1), i * 90);
+    });
+  }
+}
+const sfx = new NativeAudio();
+document.addEventListener('click', () => sfx.init(), { once: true });
+document.addEventListener('keydown', () => sfx.init(), { once: true });
+const audioBtn = document.getElementById('btnAudioToggle');
+if (audioBtn) {
+  audioBtn.addEventListener('click', () => {
+    sfx.enabled = !sfx.enabled;
+    audioBtn.textContent = sfx.enabled ? '🔊 AUDIO: ON' : '🔇 AUDIO: OFF';
+  });
+}
+
+
+const rCanvas = document.createElement('canvas');
+rCanvas.id = 'rpgCanvas';
+document.body.appendChild(rCanvas);
+const rCtx = rCanvas.getContext('2d');
+function resizeRpg() { rCanvas.width = window.innerWidth; rCanvas.height = window.innerHeight; }
+window.addEventListener('resize', resizeRpg);
+resizeRpg();
+
+const hero = { x: window.innerWidth / 2, worldY: 180, speed: 4.5 };
+const keys = {};
+window.addEventListener('keydown', e => { keys[e.key] = true; if(['ArrowUp','ArrowDown',' '].includes(e.key)) e.preventDefault(); });
+window.addEventListener('keyup', e => { keys[e.key] = false; });
+
+const npcs = [
+  { name: 'Sir Roland (Knight)', section: '#featured', icon: '⚔️', text: 'Welcome to Dark Throne! Elroy crafted my 4-hit combo chains and fluid state machine AI in Godot 4.3. Every swing has weight and hitstop juice!' },
+  { name: 'Cipher (Cloud Drone)', section: '#projects', icon: '🤖', text: 'Beep boop! StocksBot operates 24/7 on Google Cloud Run containers. I parse Finviz volume outliers and trigger Discord alerts in sub-seconds!' },
+  { name: 'Lead Machinist', section: '#experience', icon: '🏎️', text: 'On the FIRST Robotics field, Elroy piloted under millisecond tournament pressure and machined aluminum drivetrains on CNC mills!' },
+  { name: 'Apex Master', section: '#philosophy', icon: '💎', text: 'Competitive acumen is real! Reached Top 1% Diamond in League of Legends alongside 15+ straight years of soccer endurance!' }
+];
+
+let metCount = 0;
+const bubble = document.createElement('div');
+bubble.className = 'rpg-speech-bubble';
+bubble.innerHTML = '<div style="font-weight:800; color:#38bdf8; margin-bottom:6px;" id="bTitle">NPC</div><div id="bText" style="line-height:1.6; font-size:0.95rem;">Text</div><button class="btn-hud" style="margin-top:12px; width:100%;" onclick="closeBubble()">[SPACE] CLOSE</button>';
+document.body.appendChild(bubble);
+
+window.closeBubble = () => { bubble.classList.remove('active'); };
+
+function checkNpcProximity() {
+  npcs.forEach(n => {
+    const el = document.querySelector(n.section);
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const targetY = r.top + window.scrollY + 60;
+    const dist = Math.hypot(hero.x - (r.left + 50), hero.worldY - targetY);
+    if (dist < 80) {
+      if (keys[' '] && !bubble.classList.contains('active')) {
+        talkNpc(n);
+      }
+    }
+  });
+}
+
+function talkNpc(n) {
+  document.getElementById('bTitle').textContent = n.icon + ' ' + n.name;
+  document.getElementById('bText').textContent = n.text;
+  bubble.classList.add('active');
+  sfx.playTone(660, 0.12, 'square');
+  if (!n.met) { n.met = true; metCount++; document.getElementById('rpgMet').textContent = `${metCount}/4`; }
+}
+
+function updateRpg() {
+  let moved = false;
+  if (keys['w'] || keys['W'] || keys['ArrowUp']) { hero.worldY -= hero.speed; moved = true; }
+  if (keys['s'] || keys['S'] || keys['ArrowDown']) { hero.worldY += hero.speed; moved = true; }
+  if (keys['a'] || keys['A'] || keys['ArrowLeft']) { hero.x -= hero.speed; moved = true; }
+  if (keys['d'] || keys['D'] || keys['ArrowRight']) { hero.x += hero.speed; moved = true; }
+
+  hero.x = Math.max(30, Math.min(window.innerWidth - 30, hero.x));
+  hero.worldY = Math.max(80, Math.min(document.body.scrollHeight - 50, hero.worldY));
+
+  // Camera tracking
+  const targetY = hero.worldY - window.innerHeight * 0.5;
+  if (Math.abs(window.scrollY - targetY) > 8) {
+    window.scrollBy(0, (targetY - window.scrollY) * 0.1);
+  }
+
+  checkNpcProximity();
+}
+
+function drawRpg() {
+  rCtx.clearRect(0, 0, rCanvas.width, rCanvas.height);
+  const sy = hero.worldY - window.scrollY;
+
+  // Draw NPCs over sections
+  npcs.forEach(n => {
+    const el = document.querySelector(n.section);
+    if (el) {
+      const r = el.getBoundingClientRect();
+      const nx = r.left + 40;
+      const ny = r.top + 60;
+      if (ny > -50 && ny < window.innerHeight + 50) {
+        rCtx.fillStyle = '#0f172a';
+        rCtx.beginPath(); rCtx.arc(nx, ny, 18, 0, Math.PI * 2); rCtx.fill();
+        rCtx.strokeStyle = '#38bdf8'; rCtx.lineWidth = 2; rCtx.stroke();
+        rCtx.font = '18px sans-serif'; rCtx.textAlign = 'center'; rCtx.textBaseline = 'middle';
+        rCtx.fillText(n.icon, nx, ny);
+
+        // Prompt
+        if (Math.hypot(hero.x - nx, sy - ny) < 80) {
+          rCtx.fillStyle = '#fbbf24'; rCtx.font = '9px "Press Start 2P"';
+          rCtx.fillText('[SPACE TO TALK]', nx, ny - 28);
+        }
+      }
+    }
+  });
+
+  // Draw Hero
+  rCtx.fillStyle = '#10b981';
+  rCtx.shadowColor = '#10b981'; rCtx.shadowBlur = 10;
+  rCtx.beginPath(); rCtx.arc(hero.x, sy, 14, 0, Math.PI * 2); rCtx.fill();
+  rCtx.fillStyle = '#f8fafc';
+  rCtx.fillRect(hero.x - 3, sy - 6, 6, 6);
+  rCtx.shadowBlur = 0;
+}
+
+function loopRpg() {
+  updateRpg();
+  drawRpg();
+  requestAnimationFrame(loopRpg);
+}
+requestAnimationFrame(loopRpg);
+
+</script></body>
+</html>
