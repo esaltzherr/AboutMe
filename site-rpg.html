@@ -1110,12 +1110,27 @@
     }
   </style>
 <style>
-    /* On-Site Game HUD Common Styling */
+    /* ZERO SCROLLBAR & VIRTUAL CAMERA CONTAINER */
+    html, body {
+      overflow: hidden !important;
+      height: 100vh !important;
+      width: 100vw !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    ::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
     #onsite-game-hud {
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100000;
-      background: rgba(9, 13, 22, 0.94);
+      background: rgba(9, 13, 22, 0.95);
       backdrop-filter: blur(14px);
       border-bottom: 2px solid #6366f1;
       padding: 10px 20px;
@@ -1185,26 +1200,33 @@
       color: #94a3b8;
       font-size: 0.55rem;
     }
-    body {
+
+    /* World stage that translates smoothly without native scrollbar */
+    #world-stage {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      will-change: transform;
       padding-top: 56px;
     }
 
 
 #rpgCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 99999; }
-.rpg-npc-marker { position: absolute; pointer-events: auto; z-index: 50; cursor: pointer; text-align: center; }
 .rpg-speech-bubble {
   position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-  background: rgba(15, 23, 42, 0.96); border: 3px solid #38bdf8; border-radius: 14px;
+  background: rgba(15, 23, 42, 0.97); border: 3px solid #38bdf8; border-radius: 14px;
   padding: 18px 24px; max-width: 600px; width: 90%; color: #fff; z-index: 100001;
-  font-family: 'Plus Jakarta Sans', sans-serif; box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+  font-family: 'Plus Jakarta Sans', sans-serif; box-shadow: 0 10px 40px rgba(0,0,0,0.85);
   display: none;
 }
 .rpg-speech-bubble.active { display: block; animation: popUp 0.2s ease; }
 @keyframes popUp { from { transform: translate(-50%, 20px) scale(0.95); opacity: 0; } to { transform: translate(-50%, 0) scale(1); opacity: 1; } }
 </style></head>
-<body>
 
-  <!-- ON-SITE RESKIN TOP HUD -->
+<body>
+  
+  <!-- ON-SITE RESKIN TOP HUD (Fixed on top of viewport) -->
   <div id="onsite-game-hud">
     <div class="hud-left">
       <a href="play.html" class="btn-hud">◀ Arcade Hub</a>
@@ -1214,13 +1236,15 @@
       <div class="hud-stat-chip">NPCS MET: <span id="rpgMet">0/4</span></div>
     </div>
     <div class="hud-right">
-      <span class="hud-hint">Move: WASD/Arrows | Talk: Space / Click NPC</span>
+      <span class="hud-hint">Move: WASD/Arrows | Talk: Space | Wheel: Scroll</span>
       <button class="btn-hud" id="btnAudioToggle">🔊 AUDIO: ON</button>
       <a href="rpg.html" class="btn-hud btn-hud-compare">🖥️ Standalone Version ▶</a>
       <a href="index.html" class="btn-hud">Standard Site ▶</a>
     </div>
   </div>
 
+  <div id="world-stage">
+    
 
   <!-- Sticky Top Nav -->
   <header>
@@ -1926,8 +1950,10 @@
       });
     }
   </script>
-<script>
 
+  </div>
+  <script>
+    
 class NativeAudio {
   constructor() { this.ctx = null; this.enabled = true; }
   init() { if (!this.ctx) { const AC = window.AudioContext || window.webkitAudioContext; this.ctx = new AC(); } }
@@ -1960,7 +1986,37 @@ if (audioBtn) {
   });
 }
 
+    
+// Virtual Camera (Zero scrollbars, manual wheel scroll + game camera follow)
+let camY = 0;
+let targetCamY = 0;
+const stage = document.getElementById('world-stage');
+let maxCamY = 3000;
 
+function updateMaxCam() {
+  maxCamY = Math.max(0, stage.scrollHeight - window.innerHeight);
+}
+window.addEventListener('resize', updateMaxCam);
+setTimeout(updateMaxCam, 500);
+
+// Smooth mouse wheel / touchpad scroll without scrollbar
+window.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  targetCamY += e.deltaY;
+  targetCamY = Math.max(0, Math.min(maxCamY, targetCamY));
+}, { passive: false });
+
+function updateCamera(followWorldY) {
+  if (followWorldY !== undefined) {
+    targetCamY = followWorldY - window.innerHeight * 0.45;
+  }
+  targetCamY = Math.max(0, Math.min(maxCamY, targetCamY));
+  camY += (targetCamY - camY) * 0.12;
+  stage.style.transform = `translate3d(0, ${-camY}px, 0)`;
+  return camY;
+}
+
+    
 const rCanvas = document.createElement('canvas');
 rCanvas.id = 'rpgCanvas';
 document.body.appendChild(rCanvas);
@@ -1969,9 +2025,12 @@ function resizeRpg() { rCanvas.width = window.innerWidth; rCanvas.height = windo
 window.addEventListener('resize', resizeRpg);
 resizeRpg();
 
-const hero = { x: window.innerWidth / 2, worldY: 180, speed: 4.5 };
+const hero = { x: window.innerWidth / 2, worldY: 200, speed: 5 };
 const keys = {};
-window.addEventListener('keydown', e => { keys[e.key] = true; if(['ArrowUp','ArrowDown',' '].includes(e.key)) e.preventDefault(); });
+window.addEventListener('keydown', e => {
+  keys[e.key] = true;
+  if (['ArrowUp','ArrowDown',' '].includes(e.key)) e.preventDefault();
+});
 window.addEventListener('keyup', e => { keys[e.key] = false; });
 
 const npcs = [
@@ -1986,23 +2045,7 @@ const bubble = document.createElement('div');
 bubble.className = 'rpg-speech-bubble';
 bubble.innerHTML = '<div style="font-weight:800; color:#38bdf8; margin-bottom:6px;" id="bTitle">NPC</div><div id="bText" style="line-height:1.6; font-size:0.95rem;">Text</div><button class="btn-hud" style="margin-top:12px; width:100%;" onclick="closeBubble()">[SPACE] CLOSE</button>';
 document.body.appendChild(bubble);
-
 window.closeBubble = () => { bubble.classList.remove('active'); };
-
-function checkNpcProximity() {
-  npcs.forEach(n => {
-    const el = document.querySelector(n.section);
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const targetY = r.top + window.scrollY + 60;
-    const dist = Math.hypot(hero.x - (r.left + 50), hero.worldY - targetY);
-    if (dist < 80) {
-      if (keys[' '] && !bubble.classList.contains('active')) {
-        talkNpc(n);
-      }
-    }
-  });
-}
 
 function talkNpc(n) {
   document.getElementById('bTitle').textContent = n.icon + ' ' + n.name;
@@ -2013,46 +2056,51 @@ function talkNpc(n) {
 }
 
 function updateRpg() {
-  let moved = false;
-  if (keys['w'] || keys['W'] || keys['ArrowUp']) { hero.worldY -= hero.speed; moved = true; }
-  if (keys['s'] || keys['S'] || keys['ArrowDown']) { hero.worldY += hero.speed; moved = true; }
-  if (keys['a'] || keys['A'] || keys['ArrowLeft']) { hero.x -= hero.speed; moved = true; }
-  if (keys['d'] || keys['D'] || keys['ArrowRight']) { hero.x += hero.speed; moved = true; }
+  if (keys['w'] || keys['W'] || keys['ArrowUp']) hero.worldY -= hero.speed;
+  if (keys['s'] || keys['S'] || keys['ArrowDown']) hero.worldY += hero.speed;
+  if (keys['a'] || keys['A'] || keys['ArrowLeft']) hero.x -= hero.speed;
+  if (keys['d'] || keys['D'] || keys['ArrowRight']) hero.x += hero.speed;
 
   hero.x = Math.max(30, Math.min(window.innerWidth - 30, hero.x));
-  hero.worldY = Math.max(80, Math.min(document.body.scrollHeight - 50, hero.worldY));
+  hero.worldY = Math.max(100, Math.min(stage.scrollHeight - 50, hero.worldY));
 
-  // Camera tracking
-  const targetY = hero.worldY - window.innerHeight * 0.5;
-  if (Math.abs(window.scrollY - targetY) > 8) {
-    window.scrollBy(0, (targetY - window.scrollY) * 0.1);
-  }
+  // Smooth virtual camera (No scrollbar!)
+  updateCamera(hero.worldY);
 
-  checkNpcProximity();
+  // Proximity check
+  npcs.forEach(n => {
+    const el = document.querySelector(n.section);
+    if (!el) return;
+    const nx = el.offsetLeft + 40;
+    const ny = el.offsetTop + 60;
+    if (Math.hypot(hero.x - nx, hero.worldY - ny) < 80) {
+      if (keys[' '] && !bubble.classList.contains('active')) {
+        talkNpc(n);
+      }
+    }
+  });
 }
 
 function drawRpg() {
   rCtx.clearRect(0, 0, rCanvas.width, rCanvas.height);
-  const sy = hero.worldY - window.scrollY;
+  const sy = hero.worldY - camY;
 
-  // Draw NPCs over sections
+  // Draw NPCs at world locations
   npcs.forEach(n => {
     const el = document.querySelector(n.section);
     if (el) {
-      const r = el.getBoundingClientRect();
-      const nx = r.left + 40;
-      const ny = r.top + 60;
+      const nx = el.offsetLeft + 40;
+      const ny = el.offsetTop + 60 - camY;
       if (ny > -50 && ny < window.innerHeight + 50) {
         rCtx.fillStyle = '#0f172a';
-        rCtx.beginPath(); rCtx.arc(nx, ny, 18, 0, Math.PI * 2); rCtx.fill();
+        rCtx.beginPath(); rCtx.arc(nx, ny, 20, 0, Math.PI * 2); rCtx.fill();
         rCtx.strokeStyle = '#38bdf8'; rCtx.lineWidth = 2; rCtx.stroke();
-        rCtx.font = '18px sans-serif'; rCtx.textAlign = 'center'; rCtx.textBaseline = 'middle';
+        rCtx.font = '20px sans-serif'; rCtx.textAlign = 'center'; rCtx.textBaseline = 'middle';
         rCtx.fillText(n.icon, nx, ny);
 
-        // Prompt
         if (Math.hypot(hero.x - nx, sy - ny) < 80) {
           rCtx.fillStyle = '#fbbf24'; rCtx.font = '9px "Press Start 2P"';
-          rCtx.fillText('[SPACE TO TALK]', nx, ny - 28);
+          rCtx.fillText('[SPACE TO TALK]', nx, ny - 30);
         }
       }
     }
@@ -2061,7 +2109,7 @@ function drawRpg() {
   // Draw Hero
   rCtx.fillStyle = '#10b981';
   rCtx.shadowColor = '#10b981'; rCtx.shadowBlur = 10;
-  rCtx.beginPath(); rCtx.arc(hero.x, sy, 14, 0, Math.PI * 2); rCtx.fill();
+  rCtx.beginPath(); rCtx.arc(hero.x, sy, 15, 0, Math.PI * 2); rCtx.fill();
   rCtx.fillStyle = '#f8fafc';
   rCtx.fillRect(hero.x - 3, sy - 6, 6, 6);
   rCtx.shadowBlur = 0;
@@ -2074,5 +2122,7 @@ function loopRpg() {
 }
 requestAnimationFrame(loopRpg);
 
-</script></body>
+  </script>
+</body>
+
 </html>
