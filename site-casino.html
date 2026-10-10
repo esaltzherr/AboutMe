@@ -1110,12 +1110,27 @@
     }
   </style>
 <style>
-    /* On-Site Game HUD Common Styling */
+    /* ZERO SCROLLBAR & VIRTUAL CAMERA CONTAINER */
+    html, body {
+      overflow: hidden !important;
+      height: 100vh !important;
+      width: 100vw !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    ::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
     #onsite-game-hud {
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100000;
-      background: rgba(9, 13, 22, 0.94);
+      background: rgba(9, 13, 22, 0.95);
       backdrop-filter: blur(14px);
       border-bottom: 2px solid #6366f1;
       padding: 10px 20px;
@@ -1185,7 +1200,14 @@
       color: #94a3b8;
       font-size: 0.55rem;
     }
-    body {
+
+    /* World stage that translates smoothly without native scrollbar */
+    #world-stage {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      will-change: transform;
       padding-top: 56px;
     }
 
@@ -1193,7 +1215,7 @@
 .card-vault-locked { position: relative; }
 .card-vault-overlay {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(15, 23, 42, 0.92); backdrop-filter: blur(8px);
+  background: rgba(15, 23, 42, 0.94); backdrop-filter: blur(8px);
   border: 2px solid #f59e0b; border-radius: 16px;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   z-index: 20; color: #fff; text-align: center; padding: 20px;
@@ -1205,9 +1227,10 @@
   margin-top: 10px; box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
 }
 </style></head>
-<body>
 
-  <!-- ON-SITE RESKIN TOP HUD -->
+<body>
+  
+  <!-- ON-SITE RESKIN TOP HUD (Fixed on top of viewport) -->
   <div id="onsite-game-hud">
     <div class="hud-left">
       <a href="play.html" class="btn-hud">◀ Arcade Hub</a>
@@ -1217,13 +1240,15 @@
       <div class="hud-stat-chip">BANKROLL: <span id="casChips" style="color:#fbbf24;">$500</span></div><button class="btn-hud" style="color:#10b981;" onclick="addChips()">+ $100 HOTFIX</button>
     </div>
     <div class="hud-right">
-      <span class="hud-hint">Gamble winnings to unlock site sections!</span>
+      <span class="hud-hint">Gamble winnings to unlock site sections! (Wheel to scroll)</span>
       <button class="btn-hud" id="btnAudioToggle">🔊 AUDIO: ON</button>
       <a href="casino.html" class="btn-hud btn-hud-compare">🖥️ Standalone Version ▶</a>
       <a href="index.html" class="btn-hud">Standard Site ▶</a>
     </div>
   </div>
 
+  <div id="world-stage">
+    
 
   <!-- Sticky Top Nav -->
   <header>
@@ -1929,8 +1954,10 @@
       });
     }
   </script>
-<script>
 
+  </div>
+  <script>
+    
 class NativeAudio {
   constructor() { this.ctx = null; this.enabled = true; }
   init() { if (!this.ctx) { const AC = window.AudioContext || window.webkitAudioContext; this.ctx = new AC(); } }
@@ -1963,6 +1990,42 @@ if (audioBtn) {
   });
 }
 
+    
+// Virtual Camera (Zero scrollbars, manual wheel scroll + game camera follow)
+let camY = 0;
+let targetCamY = 0;
+const stage = document.getElementById('world-stage');
+let maxCamY = 3000;
+
+function updateMaxCam() {
+  maxCamY = Math.max(0, stage.scrollHeight - window.innerHeight);
+}
+window.addEventListener('resize', updateMaxCam);
+setTimeout(updateMaxCam, 500);
+
+// Smooth mouse wheel / touchpad scroll without scrollbar
+window.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  targetCamY += e.deltaY;
+  targetCamY = Math.max(0, Math.min(maxCamY, targetCamY));
+}, { passive: false });
+
+function updateCamera(followWorldY) {
+  if (followWorldY !== undefined) {
+    targetCamY = followWorldY - window.innerHeight * 0.45;
+  }
+  targetCamY = Math.max(0, Math.min(maxCamY, targetCamY));
+  camY += (targetCamY - camY) * 0.12;
+  stage.style.transform = `translate3d(0, ${-camY}px, 0)`;
+  return camY;
+}
+
+    
+function loopCas() {
+  updateCamera();
+  requestAnimationFrame(loopCas);
+}
+requestAnimationFrame(loopCas);
 
 let chips = 500;
 window.addChips = () => {
@@ -2005,5 +2068,7 @@ locks.forEach(l => {
   }
 });
 
-</script></body>
+  </script>
+</body>
+
 </html>
