@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elroy Saltzherr • Constellation Skill Tree</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Press+Start+2P&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #060913;
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* Fixed HUD */
+    #tree-hud {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 100;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border-radius: 14px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+
+    .btn-exit {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+
+    .btn-exit:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    /* Inspector Side Drawer */
+    #node-inspector {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      bottom: 16px;
+      width: 360px;
+      background: rgba(15, 23, 42, 0.94);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 100;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.7);
+      transform: translateX(400px);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #node-inspector.active {
+      transform: translateX(0);
+    }
+
+    .inspector-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .inspector-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .inspector-desc {
+      font-size: 0.92rem;
+      color: #94a3b8;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      flex-grow: 1;
+    }
+
+    .inspector-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 20px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+      color: #fff;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+    }
+
+    canvas {
+      display: block;
+      cursor: grab;
+    }
+
+    canvas:active {
+      cursor: grabbing;
+    }
+  </style>
+</head>
+<body>
+  <div id="tree-hud">
+    <div style="font-weight: 800; font-size: 0.85rem; color: #fbbf24;">⚡ METROIDVANIA SKILL TREE</div>
+    <div style="font-size: 0.75rem; color: #94a3b8;">DRAG TO PAN • CLICK NODES TO INSPECT</div>
+    <a href="play.html" class="btn-exit">EXIT</a>
+  </div>
+
+  <!-- Side Inspector -->
+  <div id="node-inspector">
+    <div>
+      <span class="inspector-tag" id="node-tag" style="background: rgba(99, 102, 241, 0.2); color: #818cf8;">CORE ARCHITECTURE</span>
+      <h2 class="inspector-title" id="node-title">Node Title</h2>
+      <p class="inspector-desc" id="node-desc">Click any node in the constellation to view technical parameters, engine architecture, and links.</p>
+    </div>
+    <a id="node-link" href="#" target="_blank" class="inspector-btn">Inspect Shipped Project →</a>
+  </div>
+
+  <canvas id="tree-canvas"></canvas>
+
+  <script>
+    // Web Audio Synthesizer
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function playTone(freq, dur = 0.08) {
+      try {
+        if (!audioCtx) audioCtx = new AudioCtx();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const t = audioCtx.currentTime;
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, t);
+        gain.gain.setValueAtTime(0.15, t);
+        gain.gain.linearRampToValueAtTime(0, t + dur);
+        osc.start(t);
+        osc.stop(t + dur);
+      } catch (e) {}
+    }
+
+    const canvas = document.getElementById('tree-canvas');
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // Pan & Camera
+    let panX = canvas.width / 2;
+    let panY = canvas.height / 2;
+    let isDragging = false;
+    let lastMouseX = 0;
+    let lastMouseY = 0;
+
+    // Nodes
+    const nodes = [
+      // Core Root
+      {
+        id: 'root',
+        x: 0,
+        y: 0,
+        r: 28,
+        color: '#fbbf24',
+        title: 'B.S. CS: Game Design @ UCSC',
+        tag: 'CORE FOUNDATION',
+        desc: 'Rigorous foundation in gameplay engineering, creative coding, game AI, procedural algorithms, and multi-disciplinary game development.',
+        link: 'index.html#experience'
+      },
+      // Gameplay Engineering Branch (North-East)
+      {
+        id: 'csharp',
+        x: 160,
+        y: -100,
+        r: 20,
+        color: '#818cf8',
+        title: 'C# & Unity Engine Architecture',
+        tag: 'GAMEPLAY STACK',
+        desc: 'Custom player controllers, physics loops, serialization, and clean state machine interfaces.',
+        link: 'index.html#projects'
+      },
+      {
+        id: 'combat',
+        x: 320,
+        y: -160,
+        r: 22,
+        color: '#6366f1',
+        title: 'Melee Combat & Frame Pacing',
+        tag: 'COMBAT TUNING',
+        desc: 'Hitbox validation, invulnerability frames, animation cancelling, combo branching, and coyote jump buffers.',
+        link: 'index.html#featured'
+      },
+      {
+        id: 'darkthrone',
+        x: 480,
+        y: -220,
+        r: 32,
+        color: '#10b981',
+        title: 'Dark Throne (Shipped on Steam)',
+        tag: 'SHIPPED TITLE',
+        desc: 'Lead Programmer for commercial Metroidvania. Mostly Positive Steam reviews, Steamworks SDK integration, and boss AI state machines.',
+        link: 'https://store.steampowered.com/app/2995790/Dark_Throne/'
+      },
+
+      // Autonomous Cloud Branch (South-East)
+      {
+        id: 'python',
+        x: 160,
+        y: 100,
+        r: 20,
+        color: '#38bdf8',
+        title: 'Python Automation Pipelines',
+        tag: 'BACKEND ENGINEERING',
+        desc: 'Automating high-throughput e-commerce catalog pipelines, reducing hours down to 10 minutes.',
+        link: 'index.html#projects'
+      },
+      {
+        id: 'cloudrun',
+        x: 340,
+        y: 160,
+        r: 24,
+        color: '#0284c7',
+        title: 'GCP Cloud Run Serverless',
+        tag: 'CLOUD ARCHITECTURE',
+        desc: 'Architected and deployed containerized microservices serving 900+ users across 3,000+ interactions for Jambelles & LongboardsUSA.',
+        link: 'index.html#projects'
+      },
+
+      // Robotics Branch (North-West)
+      {
+        id: 'frc',
+        x: -160,
+        y: -100,
+        r: 22,
+        color: '#c084fc',
+        title: 'FRC Team 199 Deep Blue',
+        tag: 'ROBOTICS & HARDWARE',
+        desc: 'Official Robot Driver, Team Lead, and mechanical fabrication specialist. Rapid CNC machining, CAD modeling, and real-time piloting under pressure.',
+        link: 'index.html#philosophy'
+      },
+      {
+        id: 'skild',
+        x: -340,
+        y: -160,
+        r: 26,
+        color: '#a855f7',
+        title: 'Skild.AI — VR Robot Operator',
+        tag: 'ADVANCED TELE-OPERATION',
+        desc: 'Operate and monitor advanced VR-controlled robotic systems in dynamic real-time environments, validating robotic AI policy behaviors.',
+        link: 'index.html#experience'
+      },
+
+      // Competitive Acumen Branch (South-West)
+      {
+        id: 'lol',
+        x: -160,
+        y: 120,
+        r: 24,
+        color: '#f87171',
+        title: 'Diamond Rank League Theorycrafting',
+        tag: 'COMPETITIVE DNA',
+        desc: 'Piloting unconventional off-meta bottom lane carries: 2.39M points on Taliyah, Zyra, and Diana ADC. Deep understanding of ability cooldowns and combat math.',
+        link: 'https://masterychart.com/profile/na/LRoy-Rocks'
+      },
+      {
+        id: 'pokemon',
+        x: -320,
+        y: 200,
+        r: 26,
+        color: '#fbbf24',
+        title: 'Shiny Hunting & Probability',
+        tag: 'GAME DESIGN ECONOMY',
+        desc: 'Fascination with encounter probability, odds curves, form changes (Zenith Marshadow, School Wishiwashi, Mega Golisopod).',
+        link: 'index.html#philosophy'
+      }
+    ];
+
+    // Edges
+    const edges = [
+      ['root', 'csharp'],
+      ['csharp', 'combat'],
+      ['combat', 'darkthrone'],
+      ['root', 'python'],
+      ['python', 'cloudrun'],
+      ['root', 'frc'],
+      ['frc', 'skild'],
+      ['root', 'lol'],
+      ['lol', 'pokemon']
+    ];
+
+    let selectedNode = null;
+
+    canvas.addEventListener('mousedown', e => {
+      isDragging = true;
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+
+      // Check click on node
+      const mx = e.clientX - panX;
+      const my = e.clientY - panY;
+
+      for (const n of nodes) {
+        const d = Math.hypot(mx - n.x, my - n.y);
+        if (d < n.r) {
+          selectNode(n);
+          return;
+        }
+      }
+    });
+
+    window.addEventListener('mousemove', e => {
+      if (isDragging) {
+        panX += e.clientX - lastMouseX;
+        panY += e.clientY - lastMouseY;
+        lastMouseX = e.clientX;
+        lastMouseY = e.clientY;
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+    });
+
+    function selectNode(n) {
+      selectedNode = n;
+      playTone(523.25, 0.1); // C5
+      const inspector = document.getElementById('node-inspector');
+      document.getElementById('node-tag').textContent = n.tag;
+      document.getElementById('node-tag').style.color = n.color;
+      document.getElementById('node-title').textContent = n.title;
+      document.getElementById('node-desc').textContent = n.desc;
+      const btn = document.getElementById('node-link');
+      btn.href = n.link;
+      inspector.classList.add('active');
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.save();
+      ctx.translate(panX, panY);
+
+      // 1. Draw Connecting Laser Edges
+      for (const [sId, tId] of edges) {
+        const s = nodes.find(n => n.id === sId);
+        const t = nodes.find(n => n.id === tId);
+        if (!s || !t) continue;
+
+        ctx.strokeStyle = 'rgba(99, 102, 241, 0.3)';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(s.x, s.y);
+        ctx.lineTo(t.x, t.y);
+        ctx.stroke();
+
+        // Pulsing glow
+        ctx.strokeStyle = s.color;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(s.x, s.y);
+        ctx.lineTo(t.x, t.y);
+        ctx.stroke();
+      }
+
+      // 2. Draw Nodes
+      for (const n of nodes) {
+        // Outer aura
+        const isSel = selectedNode && selectedNode.id === n.id;
+        ctx.fillStyle = n.color;
+        ctx.globalAlpha = isSel ? 0.4 : 0.15;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r + (isSel ? 12 : 6), 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
+
+        // Solid Node Core
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = n.color;
+        ctx.lineWidth = isSel ? 4 : 2;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Label below
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '700 12px "Plus Jakarta Sans"';
+        ctx.textAlign = 'center';
+        ctx.fillText(n.title, n.x, n.y + n.r + 18);
+      }
+
+      ctx.restore();
+      requestAnimationFrame(render);
+    }
+    render();
+  </script>
+</body>
+</html>
