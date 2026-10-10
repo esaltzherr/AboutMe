@@ -23,14 +23,22 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
+    html, body {
+      overflow: hidden !important;
+      height: 100vh !important;
+      width: 100vw !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
       background-color: var(--bg);
       color: var(--text);
       font-family: 'Plus Jakarta Sans', sans-serif;
       line-height: 1.6;
-      overflow-x: hidden;
-      min-height: 100vh;
       user-select: none;
+    }
+    ::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
     }
 
     /* Platformer Game HUD Overlay */
@@ -100,9 +108,14 @@
 
     /* Level Container (Holds all platform elements) */
     .level-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
       max-width: 1140px;
       margin: 80px auto 100px auto;
       padding: 0 24px;
+      will-change: transform;
     }
 
     /* Platformer Elements (Acts as solid platforms) */
@@ -389,17 +402,25 @@
       }
     }
 
+    const levelContainer = document.getElementById('level');
+    let cameraY = 0;
+    let targetCamY = 0;
+
+    window.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      targetCamY += e.deltaY;
+    }, { passive: false });
+
     // Platforms
     function getPlatformRects() {
       const plats = document.querySelectorAll('.solid-platform');
       const rects = [];
       plats.forEach(el => {
-        const r = el.getBoundingClientRect();
         rects.push({
-          x: r.left + window.scrollX,
-          y: r.top + window.scrollY,
-          w: r.width,
-          h: r.height,
+          x: el.offsetLeft,
+          y: el.offsetTop,
+          w: el.offsetWidth,
+          h: el.offsetHeight,
           el: el
         });
       });
@@ -487,20 +508,21 @@
         }
       }
 
-      // Smooth Camera follow Y
-      const targetScrollY = player.y - window.innerHeight / 2;
-      window.scrollTo({
-        top: targetScrollY,
-        behavior: 'auto'
-      });
+      // Smooth Virtual Camera without native scrollbars
+      targetCamY = player.y - window.innerHeight * 0.45;
+      const maxCamY = Math.max(0, levelContainer.scrollHeight - window.innerHeight + 150);
+      targetCamY = Math.max(0, Math.min(maxCamY, targetCamY));
+      cameraY += (targetCamY - cameraY) * 0.12;
+      levelContainer.style.transform = `translate3d(0, ${-cameraY}px, 0)`;
     }
 
     function render() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const screenY = player.y - cameraY;
 
       // Draw Player Knight
       ctx.save();
-      ctx.translate(player.x, player.y);
+      ctx.translate(player.x, screenY);
 
       // Shadow on ground
       ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
@@ -538,3 +560,4 @@
   </script>
 </body>
 </html>
+
