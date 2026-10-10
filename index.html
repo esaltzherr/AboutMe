@@ -861,14 +861,25 @@
       text-align: center;
       gap: 8px;
       box-sizing: border-box;
+      position: relative;
       overflow: hidden;
+      cursor: pointer;
       transition: all 0.2s ease;
     }
 
     .pokemon-card:hover {
       border-color: var(--gold);
       transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(251, 191, 36, 0.18);
+      box-shadow: 0 4px 20px rgba(251, 191, 36, 0.28);
+    }
+
+    .pokemon-img-wrap {
+      position: relative;
+      width: 58px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .pokemon-img {
@@ -876,6 +887,119 @@
       height: 54px;
       object-fit: contain;
       filter: drop-shadow(0 3px 10px rgba(251, 191, 36, 0.25));
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .pokemon-card:hover .pokemon-img {
+      transform: scale(1.12) translateY(-2px);
+      filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.75)) brightness(1.1);
+    }
+
+    /* Shiny Sparkle Stars */
+    .sparkle {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0;
+      font-size: 15px;
+      line-height: 1;
+      color: #fef08a;
+      text-shadow: 0 0 6px #f59e0b, 0 0 12px #ffffff;
+      z-index: 3;
+      user-select: none;
+    }
+
+    .pokemon-card:hover .sparkle.s1 {
+      animation: shiny-sparkle-1 1.1s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+    }
+
+    .pokemon-card:hover .sparkle.s2 {
+      animation: shiny-sparkle-2 1.1s cubic-bezier(0.25, 1, 0.5, 1) infinite 0.16s;
+    }
+
+    .pokemon-card:hover .sparkle.s3 {
+      animation: shiny-sparkle-3 1.1s cubic-bezier(0.25, 1, 0.5, 1) infinite 0.32s;
+    }
+
+    .pokemon-card:hover .sparkle.s4 {
+      animation: shiny-sparkle-4 1.1s cubic-bezier(0.25, 1, 0.5, 1) infinite 0.48s;
+    }
+
+    @keyframes shiny-sparkle-1 {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0) rotate(0deg);
+      }
+      20% {
+        opacity: 1;
+        transform: translate(-18px, -18px) scale(1.4) rotate(45deg);
+      }
+      70% {
+        opacity: 0.9;
+        transform: translate(-26px, -24px) scale(1) rotate(90deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-30px, -28px) scale(0.2) rotate(135deg);
+      }
+    }
+
+    @keyframes shiny-sparkle-2 {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0) rotate(0deg);
+      }
+      20% {
+        opacity: 1;
+        transform: translate(18px, -16px) scale(1.3) rotate(-30deg);
+      }
+      70% {
+        opacity: 0.9;
+        transform: translate(25px, -22px) scale(0.9) rotate(-75deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(30px, -26px) scale(0.2) rotate(-120deg);
+      }
+    }
+
+    @keyframes shiny-sparkle-3 {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0) rotate(0deg);
+      }
+      20% {
+        opacity: 1;
+        transform: translate(16px, 14px) scale(1.2) rotate(30deg);
+      }
+      70% {
+        opacity: 0.9;
+        transform: translate(24px, 20px) scale(0.85) rotate(75deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(28px, 24px) scale(0.2) rotate(120deg);
+      }
+    }
+
+    @keyframes shiny-sparkle-4 {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0) rotate(0deg);
+      }
+      20% {
+        opacity: 1;
+        transform: translate(-16px, 14px) scale(1.3) rotate(-45deg);
+      }
+      70% {
+        opacity: 0.9;
+        transform: translate(-22px, 20px) scale(0.95) rotate(-90deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-26px, 24px) scale(0.2) rotate(-135deg);
+      }
     }
 
     .pokemon-info-name {
@@ -1063,7 +1187,7 @@
             </div>
             <div class="meta-row">
               <span class="meta-label">Competitive DNA:</span>
-              <span class="meta-val">League (Diamond) • Robotics • Athletics</span>
+              <span class="meta-val">League (Diamond) • Robotics • Sports</span>
             </div>
           </div>
         </div>
@@ -1466,9 +1590,6 @@
             </div>
             <a href="https://masterychart.com/profile/na/LRoy-Rocks" target="_blank" title="View full Mastery Chart for LRoy#Rocks" style="display: block; text-decoration: none;">
               <img src="images/league_mastery_top4.png" alt="Top 4 Mastery Chart (Taliyah 2.4M, Zyra 803k, Miss Fortune 677k, Diana 467k)" style="width: 100%; max-width: 270px; height: auto; display: block; margin: 0 auto; filter: drop-shadow(0 4px 16px rgba(56, 189, 248, 0.22)); transition: transform 0.2s;" />
-              <div style="margin-top: 8px; font-size: 0.76rem; color: var(--cyan); font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px;">
-                <span>View Full Mastery Chart</span> →
-              </div>
             </a>
           </div>
 
@@ -1516,32 +1637,68 @@
             <div class="pokemon-grid">
               <!-- Marshadow -->
               <div class="pokemon-card">
-                <img src="images/pokemon/marshadow_highres.png" alt="Shiny Zenith Marshadow" class="pokemon-img" />
+                <div class="pokemon-img-wrap">
+                  <img src="images/pokemon/marshadow_highres.png" alt="Shiny Zenith Marshadow" class="pokemon-img" />
+                  <span class="sparkle s1">✦</span>
+                  <span class="sparkle s2">✦</span>
+                  <span class="sparkle s3">✦</span>
+                  <span class="sparkle s4">✦</span>
+                </div>
                 <span class="pokemon-info-name">Marshadow ✨</span>
               </div>
               <!-- Wishiwashi -->
               <div class="pokemon-card">
-                <img src="images/pokemon/wishiwashi_highres.png" alt="Shiny Wishiwashi (School Form)" class="pokemon-img" />
+                <div class="pokemon-img-wrap">
+                  <img src="images/pokemon/wishiwashi_highres.png" alt="Shiny Wishiwashi (School Form)" class="pokemon-img" />
+                  <span class="sparkle s1">✦</span>
+                  <span class="sparkle s2">✦</span>
+                  <span class="sparkle s3">✦</span>
+                  <span class="sparkle s4">✦</span>
+                </div>
                 <span class="pokemon-info-name">Wishiwashi ✨</span>
               </div>
               <!-- Perrserker -->
               <div class="pokemon-card">
-                <img src="images/pokemon/perrserker_highres.png" alt="Shiny Perrserker" class="pokemon-img" />
+                <div class="pokemon-img-wrap">
+                  <img src="images/pokemon/perrserker_highres.png" alt="Shiny Perrserker" class="pokemon-img" />
+                  <span class="sparkle s1">✦</span>
+                  <span class="sparkle s2">✦</span>
+                  <span class="sparkle s3">✦</span>
+                  <span class="sparkle s4">✦</span>
+                </div>
                 <span class="pokemon-info-name">Perrserker ✨</span>
               </div>
               <!-- Mega Golisopod -->
               <div class="pokemon-card">
-                <img src="images/pokemon/golisopod_highres.png" alt="Shiny Mega Golisopod" class="pokemon-img" />
+                <div class="pokemon-img-wrap">
+                  <img src="images/pokemon/golisopod_highres.png" alt="Shiny Mega Golisopod" class="pokemon-img" />
+                  <span class="sparkle s1">✦</span>
+                  <span class="sparkle s2">✦</span>
+                  <span class="sparkle s3">✦</span>
+                  <span class="sparkle s4">✦</span>
+                </div>
                 <span class="pokemon-info-name">Mega Golisopod ✨</span>
               </div>
               <!-- Cramorant (Gorging) -->
               <div class="pokemon-card">
-                <img src="images/pokemon/cramorant_highres.png" alt="Shiny Cramorant (Gorging Form)" class="pokemon-img" />
+                <div class="pokemon-img-wrap">
+                  <img src="images/pokemon/cramorant_highres.png" alt="Shiny Cramorant (Gorging Form)" class="pokemon-img" />
+                  <span class="sparkle s1">✦</span>
+                  <span class="sparkle s2">✦</span>
+                  <span class="sparkle s3">✦</span>
+                  <span class="sparkle s4">✦</span>
+                </div>
                 <span class="pokemon-info-name">Cramorant ✨</span>
               </div>
               <!-- Litten -->
               <div class="pokemon-card">
-                <img src="images/pokemon/litten_highres.png" alt="Shiny Litten" class="pokemon-img" />
+                <div class="pokemon-img-wrap">
+                  <img src="images/pokemon/litten_highres.png" alt="Shiny Litten" class="pokemon-img" />
+                  <span class="sparkle s1">✦</span>
+                  <span class="sparkle s2">✦</span>
+                  <span class="sparkle s3">✦</span>
+                  <span class="sparkle s4">✦</span>
+                </div>
                 <span class="pokemon-info-name">Litten ✨</span>
               </div>
             </div>
@@ -1566,12 +1723,12 @@
           </div>
         </div>
 
-        <!-- Card 5: Athletics & Multi-Sport -->
+        <!-- Card 5: Sports & Multi-Sport -->
         <div class="dna-card">
           <div class="dna-card-header">
             <div class="dna-icon-badge" style="background: rgba(6, 182, 212, 0.15); color: #38bdf8;">⚽</div>
             <div>
-              <div class="dna-title">Athletics & Multi-Sport</div>
+              <div class="dna-title">Sports & Multi-Sport</div>
               <div class="dna-sub">15+ Years Soccer • Basketball, Baseball & Swimming</div>
             </div>
           </div>
