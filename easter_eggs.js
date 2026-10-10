@@ -1,7 +1,15 @@
 /* =========================================================
-   ELROY SALTZHERR • PORTFOLIO HOVER EASTER EGGS ENGINE v2.0
-   Tactile, responsive, perfectly positioned micro-interactions
-   for every major project, skill, and competitive DNA card.
+   ELROY SALTZHERR • PORTFOLIO HOVER EASTER EGGS ENGINE v3.0
+   Tactile, responsive, perfectly positioned micro-interactions:
+   - UCSC Banana Slug peek
+   - Dark Throne dynamic mouse flashlight
+   - Building Scaler 2D physics block collisions
+   - Possession Escape readable chase
+   - E-Commerce top fountain burst with random angles
+   - Authentic League of Legends Mastery 7 crest
+   - Authentic Magic: The Gathering Counterspell card
+   - Pokémon Click-to-Catch with low catch rates & temporary vanish
+   - Sports visual Soccer Goal & Basketball Hoop animations
    ========================================================= */
 
 (function initEasterEggs() {
@@ -28,23 +36,28 @@
       } catch(e) {}
     }
 
-    // 1. Hello Chime
+    // UCSC Slug Squeak
+    playSlug() {
+      this.init();
+      this.playTone(660, 0.08, 'sine', 0.08);
+      setTimeout(() => this.playTone(880, 0.12, 'triangle', 0.1), 70);
+    }
+
+    // Hello Chime
     playHello() {
       this.init();
       this.playTone(523.25, 0.08, 'triangle', 0.1);
       setTimeout(() => this.playTone(659.25, 0.14, 'triangle', 0.12), 70);
     }
 
-    // 2. Dark Throne Golden Resonance
-    playGoldenThrone() {
+    // Dark Throne Torch Light Ambient
+    playTorchIgnite() {
       this.init();
-      if (!this.ctx) return;
-      [220, 277.18, 329.63, 440, 554.37].forEach((f, i) => {
-        setTimeout(() => this.playTone(f, 0.5, 'sine', 0.06), i * 60);
-      });
+      this.playTone(180, 0.3, 'sawtooth', 0.04);
+      setTimeout(() => this.playTone(220, 0.4, 'sine', 0.05), 100);
     }
 
-    // 3. Gunshot & Ricochet
+    // Gunshot & Ricochet
     playGunshot() {
       this.init();
       this.playTone(320, 0.05, 'sawtooth', 0.18);
@@ -55,7 +68,7 @@
       this.playTone(800 + Math.random() * 400, 0.06, 'triangle', 0.08);
     }
 
-    // 4. Pencil Eraser (Tactile rubber rubbing sound)
+    // Pencil Eraser
     playErase() {
       this.init();
       for (let i = 0; i < 4; i++) {
@@ -65,14 +78,14 @@
       }
     }
 
-    // 5. Tetris Heavy Drop
-    playBlockDrop() {
+    // Physics Block Clack
+    playBlockClack() {
       this.init();
-      this.playTone(180, 0.06, 'triangle', 0.14);
-      setTimeout(() => this.playTone(110, 0.1, 'sine', 0.16), 40);
+      this.playTone(260 + Math.random() * 120, 0.05, 'triangle', 0.1);
+      setTimeout(() => this.playTone(140, 0.08, 'sine', 0.08), 20);
     }
 
-    // 6. Fire Embers
+    // Fire Embers
     playFireCrackling() {
       this.init();
       for (let i = 0; i < 3; i++) {
@@ -80,86 +93,56 @@
       }
     }
 
-    // 7. Ghost Chase (Fast cartoon footsteps + spooky modulation)
+    // Ghost Chase
     playGhostChase() {
       this.init();
       if (!this.ctx) return;
-      // Footsteps
-      for (let i = 0; i < 5; i++) {
-        setTimeout(() => this.playTone(280 + (i % 2) * 50, 0.03, 'triangle', 0.05), i * 90);
+      for (let i = 0; i < 4; i++) {
+        setTimeout(() => this.playTone(240 + (i % 2) * 40, 0.04, 'triangle', 0.04), i * 140);
       }
-      // Ghost pitch bend
       const osc = this.ctx.createOscillator();
       const g = this.ctx.createGain();
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(320, this.ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(580, this.ctx.currentTime + 0.35);
-      g.gain.setValueAtTime(0.05, this.ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35);
+      osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(500, this.ctx.currentTime + 0.4);
+      g.gain.setValueAtTime(0.04, this.ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.4);
       osc.connect(g); g.connect(this.ctx.destination);
-      osc.start(); osc.stop(this.ctx.currentTime + 0.35);
+      osc.start(); osc.stop(this.ctx.currentTime + 0.4);
     }
 
-    // 8. E-Commerce Cha-Ching & Merchandise Pop
+    // E-Commerce Cha-Ching
     playChaChing() {
       this.init();
       this.playTone(987.77, 0.08, 'sine', 0.12);
       setTimeout(() => this.playTone(1318.51, 0.22, 'sine', 0.15), 70);
     }
 
-    // 9. Languages
-    playLangChime() {
-      this.init();
-      this.playTone(587.33, 0.09, 'triangle', 0.08);
-      setTimeout(() => this.playTone(880, 0.14, 'triangle', 0.09), 80);
-    }
-
-    // 10. Engines 3D Gizmo Boot
-    playGizmo() {
-      this.init();
-      this.playTone(330, 0.05, 'square', 0.06);
-      setTimeout(() => this.playTone(493.88, 0.08, 'square', 0.07), 60);
-      setTimeout(() => this.playTone(659.25, 0.15, 'triangle', 0.09), 120);
-    }
-
-    // 11. Gameplay Crit & Hitstop Crunch
-    playCritHit() {
-      this.init();
-      this.playTone(260, 0.04, 'sawtooth', 0.18);
-      setTimeout(() => {
-        this.playTone(880, 0.2, 'triangle', 0.15);
-        this.playTone(1760, 0.15, 'sine', 0.1);
-      }, 30);
-    }
-
-    // 12. AI Cloud Terminal Chirp
-    playCloudTerminal() {
-      this.init();
-      [600, 750, 900, 1200].forEach((f, i) => {
-        setTimeout(() => this.playTone(f, 0.03, 'sine', 0.05), i * 35);
-      });
-    }
-
-    // 13. League Diamond Mastery Horns
+    // League Mastery 7 Fanfare
     playMastery() {
       this.init();
-      [587, 880, 1174, 1760].forEach((f, i) => {
-        setTimeout(() => this.playTone(f, 0.22, 'triangle', 0.11), i * 75);
+      [587.33, 880, 1174.66, 1760].forEach((f, i) => {
+        setTimeout(() => this.playTone(f, 0.25, 'triangle', 0.12), i * 75);
       });
     }
 
-    // 14. MTG Counterspell Mystic Surge
+    // MTG Counterspell Mystic Surge
     playCounterspell() {
       this.init();
       this.playTone(180, 0.25, 'sawtooth', 0.07);
-      setTimeout(() => this.playTone(880, 0.3, 'sine', 0.12), 80);
+      setTimeout(() => this.playTone(880, 0.35, 'sine', 0.12), 80);
     }
 
-    // 15. Pokéball Bounce & Caught Fanfare
+    // Pokéball Wobble & Catch/Breakout
     playPokeballBounce() {
       this.init();
-      this.playTone(320, 0.04, 'sine', 0.08);
+      this.playTone(340, 0.04, 'sine', 0.08);
       setTimeout(() => this.playTone(220, 0.06, 'triangle', 0.06), 20);
+    }
+    playPokeballWobble() {
+      this.init();
+      this.playTone(440, 0.06, 'sine', 0.07);
+      setTimeout(() => this.playTone(330, 0.06, 'sine', 0.05), 40);
     }
     playPokemonCaught() {
       this.init();
@@ -167,29 +150,49 @@
         setTimeout(() => this.playTone(f, 0.18, 'square', 0.09), i * 90);
       });
     }
-
-    // 16. Competitive Robotics Motor & Servo Lock
-    playRoboticsMotor() {
+    playPokemonBreakout() {
       this.init();
-      if (!this.ctx) return;
-      const osc = this.ctx.createOscillator();
-      const g = this.ctx.createGain();
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(140, this.ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(420, this.ctx.currentTime + 0.3);
-      g.gain.setValueAtTime(0.06, this.ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35);
-      osc.connect(g); g.connect(this.ctx.destination);
-      osc.start(); osc.stop(this.ctx.currentTime + 0.35);
-      setTimeout(() => this.playTone(600, 0.08, 'square', 0.08), 300);
+      this.playTone(240, 0.1, 'sawtooth', 0.1);
+      setTimeout(() => this.playTone(180, 0.15, 'square', 0.08), 80);
     }
 
-    // 17. Sports Scoring (Whistle & Crowd Cheer)
-    playSportsScore() {
+    // Sports Whistle & Buzzer
+    playWhistle() {
       this.init();
-      this.playTone(1046.5, 0.12, 'square', 0.08);
-      setTimeout(() => this.playTone(1046.5, 0.25, 'square', 0.1), 100);
-      setTimeout(() => this.playTone(523.25, 0.35, 'triangle', 0.12), 220);
+      this.playTone(1046.5, 0.15, 'square', 0.08);
+      setTimeout(() => this.playTone(1046.5, 0.25, 'square', 0.1), 120);
+    }
+    playBuzzer() {
+      this.init();
+      this.playTone(220, 0.3, 'sawtooth', 0.1);
+    }
+    playBatCrack() {
+      this.init();
+      this.playTone(400, 0.03, 'sawtooth', 0.2);
+      setTimeout(() => this.playTone(800, 0.15, 'triangle', 0.15), 20);
+    }
+
+    // Other Skill Sounds
+    playGizmo() {
+      this.init();
+      this.playTone(330, 0.05, 'square', 0.06);
+      setTimeout(() => this.playTone(659.25, 0.15, 'triangle', 0.09), 100);
+    }
+    playCritHit() {
+      this.init();
+      this.playTone(260, 0.04, 'sawtooth', 0.18);
+      setTimeout(() => this.playTone(880, 0.2, 'triangle', 0.15), 30);
+    }
+    playCloudTerminal() {
+      this.init();
+      [600, 750, 900, 1200].forEach((f, i) => {
+        setTimeout(() => this.playTone(f, 0.03, 'sine', 0.05), i * 35);
+      });
+    }
+    playRoboticsMotor() {
+      this.init();
+      this.playTone(140, 0.25, 'sawtooth', 0.06);
+      setTimeout(() => this.playTone(440, 0.1, 'square', 0.08), 200);
     }
   }
 
@@ -197,24 +200,68 @@
   document.addEventListener('click', () => sfx.init(), { once: true });
   document.addEventListener('mouseover', () => sfx.init(), { once: true });
 
-  // Inject CSS Styles for all Easter Eggs
+  // Inject CSS Styles
   const style = document.createElement('style');
   style.textContent = `
-    /* =========================================================
-       GLOBAL EASTER EGG STYLES
-       ========================================================= */
-    .easter-overlay-item {
+    /* UCSC Banana Slug */
+    .ucsc-slug-badge {
       position: absolute;
+      top: -34px;
+      left: 50%;
+      transform: translateX(-50%) scale(0);
+      background: #facc15;
+      color: #000;
+      border: 2px solid #ca8a04;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.55rem;
+      font-weight: bold;
       pointer-events: none;
-      z-index: 100;
-      user-select: none;
+      z-index: 200;
+      box-shadow: 0 4px 15px rgba(250, 204, 21, 0.6);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .ucsc-slug-badge.show {
+      transform: translateX(-50%) scale(1);
     }
 
-    /* 1. Profile Picture: "Hello!" Bubble (Inside Card) */
+    /* Dark Throne Flashlight Spotlight Overlay */
+    .dt-flashlight-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: 24px;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+      background: radial-gradient(circle 140px at var(--fx, 50%) var(--fy, 50%), transparent 0%, rgba(2, 6, 23, 0.95) 85%);
+    }
+    .dt-flashlight-overlay.active {
+      opacity: 1;
+    }
+    .dt-torch-aura {
+      position: absolute;
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 101;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(251, 191, 36, 0.28) 0%, rgba(245, 158, 11, 0.12) 50%, transparent 75%);
+      mix-blend-mode: screen;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .dt-torch-aura.active { opacity: 1; }
+
+    /* Hello Bubble */
     .easter-hello-bubble-v2 {
       position: absolute;
-      top: 16px;
-      left: 50%;
+      top: 16px; left: 50%;
       transform: translateX(-50%) scale(0);
       background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
       color: #0f172a;
@@ -228,65 +275,13 @@
       z-index: 100;
       transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
-    .easter-hello-bubble-v2::after {
-      content: '';
-      position: absolute;
-      bottom: -6px;
-      left: 50%;
-      transform: translateX(-50%);
-      border-width: 6px 6px 0;
-      border-style: solid;
-      border-color: #f59e0b transparent;
-      display: block;
-      width: 0;
-    }
-    .easter-hello-bubble-v2.show {
-      transform: translateX(-50%) scale(1);
-    }
-    .hero-card-img-wrapper.hero-img-glow {
-      box-shadow: 0 0 35px rgba(251, 191, 36, 0.45) !important;
-      transition: box-shadow 0.3s ease;
-    }
+    .easter-hello-bubble-v2.show { transform: translateX(-50%) scale(1); }
 
-    /* 2. Dark Throne: Radiant Golden Light Source */
-    body.dark-throne-active::before {
-      content: '';
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: radial-gradient(circle at center, transparent 35%, rgba(5, 7, 12, 0.88) 85%);
-      pointer-events: none;
-      z-index: 900;
-      transition: opacity 0.35s ease;
-    }
-    .featured-project-card.dt-gold-blaze {
-      position: relative;
-      z-index: 950 !important;
-      box-shadow: 0 0 60px rgba(251, 191, 36, 0.7), 0 0 100px rgba(245, 158, 11, 0.45), inset 0 0 30px rgba(251, 191, 36, 0.25) !important;
-      border-color: #fbbf24 !important;
-      transition: all 0.35s ease;
-    }
-    .dt-gold-sparkle {
-      position: absolute;
-      font-size: 1.2rem;
-      color: #fbbf24;
-      pointer-events: none;
-      z-index: 960;
-      animation: dtSparkleFloat 1.2s ease-out forwards;
-    }
-    @keyframes dtSparkleFloat {
-      0% { transform: translateY(0) scale(0.6); opacity: 1; }
-      100% { transform: translateY(-45px) scale(1.3); opacity: 0; }
-    }
-
-    /* 3. Where's My Gun: Muzzle Flash & Ricochets */
+    /* Where's My Gun Muzzle & Bullet */
     .easter-muzzle-flash {
       position: absolute;
-      width: 24px;
-      height: 24px;
+      width: 24px; height: 24px;
       background: radial-gradient(circle, #fff 10%, #fbbf24 45%, #ef4444 80%, transparent 100%);
       border-radius: 50%;
       pointer-events: none;
@@ -300,8 +295,7 @@
     }
     .easter-bullet {
       position: absolute;
-      width: 8px;
-      height: 8px;
+      width: 8px; height: 8px;
       background: #fef08a;
       box-shadow: 0 0 10px #fbbf24, 0 0 20px #f59e0b;
       border-radius: 50%;
@@ -309,11 +303,10 @@
       z-index: 102;
     }
 
-    /* 4. Pencil Pusher: Visible Rubber Eraser & Shavings */
+    /* Pencil Eraser */
     .easter-eraser-tool {
       position: absolute;
-      width: 38px;
-      height: 22px;
+      width: 38px; height: 22px;
       background: linear-gradient(135deg, #f472b6 0%, #db2777 100%);
       border: 2px solid #be185d;
       border-radius: 4px;
@@ -321,9 +314,7 @@
       font-family: 'Press Start 2P', monospace;
       font-size: 0.38rem;
       color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       pointer-events: none;
       z-index: 105;
       transform: rotate(-15deg);
@@ -331,8 +322,7 @@
     }
     .easter-eraser-crumb {
       position: absolute;
-      width: 4px;
-      height: 4px;
+      width: 4px; height: 4px;
       background: #fbcfe8;
       border-radius: 50%;
       pointer-events: none;
@@ -344,59 +334,28 @@
       100% { opacity: 0; transform: translate(var(--cx), 20px); }
     }
 
-    /* 5. Building Scaler: Tetris Falling Physics */
-    .easter-tetris-piece {
+    /* Building Scaler 2D Physics Blocks */
+    .physics-tetris-block {
       position: absolute;
+      width: 24px; height: 24px;
+      border-radius: 4px;
+      border: 2px solid rgba(255, 255, 255, 0.6);
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.4);
       pointer-events: none;
-      z-index: 102;
-      display: grid;
-      gap: 2px;
-      transition: transform 0.1s ease;
-    }
-    .tetris-block-unit {
-      width: 14px;
-      height: 14px;
-      border-radius: 2px;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.4);
+      z-index: 104;
     }
 
-    /* 6. Last Ember: Impactful Fire & Side Embers */
-    .ember-fire-tongue {
-      position: absolute;
-      font-size: 1.4rem;
-      pointer-events: none;
-      z-index: 103;
-      animation: fireTongue 0.9s ease-in-out infinite alternate;
-    }
-    @keyframes fireTongue {
-      from { transform: translateY(0) scale(0.9); opacity: 0.8; }
-      to { transform: translateY(-8px) scale(1.15); opacity: 1; }
-    }
-    .easter-fire-particle {
-      position: absolute;
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 102;
-      animation: fireRise 1.2s ease-out forwards;
-    }
-    @keyframes fireRise {
-      0% { opacity: 1; transform: translate(0, 0) scale(1); }
-      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.3); }
-    }
-
-    /* 7. Possession Escape: Man running away from Ghost */
-    .easter-runner {
+    /* Possession Escape: Slower, Readable Corridor Chase */
+    .easter-corridor-runner {
       position: absolute;
       font-size: 1.7rem;
       pointer-events: none;
       z-index: 105;
       user-select: none;
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.6));
+      transition: transform 0.2s;
     }
-    .easter-ghost-chaser {
+    .easter-corridor-ghost {
       position: absolute;
       font-size: 1.8rem;
       pointer-events: none;
@@ -404,151 +363,89 @@
       user-select: none;
       filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.8));
     }
-    .easter-screaming-bubble {
+    .easter-screaming-bubble-v2 {
       position: absolute;
       background: #ef4444;
       color: #fff;
       font-family: 'Press Start 2P', monospace;
       font-size: 0.52rem;
-      padding: 3px 6px;
+      padding: 4px 8px;
       border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
       pointer-events: none;
       z-index: 106;
-      animation: screamShake 0.2s infinite alternate;
-    }
-    @keyframes screamShake {
-      from { transform: translateY(-22px) rotate(-4deg); }
-      to { transform: translateY(-22px) rotate(4deg); }
+      white-space: nowrap;
     }
 
-    /* 8. E-Commerce / JAMBELLES: Center Fountain Burst */
-    .easter-ecom-item {
+    /* E-Commerce Top Fountain Arc */
+    .easter-ecom-item-v2 {
       position: absolute;
       font-size: 1.5rem;
       pointer-events: none;
       z-index: 105;
-      animation: ecomFountain 1.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+      animation: ecomArc 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
-    @keyframes ecomFountain {
-      0% { transform: translate(-50%, -50%) scale(0.4); opacity: 1; }
-      100% { transform: translate(calc(-50% + var(--ex)), calc(-50% + var(--ey))) scale(1.2); opacity: 0; }
-    }
-
-    /* 9. Languages Speech Tags */
-    .easter-lang-bubble {
-      position: absolute;
-      background: rgba(99, 102, 241, 0.95);
-      border: 1px solid #818cf8;
-      color: #fff;
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 0.72rem;
-      font-weight: 800;
-      pointer-events: none;
-      z-index: 103;
-      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-      animation: langFloat 1.2s ease-out forwards;
-    }
-    @keyframes langFloat {
-      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
-      100% { transform: translate(calc(-50% + var(--lx)), calc(-50% + var(--ly))) scale(1.1); opacity: 0; }
+    @keyframes ecomArc {
+      0% { transform: translate(-50%, -50%) scale(0.3) rotate(0deg); opacity: 1; }
+      100% { transform: translate(calc(-50% + var(--ex)), calc(-50% + var(--ey))) scale(1.15) rotate(var(--erot)); opacity: 0; }
     }
 
-    /* 10. Engines & Tech: 3D Gizmo & Physics Debugger */
-    .easter-gizmo-box {
+    /* League of Legends Official Mastery 7 */
+    .lol-mastery-crest-img {
       position: absolute;
-      top: 14px;
-      right: 14px;
-      background: rgba(15, 23, 42, 0.94);
-      border: 2px solid #38bdf8;
-      border-radius: 8px;
-      padding: 6px 10px;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.52rem;
-      color: #38bdf8;
-      pointer-events: none;
-      z-index: 104;
-      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      animation: popIn 0.25s ease;
-    }
-
-    /* 11. Gameplay & Design: RPG Hitstop & Crit Splash */
-    .easter-crit-splash {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0);
-      background: rgba(15, 23, 42, 0.95);
-      border: 3px solid #fbbf24;
-      box-shadow: 0 0 35px rgba(251, 191, 36, 0.8);
-      border-radius: 12px;
-      padding: 10px 16px;
-      text-align: center;
-      pointer-events: none;
-      z-index: 105;
-      animation: critExplode 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    }
-    @keyframes critExplode {
-      0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
-      25% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
-      75% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-      100% { transform: translate(-50%, -60%) scale(0.9); opacity: 0; }
-    }
-
-    /* 12. AI, Cloud & Tools: Terminal Deployment Readout */
-    .easter-cloud-terminal {
-      position: absolute;
-      bottom: 12px;
-      left: 12px;
-      right: 12px;
-      background: rgba(15, 23, 42, 0.96);
-      border: 1px solid #10b981;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8), 0 0 20px rgba(16, 185, 129, 0.3);
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.62rem;
-      color: #34d399;
-      pointer-events: none;
-      z-index: 105;
-      animation: slideUpTerminal 0.25s ease;
-    }
-    @keyframes slideUpTerminal {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    /* 13. League of Legends: Diamond Mastery 7 Crest (Inside Card) */
-    .easter-mastery-crest-v2 {
-      position: absolute;
-      top: 14px;
+      top: 16px;
       left: 50%;
       transform: translateX(-50%) scale(0);
-      background: linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%);
-      border: 2px solid #38bdf8;
-      box-shadow: 0 0 28px rgba(56, 189, 248, 0.7);
-      padding: 6px 14px;
-      border-radius: 999px;
-      color: #fff;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.58rem;
-      z-index: 104;
+      width: 100px;
+      height: auto;
+      filter: drop-shadow(0 0 25px rgba(56, 189, 248, 0.85));
       pointer-events: none;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      white-space: nowrap;
-      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 105;
+      transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .easter-mastery-crest-v2.show {
+    .lol-mastery-crest-img.show {
+      transform: translateX(-50%) scale(1);
+    }
+    .lol-mastery-banner-v2 {
+      position: absolute;
+      top: 110px;
+      left: 50%;
+      transform: translateX(-50%) scale(0);
+      background: rgba(15, 23, 42, 0.94);
+      border: 2px solid #38bdf8;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
+      padding: 5px 12px;
+      border-radius: 999px;
+      color: #38bdf8;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.55rem;
+      z-index: 105;
+      pointer-events: none;
+      white-space: nowrap;
+      transition: transform 0.3s ease 0.1s;
+    }
+    .lol-mastery-banner-v2.show {
       transform: translateX(-50%) scale(1);
     }
 
-    /* 14. Magic: The Gathering: In Response + Spell Card (Inside Card) */
-    .easter-mtg-response-v2 {
+    /* MTG Counterspell Authentic Card */
+    .mtg-card-img-pop {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0) rotate(-3deg);
+      width: 135px;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.9), 0 0 30px rgba(59, 130, 246, 0.8);
+      pointer-events: none;
+      z-index: 106;
+      transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .mtg-card-img-pop.show {
+      transform: translate(-50%, -50%) scale(1) rotate(-1deg);
+    }
+    .mtg-response-banner-v2 {
       position: absolute;
       top: 14px;
       left: 50%;
@@ -557,139 +454,112 @@
       border: 2px solid #60a5fa;
       box-shadow: 0 0 25px rgba(96, 165, 250, 0.65);
       color: #93c5fd;
-      padding: 6px 12px;
+      padding: 6px 14px;
       border-radius: 8px;
       font-family: 'Press Start 2P', monospace;
-      font-size: 0.56rem;
+      font-size: 0.58rem;
       pointer-events: none;
       z-index: 105;
       white-space: nowrap;
       transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .easter-mtg-response-v2.show {
+    .mtg-response-banner-v2.show {
       transform: translateX(-50%) scale(1);
     }
-    .easter-mtg-card-pop {
-      position: absolute;
-      top: 52%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0);
-      width: 140px;
-      background: #0f172a;
-      border: 3px solid #3b82f6;
-      border-radius: 8px;
-      padding: 8px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), 0 0 25px rgba(59, 130, 246, 0.5);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      pointer-events: none;
-      z-index: 106;
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .easter-mtg-card-pop.show {
-      transform: translate(-50%, -50%) scale(1);
-    }
 
-    /* 15. Pokémon: Realistic Pokéball with Bouncing Physics */
-    .easter-pokeball-sprite {
-      position: absolute;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
-      pointer-events: none;
-      z-index: 105;
-      overflow: hidden;
-      border: 2px solid #000;
+    /* Pokémon Caught Vanish & Click Cursor */
+    .pokemon-card {
+      cursor: crosshair !important;
+      transition: transform 0.3s, opacity 0.4s !important;
     }
-    .pokeball-btn-center {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 8px; height: 8px;
-      background: #fff;
-      border: 2px solid #000;
-      border-radius: 50%;
-      box-shadow: 0 0 4px rgba(255, 255, 255, 0.9);
-      z-index: 2;
+    .pokemon-caught-vanish {
+      opacity: 0 !important;
+      transform: scale(0.2) rotate(15deg) !important;
+      filter: blur(4px) !important;
+      pointer-events: none !important;
     }
-    .pokeball-mid-band {
-      position: absolute;
-      top: 50%; left: 0; right: 0;
-      transform: translateY(-50%);
-      height: 3px;
-      background: #000;
-      z-index: 1;
+    .pokemon-respawn-burst {
+      animation: respawnSparkle 0.8s ease-out forwards;
     }
-    .easter-caught-banner {
+    @keyframes respawnSparkle {
+      0% { opacity: 0; transform: scale(0.4); filter: brightness(3); }
+      50% { opacity: 1; transform: scale(1.15); filter: brightness(2); }
+      100% { opacity: 1; transform: scale(1); filter: brightness(1); }
+    }
+    .pokemon-fail-banner {
       position: absolute;
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%) scale(0);
-      background: #facc15;
-      color: #0f172a;
+      background: rgba(239, 68, 68, 0.95);
+      border: 2px solid #fca5a5;
+      color: #fff;
       font-family: 'Press Start 2P', monospace;
-      font-size: 0.58rem;
-      padding: 6px 14px;
+      font-size: 0.55rem;
+      padding: 6px 12px;
       border-radius: 8px;
-      box-shadow: 0 6px 20px rgba(250, 204, 21, 0.6);
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
       pointer-events: none;
-      z-index: 106;
+      z-index: 107;
       white-space: nowrap;
-      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
 
-    /* 16. Competitive Robotics: FRC Driver Match Readout */
-    .easter-frc-status {
+    /* Sports: Visual Goal & Basketball Hoop */
+    .sports-scene-box {
       position: absolute;
-      top: 14px;
-      right: 14px;
-      background: rgba(15, 23, 42, 0.94);
-      border: 2px solid #a855f7;
-      border-radius: 8px;
-      padding: 6px 10px;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.52rem;
-      color: #c084fc;
+      top: 12px; left: 12px; right: 12px; bottom: 12px;
       pointer-events: none;
       z-index: 104;
-      box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      animation: popIn 0.25s ease;
+      overflow: hidden;
     }
-
-    /* 17. Sports Scoring Banner (Inside Card) */
-    .easter-sports-score-v2 {
+    .sports-goal-net {
       position: absolute;
-      top: 14px;
-      left: 50%;
-      transform: translateX(-50%) scale(0);
-      background: linear-gradient(135deg, #06b6d4 0%, #0284c7 100%);
-      border: 2px solid #38bdf8;
-      box-shadow: 0 0 25px rgba(6, 182, 212, 0.7);
-      color: #fff;
-      padding: 6px 14px;
-      border-radius: 999px;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.58rem;
-      pointer-events: none;
-      z-index: 105;
-      white-space: nowrap;
-      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      top: 25px; right: 20px;
+      width: 75px; height: 55px;
+      border-top: 4px solid #fff;
+      border-right: 4px solid #fff;
+      border-left: 2px solid rgba(255,255,255,0.4);
+      background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.2) 0px, rgba(255,255,255,0.2) 2px, transparent 2px, transparent 10px),
+                        repeating-linear-gradient(-45deg, rgba(255,255,255,0.2) 0px, rgba(255,255,255,0.2) 2px, transparent 2px, transparent 10px);
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+      transition: transform 0.15s ease;
     }
-    .easter-sports-score-v2.show {
-      transform: translateX(-50%) scale(1);
+    .sports-goal-net.hit {
+      transform: scale(1.15) skewX(8deg);
+    }
+    .sports-hoop-rim {
+      position: absolute;
+      top: 25px; right: 30px;
+      width: 44px; height: 16px;
+      border: 3px solid #f97316;
+      border-radius: 50%;
+      background: transparent;
+    }
+    .sports-hoop-net {
+      position: absolute;
+      top: 36px; right: 34px;
+      width: 36px; height: 32px;
+      background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 2px, transparent 2px, transparent 6px),
+                        repeating-linear-gradient(-45deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 2px, transparent 2px, transparent 6px);
+      border-bottom: 2px solid #fff;
+    }
+    .sports-flying-ball {
+      position: absolute;
+      font-size: 1.6rem;
+      pointer-events: none;
+      z-index: 106;
+      transition: left 0.55s cubic-bezier(0.25, 1, 0.5, 1), top 0.55s cubic-bezier(0.25, 1, 0.5, 1), transform 0.55s ease;
     }
 
     @keyframes popIn {
-      from { transform: scale(0.6); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+      from { transform: translateX(-50%) scale(0.6); opacity: 0; }
+      to { transform: translateX(-50%) scale(1); opacity: 1; }
     }
   `;
   document.head.appendChild(style);
 
-  // Helper to find project cards by title text
+  // Helper functions
   function findProjectCard(titleText) {
     const cards = document.querySelectorAll('.project-card');
     for (let c of cards) {
@@ -699,7 +569,6 @@
     return null;
   }
 
-  // Helper for skill cards
   function findSkillCard(titleText) {
     const cards = document.querySelectorAll('.skill-card');
     for (let c of cards) {
@@ -709,7 +578,6 @@
     return null;
   }
 
-  // Helper for DNA cards
   function findDnaCard(titleText) {
     const cards = document.querySelectorAll('.dna-card');
     for (let c of cards) {
@@ -720,7 +588,64 @@
   }
 
   /* =========================================================
-     1. PROFILE PICTURE: "HELLO!" SPEECH BUBBLE
+     1. UCSC BANANA SLUG PEEK (SAMMY THE SLUG)
+     ========================================================= */
+  const badgePill = document.querySelector('.badge-pill');
+  if (badgePill) {
+    badgePill.style.position = 'relative';
+    const slug = document.createElement('div');
+    slug.className = 'ucsc-slug-badge';
+    slug.innerHTML = '🍌 🐌 "Go Slugs! • UCSC 2024"';
+    badgePill.appendChild(slug);
+
+    badgePill.addEventListener('mouseenter', () => {
+      slug.classList.add('show');
+      sfx.playSlug();
+    });
+    badgePill.addEventListener('mouseleave', () => slug.classList.remove('show'));
+  }
+
+  /* =========================================================
+     2. DARK THRONE: DYNAMIC MOUSE FLASHLIGHT IN DARKNESS
+     ========================================================= */
+  const dtCard = document.querySelector('#featured .featured-project-card');
+  if (dtCard) {
+    dtCard.style.position = 'relative';
+
+    // Flashlight dark overlay
+    const flOverlay = document.createElement('div');
+    flOverlay.className = 'dt-flashlight-overlay';
+    dtCard.appendChild(flOverlay);
+
+    // Warm torch aura following mouse
+    const torch = document.createElement('div');
+    torch.className = 'dt-torch-aura';
+    dtCard.appendChild(torch);
+
+    dtCard.addEventListener('mouseenter', (e) => {
+      flOverlay.classList.add('active');
+      torch.classList.add('active');
+      sfx.playTorchIgnite();
+    });
+
+    dtCard.addEventListener('mousemove', (e) => {
+      const rect = dtCard.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      flOverlay.style.setProperty('--fx', `${x}px`);
+      flOverlay.style.setProperty('--fy', `${y}px`);
+      torch.style.left = `${x}px`;
+      torch.style.top = `${y}px`;
+    });
+
+    dtCard.addEventListener('mouseleave', () => {
+      flOverlay.classList.remove('active');
+      torch.classList.remove('active');
+    });
+  }
+
+  /* =========================================================
+     3. PROFILE PICTURE: "HELLO!" SPEECH BUBBLE
      ========================================================= */
   const heroCard = document.querySelector('.hero-card');
   const heroImgWrapper = document.querySelector('.hero-card-img-wrapper');
@@ -732,46 +657,13 @@
 
     heroCard.addEventListener('mouseenter', () => {
       bubble.classList.add('show');
-      heroImgWrapper.classList.add('hero-img-glow');
       sfx.playHello();
     });
-    heroCard.addEventListener('mouseleave', () => {
-      bubble.classList.remove('show');
-      heroImgWrapper.classList.remove('hero-img-glow');
-    });
+    heroCard.addEventListener('mouseleave', () => bubble.classList.remove('show'));
   }
 
   /* =========================================================
-     2. DARK THRONE: RADIANT GOLDEN LIGHT SOURCE
-     ========================================================= */
-  const dtCard = document.querySelector('#featured .featured-project-card');
-  if (dtCard) {
-    dtCard.addEventListener('mouseenter', () => {
-      document.body.classList.add('dark-throne-active');
-      dtCard.classList.add('dt-gold-blaze');
-      sfx.playGoldenThrone();
-
-      // Emit golden sword sparkles
-      for (let i = 0; i < 6; i++) {
-        setTimeout(() => {
-          const sp = document.createElement('div');
-          sp.className = 'dt-gold-sparkle';
-          sp.textContent = '✨';
-          sp.style.left = `${30 + Math.random() * (dtCard.offsetWidth - 60)}px`;
-          sp.style.top = `${40 + Math.random() * 80}px`;
-          dtCard.appendChild(sp);
-          setTimeout(() => sp.remove(), 1200);
-        }, i * 120);
-      }
-    });
-    dtCard.addEventListener('mouseleave', () => {
-      document.body.classList.remove('dark-throne-active');
-      dtCard.classList.remove('dt-gold-blaze');
-    });
-  }
-
-  /* =========================================================
-     3. WHERE'S MY GUN?: ALIGNED GUN BARREL & RICOCHET
+     4. WHERE'S MY GUN?: ALIGNED GUN BARREL & RICOCHET
      ========================================================= */
   const gunCard = findProjectCard("Where's My Gun");
   if (gunCard) {
@@ -782,7 +674,6 @@
       const originX = media ? media.offsetLeft + media.offsetWidth * 0.49 : gunCard.offsetWidth * 0.49;
       const originY = media ? media.offsetTop + media.offsetHeight * 0.64 : 110;
 
-      // Muzzle Flash directly at gun barrel tip
       const flash = document.createElement('div');
       flash.className = 'easter-muzzle-flash';
       flash.style.left = `${originX + 10}px`;
@@ -790,7 +681,6 @@
       gunCard.appendChild(flash);
       setTimeout(() => flash.remove(), 150);
 
-      // Fire 3 bouncing bullets from gun tip
       for (let i = 0; i < 3; i++) {
         setTimeout(() => {
           const bullet = document.createElement('div');
@@ -807,8 +697,7 @@
           let life = 38;
 
           const bInt = setInterval(() => {
-            bx += bvx;
-            by += bvy;
+            bx += bvx; by += bvy;
             let hit = false;
             if (bx <= 10 || bx >= gunCard.offsetWidth - 16) { bvx = -bvx; hit = true; }
             if (by <= 10 || by >= gunCard.offsetHeight - 16) { bvy = -bvy; hit = true; }
@@ -830,7 +719,7 @@
   }
 
   /* =========================================================
-     4. PENCIL PUSHER: VISIBLE PINK ERASER & SLOWER RUBBING
+     5. PENCIL PUSHER: VISIBLE PINK ERASER & SLOWER RUBBING
      ========================================================= */
   const pencilCard = findProjectCard("Pencil Pusher");
   if (pencilCard) {
@@ -840,7 +729,6 @@
         desc.classList.add('erasing-active');
         sfx.playErase();
 
-        // Create visible rubber eraser
         const eraser = document.createElement('div');
         eraser.className = 'easter-eraser-tool';
         eraser.textContent = 'ERASER';
@@ -854,7 +742,6 @@
         eraser.style.left = `${descLeft + 10}px`;
         eraser.style.top = `${descTop + 10}px`;
 
-        // Sweep back and forth over 1.8 seconds
         let sweep = 0;
         const sweepInt = setInterval(() => {
           sweep++;
@@ -862,7 +749,6 @@
           eraser.style.left = `${descLeft + progress * (descW - 40)}px`;
           eraser.style.top = `${descTop + (sweep / 12) * (descH - 20)}px`;
 
-          // Drop eraser shavings
           const crumb = document.createElement('div');
           crumb.className = 'easter-eraser-crumb';
           crumb.style.left = eraser.style.left;
@@ -874,7 +760,6 @@
           if (sweep >= 10) clearInterval(sweepInt);
         }, 140);
 
-        // Gradually fade and blur letters slower
         desc.style.transition = 'all 1.0s ease';
         desc.style.opacity = '0.08';
         desc.style.filter = 'blur(4px)';
@@ -891,65 +776,107 @@
   }
 
   /* =========================================================
-     5. BUILDING SCALER: RANDOMIZED TETRIS FALLING BLOCKS
+     6. BUILDING SCALER: 2D RIGID-BODY PHYSICS BLOCKS
      ========================================================= */
   const scalerCard = findProjectCard("Building Scaler");
   if (scalerCard) {
     scalerCard.style.position = 'relative';
-    const tetrisColors = ['#ef4444', '#3b82f6', '#f97316', '#eab308', '#22c55e', '#a855f7', '#06b6d4'];
+    const blockColors = ['#ef4444', '#3b82f6', '#f97316', '#eab308', '#22c55e', '#a855f7', '#06b6d4'];
 
     scalerCard.addEventListener('mouseenter', () => {
-      for (let i = 0; i < 4; i++) {
-        setTimeout(() => {
-          const piece = document.createElement('div');
-          piece.className = 'easter-tetris-piece';
-          const color = tetrisColors[Math.floor(Math.random() * tetrisColors.length)];
-          const randomCol = 25 + Math.random() * (scalerCard.offsetWidth - 80);
+      const bodies = [];
+      const floorY = scalerCard.offsetHeight - 42;
 
-          // 2x2 tetromino blocks
-          piece.style.gridTemplateColumns = 'repeat(2, 14px)';
-          for (let b = 0; b < 4; b++) {
-            const unit = document.createElement('div');
-            unit.className = 'tetris-block-unit';
-            unit.style.background = color;
-            piece.appendChild(unit);
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          const el = document.createElement('div');
+          el.className = 'physics-tetris-block';
+          const color = blockColors[Math.floor(Math.random() * blockColors.length)];
+          el.style.background = color;
+          scalerCard.appendChild(el);
+
+          const body = {
+            el,
+            x: 40 + Math.random() * (scalerCard.offsetWidth - 110),
+            y: 10,
+            vx: (Math.random() - 0.5) * 4,
+            vy: 1,
+            rot: (Math.random() - 0.5) * 20,
+            vrot: (Math.random() - 0.5) * 8,
+            settled: false
+          };
+          bodies.push(body);
+        }, i * 200);
+      }
+
+      // 2D Physics Loop for Block Collisions
+      let simTicks = 0;
+      const physInt = setInterval(() => {
+        simTicks++;
+        for (let a = 0; a < bodies.length; a++) {
+          const bA = bodies[a];
+          bA.vy += 0.7; // Gravity
+          bA.x += bA.vx;
+          bA.y += bA.vy;
+          bA.rot += bA.vrot;
+
+          // Floor collision
+          if (bA.y >= floorY) {
+            bA.y = floorY;
+            bA.vy = -bA.vy * 0.35;
+            bA.vx *= 0.8;
+            bA.vrot *= 0.7;
+            if (Math.abs(bA.vy) < 0.8) bA.vy = 0;
           }
 
-          piece.style.left = `${randomCol}px`;
-          piece.style.top = '10px';
-          scalerCard.appendChild(piece);
+          // Wall collision
+          if (bA.x <= 15) { bA.x = 15; bA.vx = -bA.vx * 0.5; }
+          if (bA.x >= scalerCard.offsetWidth - 40) { bA.x = scalerCard.offsetWidth - 40; bA.vx = -bA.vx * 0.5; }
 
-          // Fall with gravity physics and stack at bottom
-          let py = 10;
-          let pvy = 1;
-          const targetY = scalerCard.offsetHeight - 55 - (i * 14);
+          // Block-to-block collision
+          for (let b = a + 1; b < bodies.length; b++) {
+            const bB = bodies[b];
+            const dx = bA.x - bB.x;
+            const dy = bA.y - bB.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist < 26) {
+              const overlap = 26 - dist;
+              const nx = dx / (dist || 1);
+              const ny = dy / (dist || 1);
+              bA.x += nx * overlap * 0.5;
+              bA.y += ny * overlap * 0.5;
+              bB.x -= nx * overlap * 0.5;
+              bB.y -= ny * overlap * 0.5;
 
-          const fallInt = setInterval(() => {
-            pvy += 1.4;
-            py += pvy;
-            if (py >= targetY) {
-              py = targetY;
-              clearInterval(fallInt);
-              sfx.playBlockDrop();
-              setTimeout(() => piece.remove(), 1600);
+              bA.vx += nx * 2;
+              bB.vx -= nx * 2;
+              bA.vrot += (Math.random() - 0.5) * 15;
+              bB.vrot -= (Math.random() - 0.5) * 15;
+              sfx.playBlockClack();
             }
-            piece.style.top = `${py}px`;
-          }, 24);
-        }, i * 220);
-      }
+          }
+
+          bA.el.style.left = `${bA.x}px`;
+          bA.el.style.top = `${bA.y}px`;
+          bA.el.style.transform = `rotate(${bA.rot}deg)`;
+        }
+
+        if (simTicks > 120) {
+          clearInterval(physInt);
+          setTimeout(() => bodies.forEach(b => b.el.remove()), 1800);
+        }
+      }, 25);
     });
   }
 
   /* =========================================================
-     6. THE LAST EMBER: IMPACTFUL FIRE FROM SIDES & BOTTOM
+     7. THE LAST EMBER: IMPACTFUL FIRE FROM SIDES & BOTTOM
      ========================================================= */
   const emberCard = findProjectCard("Last Ember");
   if (emberCard) {
     emberCard.style.position = 'relative';
     emberCard.addEventListener('mouseenter', () => {
       sfx.playFireCrackling();
-
-      // Flame tongues along bottom and sides
       const flameSpots = [
         { left: '20px', bottom: '15px' },
         { left: '50%', bottom: '15px' },
@@ -957,7 +884,7 @@
         { left: '12px', top: '45%' },
         { right: '12px', top: '45%' }
       ];
-      flameSpots.forEach((spot, idx) => {
+      flameSpots.forEach((spot) => {
         const ft = document.createElement('div');
         ft.className = 'ember-fire-tongue';
         ft.textContent = '🔥';
@@ -966,31 +893,16 @@
         setTimeout(() => ft.remove(), 1600);
       });
 
-      // Swirling ember sparks rising up and inward
       for (let i = 0; i < 18; i++) {
         setTimeout(() => {
           const p = document.createElement('div');
           p.className = 'easter-fire-particle';
           p.style.background = Math.random() < 0.6 ? '#f97316' : '#facc15';
           p.style.boxShadow = '0 0 10px #f97316';
-
-          const fromSide = Math.random();
-          if (fromSide < 0.35) {
-            p.style.left = '16px';
-            p.style.top = `${Math.random() * emberCard.offsetHeight}px`;
-            p.style.setProperty('--tx', `${40 + Math.random() * 60}px`);
-            p.style.setProperty('--ty', `-${30 + Math.random() * 60}px`);
-          } else if (fromSide < 0.7) {
-            p.style.right = '16px';
-            p.style.top = `${Math.random() * emberCard.offsetHeight}px`;
-            p.style.setProperty('--tx', `-${40 + Math.random() * 60}px`);
-            p.style.setProperty('--ty', `-${30 + Math.random() * 60}px`);
-          } else {
-            p.style.left = `${Math.random() * emberCard.offsetWidth}px`;
-            p.style.bottom = '16px';
-            p.style.setProperty('--tx', `${(Math.random() - 0.5) * 80}px`);
-            p.style.setProperty('--ty', `-${60 + Math.random() * 90}px`);
-          }
+          p.style.left = `${Math.random() * emberCard.offsetWidth}px`;
+          p.style.bottom = '16px';
+          p.style.setProperty('--tx', `${(Math.random() - 0.5) * 80}px`);
+          p.style.setProperty('--ty', `-${60 + Math.random() * 90}px`);
           emberCard.appendChild(p);
           setTimeout(() => p.remove(), 1200);
         }, i * 55);
@@ -999,7 +911,7 @@
   }
 
   /* =========================================================
-     7. POSSESSION ESCAPE: MAN RUNNING AWAY FROM GHOST
+     8. POSSESSION ESCAPE: READABLE CORRIDOR SPRINT & CHASE
      ========================================================= */
   const ghostCard = findProjectCard("Possession Escape");
   if (ghostCard) {
@@ -1008,54 +920,53 @@
       sfx.playGhostChase();
 
       const runner = document.createElement('div');
-      runner.className = 'easter-runner';
-      runner.textContent = '🏃💨';
+      runner.className = 'easter-corridor-runner';
+      runner.textContent = '🏃';
 
       const ghost = document.createElement('div');
-      ghost.className = 'easter-ghost-chaser';
+      ghost.className = 'easter-corridor-ghost';
       ghost.textContent = '👻';
 
       const scream = document.createElement('div');
-      scream.className = 'easter-screaming-bubble';
-      scream.textContent = 'AHHH! 😱';
+      scream.className = 'easter-screaming-bubble-v2';
+      scream.textContent = '😱 "IT\'S RIGHT BEHIND ME!"';
 
       ghostCard.appendChild(runner);
       ghostCard.appendChild(ghost);
       ghostCard.appendChild(scream);
 
-      let step = 0;
-      const w = ghostCard.offsetWidth - 50;
-      const h = ghostCard.offsetHeight - 50;
+      let rx = 30;
+      let vx = 3.2; // Slower, readable speed
+      const trackY = ghostCard.offsetHeight - 58;
 
-      // Circuit trajectory around perimeter of card
       const chaseInt = setInterval(() => {
-        step += 0.08;
-        // Runner leads
-        const rx = 25 + (Math.sin(step) * 0.5 + 0.5) * (w - 20);
-        const ry = 25 + (Math.cos(step) * 0.5 + 0.5) * (h - 20);
-        runner.style.left = `${rx}px`;
-        runner.style.top = `${ry}px`;
-        scream.style.left = `${rx}px`;
-        scream.style.top = `${ry}px`;
-
-        // Ghost trails closely behind
-        const gx = 25 + (Math.sin(step - 0.4) * 0.5 + 0.5) * (w - 20);
-        const gy = 25 + (Math.cos(step - 0.4) * 0.5 + 0.5) * (h - 20);
-        ghost.style.left = `${gx}px`;
-        ghost.style.top = `${gy}px`;
-
-        if (step > 6.28) {
+        rx += vx;
+        if (rx >= ghostCard.offsetWidth - 60) {
+          vx = -vx;
+          runner.style.transform = 'scaleX(-1)';
+          ghost.style.transform = 'scaleX(-1)';
+        } else if (rx <= 25 && vx < 0) {
           clearInterval(chaseInt);
           runner.remove();
           ghost.remove();
           scream.remove();
+          return;
         }
+
+        runner.style.left = `${rx}px`;
+        runner.style.top = `${trackY}px`;
+        scream.style.left = `${rx - 20}px`;
+        scream.style.top = `${trackY - 26}px`;
+
+        const gx = rx - (vx > 0 ? 55 : -55);
+        ghost.style.left = `${gx}px`;
+        ghost.style.top = `${trackY - 4 + Math.sin(rx * 0.08) * 8}px`;
       }, 25);
     });
   }
 
   /* =========================================================
-     8. E-COMMERCE / JAMBELLES: CENTER FOUNTAIN MERCH BURST
+     9. E-COMMERCE / JAMBELLES: TOP ORIGIN RANDOM ANGLE FOUNTAIN
      ========================================================= */
   const ecomCard = findProjectCard("E-Commerce") || findProjectCard("Jambelles");
   if (ecomCard) {
@@ -1066,50 +977,289 @@
 
       items.forEach((icon, idx) => {
         const itemEl = document.createElement('div');
-        itemEl.className = 'easter-ecom-item';
+        itemEl.className = 'easter-ecom-item-v2';
         itemEl.textContent = icon;
         itemEl.style.left = '50%';
-        itemEl.style.top = '50%';
+        itemEl.style.top = '28px'; // Top part origin
 
-        const angle = (idx / items.length) * Math.PI * 2;
-        const dist = 80 + Math.random() * 60;
+        // Randomized downward & outward angle spread (20 deg to 160 deg)
+        const angle = (0.2 + (idx / items.length) * 0.6) * Math.PI;
+        const dist = 110 + Math.random() * 80;
         itemEl.style.setProperty('--ex', `${Math.cos(angle) * dist}px`);
-        itemEl.style.setProperty('--ey', `${Math.sin(angle) * dist}px`);
+        itemEl.style.setProperty('--ey', `${Math.sin(angle) * dist + 40}px`);
+        itemEl.style.setProperty('--erot', `${(Math.random() - 0.5) * 360}deg`);
 
         ecomCard.appendChild(itemEl);
-        setTimeout(() => itemEl.remove(), 1300);
+        setTimeout(() => itemEl.remove(), 1400);
       });
     });
   }
 
   /* =========================================================
-     9. LANGUAGES: MULTILINGUAL RADIAL GREETINGS
+     10. LEAGUE OF LEGENDS: OFFICIAL IN-GAME MASTERY 7 CREST
      ========================================================= */
-  const langCard = findSkillCard("Languages");
-  if (langCard) {
-    langCard.style.position = 'relative';
-    langCard.addEventListener('mouseenter', () => {
-      sfx.playLangChime();
-      const hellos = ['¡Hola!', 'Bonjour!', 'こんにちは!', 'Ciao!', 'Olá!', 'Hallo!'];
-      hellos.forEach((w, idx) => {
-        setTimeout(() => {
-          const pill = document.createElement('div');
-          pill.className = 'easter-lang-bubble';
-          pill.textContent = w;
-          pill.style.left = '50%';
-          pill.style.top = '50%';
-          const angle = (idx / hellos.length) * Math.PI * 2;
-          pill.style.setProperty('--lx', `${Math.cos(angle) * 85}px`);
-          pill.style.setProperty('--ly', `${Math.sin(angle) * 65}px`);
-          langCard.appendChild(pill);
-          setTimeout(() => pill.remove(), 1200);
-        }, idx * 60);
+  const leagueCard = findDnaCard("League of Legends");
+  if (leagueCard) {
+    leagueCard.style.position = 'relative';
+
+    const crestImg = document.createElement('img');
+    crestImg.src = 'images/mastery_7.png';
+    crestImg.alt = 'League of Legends Mastery 7 Crest';
+    crestImg.className = 'lol-mastery-crest-img';
+    leagueCard.appendChild(crestImg);
+
+    const banner = document.createElement('div');
+    banner.className = 'lol-mastery-banner-v2';
+    banner.innerHTML = '💎 MASTERY LEVEL 7 • TOP 1% DIAMOND';
+    leagueCard.appendChild(banner);
+
+    leagueCard.addEventListener('mouseenter', () => {
+      crestImg.classList.add('show');
+      banner.classList.add('show');
+      sfx.playMastery();
+    });
+    leagueCard.addEventListener('mouseleave', () => {
+      crestImg.classList.remove('show');
+      banner.classList.remove('show');
+    });
+  }
+
+  /* =========================================================
+     11. MAGIC: THE GATHERING: AUTHENTIC COUNTERSPELL CARD
+     ========================================================= */
+  const mtgCard = findDnaCard("Magic");
+  if (mtgCard) {
+    mtgCard.style.position = 'relative';
+
+    const banner = document.createElement('div');
+    banner.className = 'mtg-response-banner-v2';
+    banner.innerHTML = '⚡ IN RESPONSE... [CAST COUNTERSPELL]';
+    mtgCard.appendChild(banner);
+
+    const cardImg = document.createElement('img');
+    cardImg.src = 'images/counterspell.png';
+    cardImg.alt = 'Magic The Gathering Counterspell Card';
+    cardImg.className = 'mtg-card-img-pop';
+    mtgCard.appendChild(cardImg);
+
+    mtgCard.addEventListener('mouseenter', () => {
+      banner.classList.add('show');
+      cardImg.classList.add('show');
+      sfx.playCounterspell();
+    });
+    mtgCard.addEventListener('mouseleave', () => {
+      banner.classList.remove('show');
+      cardImg.classList.remove('show');
+    });
+  }
+
+  /* =========================================================
+     12. POKÉMON: CLICK-TO-CATCH & LOW CATCH RATE & VANISH
+     ========================================================= */
+  const pokeCard = findDnaCard("Pokémon");
+  if (pokeCard) {
+    pokeCard.style.position = 'relative';
+    const ballTiers = [
+      { name: 'Ultra Ball', top: '#1e293b', rate: 0.25 },
+      { name: 'Great Ball', top: '#0284c7', rate: 0.18 },
+      { name: 'Poké Ball', top: '#ef4444', rate: 0.12 }
+    ];
+
+    const failQuotes = [
+      "Oh no! The Pokémon broke free!",
+      "Aww! It appeared to be caught!",
+      "Shoot! It was so close, too!",
+      "Darn! Almost had it!"
+    ];
+
+    // Click on any specific Pokemon to throw ball at it!
+    const monCards = pokeCard.querySelectorAll('.pokemon-card');
+    monCards.forEach(mon => {
+      mon.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (mon.classList.contains('pokemon-caught-vanish')) return;
+
+        const tier = ballTiers[Math.floor(Math.random() * ballTiers.length)];
+        const monName = mon.querySelector('.pokemon-info-name') ? mon.querySelector('.pokemon-info-name').textContent.replace('✨', '').trim() : 'Pokémon';
+
+        // Spawn ball and fly to target
+        const ball = document.createElement('div');
+        ball.className = 'easter-pokeball-sprite';
+        ball.style.background = `linear-gradient(180deg, ${tier.top} 50%, #ffffff 50%)`;
+        ball.innerHTML = '<div class="pokeball-mid-band"></div><div class="pokeball-btn-center"></div>';
+        pokeCard.appendChild(ball);
+
+        const targetX = mon.offsetLeft + mon.offsetWidth * 0.5 - 14;
+        const targetY = mon.offsetTop + mon.offsetHeight * 0.5 - 14;
+
+        ball.style.left = '20px';
+        ball.style.top = '20px';
+        sfx.playPokeballBounce();
+
+        let bx = 20, by = 20;
+        let bvx = (targetX - 20) / 16;
+        let bvy = (targetY - 20) / 16;
+        let step = 0;
+
+        const throwInt = setInterval(() => {
+          step++;
+          bx += bvx; by += bvy;
+          ball.style.left = `${bx}px`;
+          ball.style.top = `${by}px`;
+          ball.style.transform = `rotate(${step * 30}deg)`;
+
+          if (step >= 16) {
+            clearInterval(throwInt);
+            // Impact with target Pokemon
+            sfx.playPokeballBounce();
+
+            // Low Catch Rate Roll
+            const rollSuccess = Math.random() < tier.rate;
+
+            let wobbles = 0;
+            const wobbleInt = setInterval(() => {
+              wobbles++;
+              sfx.playPokeballWobble();
+              ball.style.transform = `rotate(${wobbles % 2 === 0 ? 18 : -18}deg) scale(1.15)`;
+
+              // If FAILED
+              if (!rollSuccess && wobbles >= 2) {
+                clearInterval(wobbleInt);
+                sfx.playPokemonBreakout();
+                ball.style.transform = 'scale(1.4)';
+
+                const failBanner = document.createElement('div');
+                failBanner.className = 'pokemon-fail-banner';
+                const quote = failQuotes[Math.floor(Math.random() * failQuotes.length)];
+                failBanner.textContent = `❌ ${quote}`;
+                pokeCard.appendChild(failBanner);
+
+                setTimeout(() => {
+                  ball.remove();
+                  failBanner.remove();
+                }, 1600);
+              }
+              // If SUCCESS
+              else if (rollSuccess && wobbles >= 3) {
+                clearInterval(wobbleInt);
+                sfx.playPokemonCaught();
+                ball.style.transform = 'scale(1.25)';
+
+                // Pokemon disappears temporarily
+                mon.classList.add('pokemon-caught-vanish');
+
+                const winBanner = document.createElement('div');
+                winBanner.className = 'easter-caught-banner';
+                winBanner.textContent = `⭐ All right! Shiny ${monName} was caught! ⭐`;
+                pokeCard.appendChild(winBanner);
+
+                setTimeout(() => {
+                  ball.remove();
+                  winBanner.remove();
+                }, 2200);
+
+                // Respawns after 4.5 seconds
+                setTimeout(() => {
+                  mon.classList.remove('pokemon-caught-vanish');
+                  mon.classList.add('pokemon-respawn-burst');
+                  setTimeout(() => mon.classList.remove('pokemon-respawn-burst'), 800);
+                }, 4500);
+              }
+            }, 350);
+          }
+        }, 25);
       });
     });
   }
 
   /* =========================================================
-     10. ENGINES & TECH: 3D GIZMO & PHYSICS COMPILER DEBUGGER
+     13. SPORTS: VISUAL SOCCER GOAL & BASKETBALL HOOP
+     ========================================================= */
+  const sportsCard = findDnaCard("Sports");
+  if (sportsCard) {
+    sportsCard.style.position = 'relative';
+
+    sportsCard.addEventListener('mouseenter', () => {
+      const mode = Math.random() < 0.5 ? 'soccer' : 'basketball';
+      const scene = document.createElement('div');
+      scene.className = 'sports-scene-box';
+      sportsCard.appendChild(scene);
+
+      if (mode === 'soccer') {
+        // Soccer Goal
+        const goal = document.createElement('div');
+        goal.className = 'sports-goal-net';
+        scene.appendChild(goal);
+
+        const ball = document.createElement('div');
+        ball.className = 'sports-flying-ball';
+        ball.textContent = '⚽';
+        ball.style.left = '20px';
+        ball.style.top = `${sportsCard.offsetHeight - 50}px`;
+        scene.appendChild(ball);
+
+        setTimeout(() => {
+          ball.style.left = `${sportsCard.offsetWidth - 80}px`;
+          ball.style.top = '36px';
+          ball.style.transform = 'rotate(720deg) scale(0.9)';
+        }, 40);
+
+        setTimeout(() => {
+          goal.classList.add('hit');
+          sfx.playWhistle();
+
+          const banner = document.createElement('div');
+          banner.className = 'easter-sports-score-v2 show';
+          banner.innerHTML = '⚽ GOAAAL! (15+ YRS SOCCER ENDURANCE) 🥅';
+          sportsCard.appendChild(banner);
+
+          setTimeout(() => {
+            scene.remove();
+            banner.remove();
+          }, 1800);
+        }, 580);
+      } else {
+        // Basketball Hoop
+        const rim = document.createElement('div');
+        rim.className = 'sports-hoop-rim';
+        const net = document.createElement('div');
+        net.className = 'sports-hoop-net';
+        scene.appendChild(rim);
+        scene.appendChild(net);
+
+        const ball = document.createElement('div');
+        ball.className = 'sports-flying-ball';
+        ball.textContent = '🏀';
+        ball.style.left = '20px';
+        ball.style.top = `${sportsCard.offsetHeight - 50}px`;
+        scene.appendChild(ball);
+
+        // Arc over rim and drop through
+        setTimeout(() => {
+          ball.style.left = `${sportsCard.offsetWidth - 70}px`;
+          ball.style.top = '15px';
+        }, 40);
+
+        setTimeout(() => {
+          ball.style.top = '48px';
+          sfx.playBuzzer();
+
+          const banner = document.createElement('div');
+          banner.className = 'easter-sports-score-v2 show';
+          banner.innerHTML = '🏀 SWISH! 3-POINTER AT THE BUZZER! 🎯';
+          sportsCard.appendChild(banner);
+
+          setTimeout(() => {
+            scene.remove();
+            banner.remove();
+          }, 1800);
+        }, 580);
+      }
+    });
+  }
+
+  /* =========================================================
+     14. ENGINES & TECH: 3D GIZMO & PHYSICS COMPILER DEBUGGER
      ========================================================= */
   const engineCard = findSkillCard("Engines");
   if (engineCard) {
@@ -1125,15 +1275,13 @@
   }
 
   /* =========================================================
-     11. GAMEPLAY & DESIGN: RPG CRIT HITSTOP & DAMAGE SPLASH
+     15. GAMEPLAY & DESIGN: RPG CRIT HITSTOP & DAMAGE SPLASH
      ========================================================= */
   const designCard = findSkillCard("Gameplay & Design");
   if (designCard) {
     designCard.style.position = 'relative';
     designCard.addEventListener('mouseenter', () => {
       sfx.playCritHit();
-
-      // Screen-shake micro hitstop
       designCard.style.transform = 'scale(1.02) rotate(-1deg)';
       setTimeout(() => { designCard.style.transform = 'none'; }, 100);
 
@@ -1149,7 +1297,7 @@
   }
 
   /* =========================================================
-     12. AI, CLOUD & TOOLS: LIVE GCP CLUSTER TERMINAL
+     16. AI, CLOUD & TOOLS: LIVE GCP CLUSTER TERMINAL
      ========================================================= */
   const cloudCard = findSkillCard("AI, Cloud & Tools");
   if (cloudCard) {
@@ -1168,138 +1316,7 @@
   }
 
   /* =========================================================
-     13. LEAGUE OF LEGENDS: DIAMOND MASTERY 7 CREST
-     ========================================================= */
-  const leagueCard = findDnaCard("League of Legends");
-  if (leagueCard) {
-    leagueCard.style.position = 'relative';
-    const crest = document.createElement('div');
-    crest.className = 'easter-mastery-crest-v2';
-    crest.innerHTML = '💎 MASTERY VII • TOP 1% DIAMOND';
-    leagueCard.appendChild(crest);
-
-    leagueCard.addEventListener('mouseenter', () => {
-      crest.classList.add('show');
-      sfx.playMastery();
-    });
-    leagueCard.addEventListener('mouseleave', () => crest.classList.remove('show'));
-  }
-
-  /* =========================================================
-     14. MAGIC: THE GATHERING: IN RESPONSE & COUNTERSPELL CARD
-     ========================================================= */
-  const mtgCard = findDnaCard("Magic");
-  if (mtgCard) {
-    mtgCard.style.position = 'relative';
-    const banner = document.createElement('div');
-    banner.className = 'easter-mtg-response-v2';
-    banner.innerHTML = '⚡ IN RESPONSE... [COUNTERSPELL]';
-    mtgCard.appendChild(banner);
-
-    const spellCard = document.createElement('div');
-    spellCard.className = 'easter-mtg-card-pop';
-    spellCard.innerHTML = `
-      <div style="display:flex; justify-content:space-between; font-weight:800; font-size:0.75rem; color:#93c5fd; border-bottom:1px solid #3b82f6; padding-bottom:4px;">
-        <span>Counterspell</span>
-        <span style="color:#60a5fa;">💧💧</span>
-      </div>
-      <div style="font-size:0.62rem; color:#e2e8f0; margin-top:6px; line-height:1.4;">
-        Counter target spell.
-      </div>
-    `;
-    mtgCard.appendChild(spellCard);
-
-    mtgCard.addEventListener('mouseenter', () => {
-      banner.classList.add('show');
-      spellCard.classList.add('show');
-      sfx.playCounterspell();
-    });
-    mtgCard.addEventListener('mouseleave', () => {
-      banner.classList.remove('show');
-      spellCard.classList.remove('show');
-    });
-  }
-
-  /* =========================================================
-     15. POKÉMON: AUTHENTIC POKÉBALL TIER & TARGET CATCH
-     ========================================================= */
-  const pokeCard = findDnaCard("Pokémon");
-  if (pokeCard) {
-    pokeCard.style.position = 'relative';
-    const ballTiers = [
-      { name: 'Ultra Ball', top: '#1e293b', accent: '#facc15' },
-      { name: 'Great Ball', top: '#0284c7', accent: '#ef4444' },
-      { name: 'Master Ball', top: '#7c3aed', accent: '#ec4899' },
-      { name: 'Poké Ball', top: '#ef4444', accent: '#ef4444' }
-    ];
-
-    pokeCard.addEventListener('mouseenter', () => {
-      const tier = ballTiers[Math.floor(Math.random() * ballTiers.length)];
-
-      // Construct Authentic Styled Pokéball
-      const ball = document.createElement('div');
-      ball.className = 'easter-pokeball-sprite';
-      ball.style.background = `linear-gradient(180deg, ${tier.top} 50%, #ffffff 50%)`;
-      ball.innerHTML = `
-        <div class="pokeball-mid-band"></div>
-        <div class="pokeball-btn-center"></div>
-      `;
-
-      // Spawn at corner
-      ball.style.left = '20px';
-      ball.style.top = '20px';
-      pokeCard.appendChild(ball);
-
-      // Find one of the 6 pokemon mini cards inside
-      const monCards = pokeCard.querySelectorAll('.pokemon-card');
-      const targetMon = monCards.length ? monCards[Math.floor(Math.random() * monCards.length)] : null;
-      const targetX = targetMon ? targetMon.offsetLeft + 20 : pokeCard.offsetWidth * 0.5;
-      const targetY = targetMon ? targetMon.offsetTop + 20 : pokeCard.offsetHeight * 0.5;
-
-      // Realistic Bouncing Trajectory
-      let bx = 20, by = 20;
-      let bvx = (targetX - 20) / 20;
-      let bvy = -4;
-      let bounces = 0;
-
-      const ballInt = setInterval(() => {
-        bvy += 0.8;
-        bx += bvx;
-        by += bvy;
-
-        if (by >= targetY && bounces < 2) {
-          by = targetY;
-          bvy = -bvy * 0.5;
-          bounces++;
-          sfx.playPokeballBounce();
-        }
-
-        ball.style.left = `${bx}px`;
-        ball.style.top = `${by}px`;
-        ball.style.transform = `rotate(${bx * 8}deg)`;
-
-        if (bounces >= 2 && Math.abs(by - targetY) < 10) {
-          clearInterval(ballInt);
-          sfx.playPokemonCaught();
-
-          // Wobble animation & celebration stars
-          ball.style.transform = 'scale(1.25)';
-          const banner = document.createElement('div');
-          banner.className = 'easter-caught-banner';
-          banner.textContent = `⭐ GOTCHA! CAUGHT IN ${tier.name.toUpperCase()}! ⭐`;
-          pokeCard.appendChild(banner);
-
-          setTimeout(() => {
-            ball.remove();
-            banner.remove();
-          }, 1800);
-        }
-      }, 30);
-    });
-  }
-
-  /* =========================================================
-     16. COMPETITIVE ROBOTICS: FRC DRIVER MATCH READOUT
+     17. COMPETITIVE ROBOTICS: FRC DRIVER MATCH READOUT
      ========================================================= */
   const roboticsCard = findDnaCard("Robotics");
   if (roboticsCard) {
@@ -1314,29 +1331,5 @@
     });
   }
 
-  /* =========================================================
-     17. SPORTS: SOCCER GOAL, BASKETBALL SWISH, OR BASEBALL
-     ========================================================= */
-  const sportsCard = findDnaCard("Sports");
-  if (sportsCard) {
-    sportsCard.style.position = 'relative';
-    const banner = document.createElement('div');
-    banner.className = 'easter-sports-score-v2';
-    sportsCard.appendChild(banner);
-
-    sportsCard.addEventListener('mouseenter', () => {
-      sfx.playSportsScore();
-      const sportItems = [
-        { icon: '⚽', txt: 'GOAAAL! 15+ YRS SOCCER ENDURANCE 🥅' },
-        { icon: '🏀', txt: 'SWISH! 3-POINTER AT THE BUZZER 🎯' },
-        { icon: '⚾', txt: 'HOMERUN! GRAND SLAM 🏟️' }
-      ];
-      const pick = sportItems[Math.floor(Math.random() * sportItems.length)];
-      banner.innerHTML = `${pick.icon} ${pick.txt}`;
-      banner.classList.add('show');
-    });
-    sportsCard.addEventListener('mouseleave', () => banner.classList.remove('show'));
-  }
-
-  console.log("Portfolio Easter Eggs Engine v2.0 initialized.");
+  console.log("Portfolio Easter Eggs Engine v3.0 initialized.");
 })();
