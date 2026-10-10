@@ -1110,12 +1110,27 @@
     }
   </style>
 <style>
-    /* On-Site Game HUD Common Styling */
+    /* ZERO SCROLLBAR & VIRTUAL CAMERA CONTAINER */
+    html, body {
+      overflow: hidden !important;
+      height: 100vh !important;
+      width: 100vw !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    ::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
     #onsite-game-hud {
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100000;
-      background: rgba(9, 13, 22, 0.94);
+      background: rgba(9, 13, 22, 0.95);
       backdrop-filter: blur(14px);
       border-bottom: 2px solid #6366f1;
       padding: 10px 20px;
@@ -1185,7 +1200,14 @@
       color: #94a3b8;
       font-size: 0.55rem;
     }
-    body {
+
+    /* World stage that translates smoothly without native scrollbar */
+    #world-stage {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      will-change: transform;
       padding-top: 56px;
     }
 
@@ -1193,9 +1215,10 @@
 #platCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 99999; }
 .card-highlight-plat { outline: 3px solid #10b981 !important; box-shadow: 0 0 25px rgba(16, 185, 129, 0.5) !important; }
 </style></head>
-<body>
 
-  <!-- ON-SITE RESKIN TOP HUD -->
+<body>
+  
+  <!-- ON-SITE RESKIN TOP HUD (Fixed on top of viewport) -->
   <div id="onsite-game-hud">
     <div class="hud-left">
       <a href="play.html" class="btn-hud">◀ Arcade Hub</a>
@@ -1205,13 +1228,15 @@
       <div class="hud-stat-chip">SCORE: <span id="platScore">0</span></div><div class="hud-stat-chip">COINS: <span id="platCoins">0/8</span></div>
     </div>
     <div class="hud-right">
-      <span class="hud-hint">Move: A/D/Arrows | Jump: W/Space | Double Jump</span>
+      <span class="hud-hint">Move: A/D/Arrows | Jump: W/Space | Double Jump | Wheel to Scroll</span>
       <button class="btn-hud" id="btnAudioToggle">🔊 AUDIO: ON</button>
       <a href="platformer.html" class="btn-hud btn-hud-compare">🖥️ Standalone Version ▶</a>
       <a href="index.html" class="btn-hud">Standard Site ▶</a>
     </div>
   </div>
 
+  <div id="world-stage">
+    
 
   <!-- Sticky Top Nav -->
   <header>
@@ -1917,8 +1942,10 @@
       });
     }
   </script>
-<script>
 
+  </div>
+  <script>
+    
 class NativeAudio {
   constructor() { this.ctx = null; this.enabled = true; }
   init() { if (!this.ctx) { const AC = window.AudioContext || window.webkitAudioContext; this.ctx = new AC(); } }
@@ -1951,7 +1978,37 @@ if (audioBtn) {
   });
 }
 
+    
+// Virtual Camera (Zero scrollbars, manual wheel scroll + game camera follow)
+let camY = 0;
+let targetCamY = 0;
+const stage = document.getElementById('world-stage');
+let maxCamY = 3000;
 
+function updateMaxCam() {
+  maxCamY = Math.max(0, stage.scrollHeight - window.innerHeight);
+}
+window.addEventListener('resize', updateMaxCam);
+setTimeout(updateMaxCam, 500);
+
+// Smooth mouse wheel / touchpad scroll without scrollbar
+window.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  targetCamY += e.deltaY;
+  targetCamY = Math.max(0, Math.min(maxCamY, targetCamY));
+}, { passive: false });
+
+function updateCamera(followWorldY) {
+  if (followWorldY !== undefined) {
+    targetCamY = followWorldY - window.innerHeight * 0.45;
+  }
+  targetCamY = Math.max(0, Math.min(maxCamY, targetCamY));
+  camY += (targetCamY - camY) * 0.12;
+  stage.style.transform = `translate3d(0, ${-camY}px, 0)`;
+  return camY;
+}
+
+    
 const pCanvas = document.createElement('canvas');
 pCanvas.id = 'platCanvas';
 document.body.appendChild(pCanvas);
@@ -1966,12 +2023,11 @@ resizePlat();
 
 const player = {
   x: window.innerWidth * 0.25,
-  y: 120,
-  worldY: 120,
+  worldY: 180,
   vx: 0,
   vy: 0,
-  width: 22,
-  height: 32,
+  width: 24,
+  height: 34,
   grounded: false,
   jumpsLeft: 2,
   score: 0,
@@ -1979,34 +2035,31 @@ const player = {
 };
 
 const keys = {};
-window.addEventListener('keydown', e => { keys[e.key] = true; if(['ArrowUp','ArrowDown',' '].includes(e.key)) e.preventDefault(); });
+window.addEventListener('keydown', e => {
+  keys[e.key] = true;
+  if (['ArrowUp','ArrowDown',' '].includes(e.key)) e.preventDefault();
+});
 window.addEventListener('keyup', e => { keys[e.key] = false; });
 
-// Coins placed at project headers
+// Coins
 const coinTargets = document.querySelectorAll('.hero-card, .featured-project-card, .project-card, .skill-card');
 const coins = [];
 coinTargets.forEach((el, i) => {
   if (i < 8) {
-    const rect = el.getBoundingClientRect();
-    coins.push({
-      el,
-      collected: false,
-      worldX: rect.left + rect.width / 2,
-      worldY: rect.top + window.scrollY - 30
-    });
+    coins.push({ el, collected: false });
   }
 });
 
 function updatePlat() {
   // Movement
-  if (keys['a'] || keys['A'] || keys['ArrowLeft']) player.vx = -5;
-  else if (keys['d'] || keys['D'] || keys['ArrowRight']) player.vx = 5;
+  if (keys['a'] || keys['A'] || keys['ArrowLeft']) player.vx = -5.5;
+  else if (keys['d'] || keys['D'] || keys['ArrowRight']) player.vx = 5.5;
   else player.vx *= 0.8;
 
   // Jump
   if ((keys['w'] || keys['W'] || keys['ArrowUp'] || keys[' ']) && player.jumpsLeft > 0) {
     if (!player.jumpKeyHeld) {
-      player.vy = -12;
+      player.vy = -12.5;
       player.jumpsLeft--;
       player.jumpKeyHeld = true;
       sfx.playTone(player.jumpsLeft === 1 ? 340 : 480, 0.1, 'square');
@@ -2016,26 +2069,26 @@ function updatePlat() {
   }
 
   // Gravity
-  player.vy += 0.55;
+  player.vy += 0.58;
   player.x += player.vx;
   player.worldY += player.vy;
 
   // Screen wrap X
-  if (player.x < 0) player.x = window.innerWidth;
-  if (player.x > window.innerWidth) player.x = 0;
+  if (player.x < 10) player.x = 10;
+  if (player.x > window.innerWidth - player.width - 10) player.x = window.innerWidth - player.width - 10;
 
-  // Platforms collision with real DOM cards
+  // Platform collision in world coordinates
   player.grounded = false;
-  const cards = document.querySelectorAll('.hero-card, .featured-project-card, .project-card, .timeline-card, header');
+  const cards = document.querySelectorAll('.hero-card, .featured-project-card, .project-card, .timeline-card, .brand-link');
   cards.forEach(card => {
-    const r = card.getBoundingClientRect();
-    const top = r.top + window.scrollY;
-    const bottom = top + r.height;
-    const left = r.left;
-    const right = r.left + r.width;
+    // Calculate world top/bottom
+    const top = card.offsetTop;
+    const height = card.offsetHeight;
+    const left = card.offsetLeft;
+    const width = card.offsetWidth;
 
-    if (player.x + player.width > left && player.x < right) {
-      if (player.worldY + player.height >= top && player.worldY + player.height <= top + 20 && player.vy > 0) {
+    if (player.x + player.width > left && player.x < left + width) {
+      if (player.worldY + player.height >= top && player.worldY + player.height <= top + 22 && player.vy > 0) {
         player.worldY = top - player.height;
         player.vy = 0;
         player.grounded = true;
@@ -2046,19 +2099,15 @@ function updatePlat() {
     }
   });
 
-  // Camera tracking
-  const targetScrollY = player.worldY - window.innerHeight * 0.45;
-  if (Math.abs(window.scrollY - targetScrollY) > 8) {
-    window.scrollBy(0, (targetScrollY - window.scrollY) * 0.08);
-  }
+  // Smooth Virtual Camera Update (No scrollbars!)
+  updateCamera(player.worldY);
 
-  // Coin pickups
+  // Coins
   coins.forEach(c => {
     if (!c.collected) {
-      const cr = c.el.getBoundingClientRect();
-      const cx = cr.left + cr.width / 2;
-      const cy = cr.top + window.scrollY - 30;
-      if (Math.hypot(player.x - cx, player.worldY - cy) < 35) {
+      const cx = c.el.offsetLeft + c.el.offsetWidth / 2;
+      const cy = c.el.offsetTop - 25;
+      if (Math.hypot(player.x - cx, player.worldY - cy) < 40) {
         c.collected = true;
         player.score += 100;
         player.coinsCollected++;
@@ -2072,20 +2121,19 @@ function updatePlat() {
 
 function drawPlat() {
   pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
-  const screenY = player.worldY - window.scrollY;
+  const screenY = player.worldY - camY;
 
   // Draw Coins
   coins.forEach(c => {
     if (!c.collected) {
-      const cr = c.el.getBoundingClientRect();
-      const cx = cr.left + cr.width / 2;
-      const cy = cr.top - 20;
+      const cx = c.el.offsetLeft + c.el.offsetWidth / 2;
+      const cy = c.el.offsetTop - 25 - camY;
       if (cy > -50 && cy < window.innerHeight + 50) {
         pCtx.fillStyle = '#fbbf24';
         pCtx.shadowColor = '#fbbf24';
         pCtx.shadowBlur = 10;
         pCtx.beginPath();
-        pCtx.arc(cx, cy, 9, 0, Math.PI * 2);
+        pCtx.arc(cx, cy, 10, 0, Math.PI * 2);
         pCtx.fill();
         pCtx.fillStyle = '#000';
         pCtx.font = '10px sans-serif';
@@ -2096,13 +2144,15 @@ function drawPlat() {
     }
   });
 
-  // Draw Player
+  // Draw Player Knight
   pCtx.fillStyle = '#6366f1';
   pCtx.shadowColor = '#6366f1';
   pCtx.shadowBlur = 12;
   pCtx.fillRect(player.x, screenY, player.width, player.height);
-  pCtx.fillStyle = '#f8fafc';
-  pCtx.fillRect(player.x + (player.vx >= 0 ? 12 : 2), screenY + 4, 6, 6);
+  pCtx.fillStyle = '#94a3b8';
+  pCtx.fillRect(player.x + 2, screenY, player.width - 4, 14);
+  pCtx.fillStyle = '#38bdf8';
+  pCtx.fillRect(player.x + (player.vx >= 0 ? 12 : 4), screenY + 4, 6, 4);
   pCtx.shadowBlur = 0;
 }
 
@@ -2113,5 +2163,7 @@ function loopPlat() {
 }
 requestAnimationFrame(loopPlat);
 
-</script></body>
+  </script>
+</body>
+
 </html>
