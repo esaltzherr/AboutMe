@@ -1212,16 +1212,172 @@
     }
 
 
-#rpgCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 99999; }
-.rpg-speech-bubble {
-  position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-  background: rgba(15, 23, 42, 0.97); border: 3px solid #38bdf8; border-radius: 14px;
-  padding: 18px 24px; max-width: 600px; width: 90%; color: #fff; z-index: 100001;
-  font-family: 'Plus Jakarta Sans', sans-serif; box-shadow: 0 10px 40px rgba(0,0,0,0.85);
-  display: none;
+#rpgCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 99999;
 }
-.rpg-speech-bubble.active { display: block; animation: popUp 0.2s ease; }
-@keyframes popUp { from { transform: translate(-50%, 20px) scale(0.95); opacity: 0; } to { transform: translate(-50%, 0) scale(1); opacity: 1; } }
+
+/* Green Pokémon Town Meadow Stage */
+#world-stage {
+  background: #1b4d3e !important;
+  background-image: 
+    radial-gradient(rgba(255, 255, 255, 0.08) 1.5px, transparent 1.5px),
+    linear-gradient(0deg, #1b4d3e 50%, #1e5645 50%) !important;
+  background-size: 32px 32px !important;
+  position: relative;
+  padding-bottom: 240px !important;
+}
+
+/* Central Cobblestone Paths connecting houses */
+.rpg-cobblestone-path {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  background: #78716c;
+  border-left: 6px solid #44403c;
+  border-right: 6px solid #44403c;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+  background-image: repeating-linear-gradient(45deg, #78716c, #78716c 14px, #6b7280 14px, #6b7280 28px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Pokémon Houses */
+.rpg-house-building {
+  position: relative !important;
+  border: 5px solid #0f172a !important;
+  border-radius: 18px !important;
+  margin: 60px auto 90px auto !important;
+  background: #0f172a !important;
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.85), 0 0 0 4px rgba(255, 255, 255, 0.12) !important;
+  z-index: 10 !important;
+  transition: box-shadow 0.35s ease, border-color 0.35s ease !important;
+}
+
+.rpg-house-building.inside-active {
+  border-color: #4ade80 !important;
+  box-shadow: 0 22px 65px rgba(0, 0, 0, 0.9), 0 0 50px rgba(74, 222, 128, 0.45) !important;
+}
+
+/* Walk-in Roof Overlay */
+.rpg-house-roof {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 14px;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.98;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px 20px;
+  color: #fff;
+  font-family: 'Press Start 2P', monospace;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.rpg-house-building.inside-active .rpg-house-roof {
+  opacity: 0.05 !important;
+}
+
+.roof-header {
+  position: relative;
+  z-index: 2;
+  background: rgba(15, 23, 42, 0.95);
+  border: 3px solid #facc15;
+  padding: 14px 28px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  text-align: center;
+  max-width: 90%;
+}
+
+.roof-title {
+  font-size: 0.88rem;
+  color: #facc15;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.roof-sub {
+  font-size: 0.58rem;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+.roof-doorway-hint {
+  position: relative;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.9);
+  border: 3px dashed #4ade80;
+  color: #4ade80;
+  font-size: 0.65rem;
+  padding: 12px 24px;
+  border-radius: 10px;
+  animation: pulse-door 1.4s ease-in-out infinite alternate;
+}
+@keyframes pulse-door {
+  from { transform: scale(0.96); opacity: 0.85; }
+  to { transform: scale(1.04); opacity: 1; }
+}
+
+/* Retro Dialogue Box */
+.rpg-speech-bubble {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) scale(0.95);
+  background: rgba(15, 23, 42, 0.98);
+  border: 4px solid #facc15;
+  border-radius: 14px;
+  padding: 20px 26px;
+  max-width: 780px;
+  width: 90%;
+  color: #fff;
+  z-index: 100001;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.9), 0 0 35px rgba(250, 204, 21, 0.35);
+  display: none;
+  opacity: 0;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.rpg-speech-bubble.active {
+  display: block;
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+.dialogue-speaker {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.72rem;
+  color: #38bdf8;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dialogue-text {
+  font-size: 0.98rem;
+  line-height: 1.65;
+  color: #f8fafc;
+  min-height: 55px;
+}
+.dialogue-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.58rem;
+  color: #94a3b8;
+}
 </style></head>
 
 <body>
@@ -1230,13 +1386,13 @@
   <div id="onsite-game-hud">
     <div class="hud-left">
       <a href="play.html" class="btn-hud">◀ Arcade Hub</a>
-      <span class="hud-mode-pill">🌐 ON-SITE RESKIN • 16-BIT TOWN RPG</span>
+      <span class="hud-mode-pill">🌐 ON-SITE RESKIN • 16-BIT POKÉMON TOWN</span>
     </div>
     <div class="hud-center">
-      <div class="hud-stat-chip">NPCS MET: <span id="rpgMet">0/4</span></div>
+      <div class="hud-stat-chip">LOCATION: <span id="rpgLocation" style="color: #4ade80;">🌲 OUTSIDE MEADOW</span></div><div class="hud-stat-chip">NPCS MET: <span id="rpgMet">0/6</span></div>
     </div>
     <div class="hud-right">
-      <span class="hud-hint">Move: WASD/Arrows | Talk: Space | Wheel: Scroll</span>
+      <span class="hud-hint">[WASD]/[Arrows] Move • [SPACE] Talk • Walk into houses to reveal interiors!</span>
       <button class="btn-hud" id="btnAudioToggle">🔊 AUDIO: ON</button>
       <a href="rpg.html" class="btn-hud btn-hud-compare">🖥️ Standalone Version ▶</a>
       <a href="index.html" class="btn-hud">Standard Site ▶</a>
@@ -1950,6 +2106,7 @@
       });
     }
   </script>
+  <script src="easter_eggs.js"></script>
 
   </div>
   <script>
@@ -2025,59 +2182,266 @@ function resizeRpg() { rCanvas.width = window.innerWidth; rCanvas.height = windo
 window.addEventListener('resize', resizeRpg);
 resizeRpg();
 
-const hero = { x: window.innerWidth / 2, worldY: 200, speed: 5 };
-const keys = {};
-window.addEventListener('keydown', e => {
-  keys[e.key] = true;
-  if (['ArrowUp','ArrowDown',' '].includes(e.key)) e.preventDefault();
-});
-window.addEventListener('keyup', e => { keys[e.key] = false; });
+const stageEl = document.getElementById('world-stage');
 
-const npcs = [
-  { name: 'Sir Roland (Knight)', section: '#featured', icon: '⚔️', text: 'Welcome to Dark Throne! Elroy crafted my 4-hit combo chains and fluid state machine AI in Godot 4.3. Every swing has weight and hitstop juice!' },
-  { name: 'Cipher (Cloud Drone)', section: '#projects', icon: '🤖', text: 'Beep boop! StocksBot operates 24/7 on Google Cloud Run containers. I parse Finviz volume outliers and trigger Discord alerts in sub-seconds!' },
-  { name: 'Lead Machinist', section: '#experience', icon: '🏎️', text: 'On the FIRST Robotics field, Elroy piloted under millisecond tournament pressure and machined aluminum drivetrains on CNC mills!' },
-  { name: 'Apex Master', section: '#philosophy', icon: '💎', text: 'Competitive acumen is real! Reached Top 1% Diamond in League of Legends alongside 15+ straight years of soccer endurance!' }
+// Cobblestone Path
+const pathEl = document.createElement('div');
+pathEl.className = 'rpg-cobblestone-path';
+pathEl.style.top = '100px';
+pathEl.style.height = (stageEl.scrollHeight - 160) + 'px';
+stageEl.prepend(pathEl);
+
+// Define Pokémon Town Houses from Site Sections
+const buildingConfigs = [
+  {
+    id: 'top',
+    name: 'Pallet Town: Saltzherr Lab',
+    title: '🏠 PALLET TOWN • SALTZHERR LAB & RESIDENCE',
+    sub: 'Gameplay Programmer • Systems & Engine Architect',
+    roofGrad: 'linear-gradient(135deg, #78350f, #451a03)',
+    doorText: '🚪 WALK IN TO ENTER LAB'
+  },
+  {
+    id: 'featured',
+    name: 'Dark Throne Keep (Steam Gym)',
+    title: '⚔️ DARK THRONE KEEP • STEAM METROIDVANIA GYM',
+    sub: 'Commercial Steam Title • 4-Hit Combat State Machines',
+    roofGrad: 'linear-gradient(135deg, #b91c1c, #7f1d1d)',
+    doorText: '🚪 WALK IN TO ENTER BATTLE KEEP'
+  },
+  {
+    id: 'projects',
+    name: 'Silph Co. Cloud Automation Foundry',
+    title: '🤖 SILPH CO. CLOUD AUTOMATION FOUNDRY',
+    sub: 'GCP Cloud Run Microservices • Live Market Outlier Scrapers',
+    roofGrad: 'linear-gradient(135deg, #0369a1, #0c4a6e)',
+    doorText: '🚪 WALK IN TO ENTER CLOUD LAB'
+  },
+  {
+    id: 'skills',
+    name: 'Celadon City Tech Academy',
+    title: '📚 CELADON CITY TECH ACADEMY',
+    sub: 'Godot 4.3 • Unity • C# • Python • Docker • Cloud Run',
+    roofGrad: 'linear-gradient(135deg, #15803d, #14532d)',
+    doorText: '🚪 WALK IN TO ENTER TECH ACADEMY'
+  },
+  {
+    id: 'experience',
+    name: 'Hoenn CNC Robotics Workshop',
+    title: '🏎️ HOENN CNC ROBOTICS WORKSHOP & ARENA',
+    sub: 'FIRST Robotics FRC 2473 • Precision CNC Milling • Driver Under Pressure',
+    roofGrad: 'linear-gradient(135deg, #c2410c, #7c2d12)',
+    doorText: '🚪 WALK IN TO ENTER ROBOTICS WORKSHOP'
+  },
+  {
+    id: 'philosophy',
+    name: 'Indigo Plateau Diamond Temple',
+    title: '💎 INDIGO PLATEAU • DIAMOND MASTERY TEMPLE',
+    sub: 'Top 1% Diamond League MMR • MTG Stack Mechanics • Probability RNG',
+    roofGrad: 'linear-gradient(135deg, #b45309, #78350f)',
+    doorText: '🚪 WALK IN TO ENTER CHAMPION TEMPLE'
+  }
 ];
 
+// Wrap sections with House styling & Roof Overlays
+buildingConfigs.forEach(b => {
+  const el = document.getElementById(b.id);
+  if (el) {
+    el.classList.add('rpg-house-building');
+    const roof = document.createElement('div');
+    roof.id = 'roof-' + b.id;
+    roof.className = 'rpg-house-roof';
+    roof.style.background = b.roofGrad;
+    roof.innerHTML = `
+      <div class="roof-header">
+        <div class="roof-title">${b.title}</div>
+        <div class="roof-sub">${b.sub}</div>
+      </div>
+      <div class="roof-doorway-hint">[ ${b.doorText} ]</div>
+    `;
+    el.prepend(roof);
+  }
+});
+
+// Interactive NPCs
+const npcs = [
+  {
+    id: 'elroy',
+    name: 'Elroy Saltzherr (Gameplay Dev & Engineer)',
+    icon: '👨‍💻',
+    section: '#top',
+    text: "Welcome to my interactive portfolio town! I'm Elroy, a gameplay programmer and cloud systems architect. Walk inside each building to inspect my live steam titles, algorithm engines, and robotics engineering!"
+  },
+  {
+    id: 'roland',
+    name: 'Sir Roland (Lead Combat Dev)',
+    icon: '⚔️',
+    section: '#featured',
+    text: "Dark Throne: Blood & Gold is live on Steam! Elroy programmed my 4-hit combo chains, custom hurtbox sweeps, hitstop micro-pauses, and fluid state machines in Godot 4.3. Every sword strike has weight and impact!"
+  },
+  {
+    id: 'cipher',
+    name: 'Cipher (Autonomous Cloud Drone)',
+    icon: '🤖',
+    section: '#projects',
+    text: "Beep boop! StocksBot operates 24/7 on Google Cloud Run container clusters. Elroy engineered asynchronous Finviz scrapers catching 300%+ volume spikes and delivering Discord webhooks in sub-seconds!"
+  },
+  {
+    id: 'tutor',
+    name: 'Professor Oak / Tech Mentor',
+    icon: '🔬',
+    section: '#skills',
+    text: "Remarkable technical breadth! Elroy commands Godot GDScript, Unity C#, Python asyncio, Docker, and GCP. From 2D state machine AI to distributed microservices, he solves full-stack gameplay challenges!"
+  },
+  {
+    id: 'machinist',
+    name: 'Lead Machinist & FRC Driver',
+    icon: '🏎️',
+    section: '#experience',
+    text: "In FIRST Robotics, Elroy piloted our 120-lb robot under millisecond tournament pressure and precision-machined aluminum drivetrains on CNC mills. Real-world mechanical and algorithmic discipline!"
+  },
+  {
+    id: 'apex',
+    name: 'Apex Diamond Strategist',
+    icon: '💎',
+    section: '#philosophy',
+    text: "Top 1% Diamond rank in League of Legends requires extreme macro execution and cooldown discipline. Paired with 15+ years of competitive soccer and MTG stack mastery, competitive acumen is in his DNA!"
+  }
+];
+
+// Dialogue Speech Bubble
 let metCount = 0;
 const bubble = document.createElement('div');
 bubble.className = 'rpg-speech-bubble';
-bubble.innerHTML = '<div style="font-weight:800; color:#38bdf8; margin-bottom:6px;" id="bTitle">NPC</div><div id="bText" style="line-height:1.6; font-size:0.95rem;">Text</div><button class="btn-hud" style="margin-top:12px; width:100%;" onclick="closeBubble()">[SPACE] CLOSE</button>';
+bubble.innerHTML = `
+  <div class="dialogue-speaker" id="bTitle">NPC</div>
+  <div class="dialogue-text" id="bText">...</div>
+  <div class="dialogue-footer">
+    <span>Press [SPACE] to close</span>
+    <button class="btn-hud" style="background: #facc15; color: #000;" onclick="closeBubble()">[SPACE] CLOSE</button>
+  </div>
+`;
 document.body.appendChild(bubble);
 window.closeBubble = () => { bubble.classList.remove('active'); };
 
 function talkNpc(n) {
-  document.getElementById('bTitle').textContent = n.icon + ' ' + n.name;
+  document.getElementById('bTitle').innerHTML = `${n.icon} ${n.name}`;
   document.getElementById('bText').textContent = n.text;
   bubble.classList.add('active');
   sfx.playTone(660, 0.12, 'square');
-  if (!n.met) { n.met = true; metCount++; document.getElementById('rpgMet').textContent = `${metCount}/4`; }
+  if (!n.met) {
+    n.met = true;
+    metCount++;
+    const metEl = document.getElementById('rpgMet');
+    if (metEl) metEl.textContent = `${metCount}/${npcs.length}`;
+  }
+}
+
+// Roaming Shiny Pokémon in the Meadow Outside
+const shinyMons = [
+  { name: 'Marshadow ✨', x: 220, y: 720, vx: 0.6, icon: '🥋' },
+  { name: 'Rayquaza ✨', x: 780, y: 1040, vx: -0.7, icon: '🐉' },
+  { name: 'Lucario ✨', x: 200, y: 1400, vx: 0.8, icon: '🐺' },
+  { name: 'Charizard ✨', x: 800, y: 1750, vx: -0.6, icon: '🔥' },
+  { name: 'Gengar ✨', x: 240, y: 2100, vx: 0.7, icon: '👻' }
+];
+
+// Hero Player
+const hero = {
+  x: window.innerWidth / 2,
+  worldY: 220,
+  speed: 5.5,
+  facing: 'down',
+  stepTick: 0
+};
+
+const keys = {};
+window.addEventListener('keydown', e => {
+  keys[e.key] = true;
+  if (['ArrowUp','ArrowDown',' '].includes(e.key)) e.preventDefault();
+  if (e.key === ' ' || e.key === 'e' || e.key === 'E') {
+    if (bubble.classList.contains('active')) {
+      closeBubble();
+    } else {
+      checkNpcInteraction();
+    }
+  }
+});
+window.addEventListener('keyup', e => { keys[e.key] = false; });
+
+function checkNpcInteraction() {
+  npcs.forEach(n => {
+    const el = document.querySelector(n.section);
+    if (!el) return;
+    const nx = el.offsetLeft + 50;
+    const ny = el.offsetTop + 60;
+    if (Math.hypot(hero.x - nx, hero.worldY - ny) < 85) {
+      talkNpc(n);
+    }
+  });
 }
 
 function updateRpg() {
-  if (keys['w'] || keys['W'] || keys['ArrowUp']) hero.worldY -= hero.speed;
-  if (keys['s'] || keys['S'] || keys['ArrowDown']) hero.worldY += hero.speed;
-  if (keys['a'] || keys['A'] || keys['ArrowLeft']) hero.x -= hero.speed;
-  if (keys['d'] || keys['D'] || keys['ArrowRight']) hero.x += hero.speed;
+  let moved = false;
+  if (keys['w'] || keys['W'] || keys['ArrowUp']) { hero.worldY -= hero.speed; hero.facing = 'up'; moved = true; }
+  if (keys['s'] || keys['S'] || keys['ArrowDown']) { hero.worldY += hero.speed; hero.facing = 'down'; moved = true; }
+  if (keys['a'] || keys['A'] || keys['ArrowLeft']) { hero.x -= hero.speed; hero.facing = 'left'; moved = true; }
+  if (keys['d'] || keys['D'] || keys['ArrowRight']) { hero.x += hero.speed; hero.facing = 'right'; moved = true; }
 
-  hero.x = Math.max(30, Math.min(window.innerWidth - 30, hero.x));
-  hero.worldY = Math.max(100, Math.min(stage.scrollHeight - 50, hero.worldY));
+  if (moved) {
+    hero.stepTick++;
+    if (hero.stepTick % 18 === 0) sfx.playTone(180, 0.03, 'sine', 0.02);
+  }
+
+  hero.x = Math.max(40, Math.min(window.innerWidth - 40, hero.x));
+  hero.worldY = Math.max(100, Math.min(stageEl.scrollHeight - 60, hero.worldY));
 
   // Smooth virtual camera (No scrollbar!)
   updateCamera(hero.worldY);
 
-  // Proximity check
-  npcs.forEach(n => {
-    const el = document.querySelector(n.section);
+  // Check which building hero is inside (Smooth Roof Transparency)
+  let currentLoc = "OUTSIDE MEADOW";
+  buildingConfigs.forEach(b => {
+    const el = document.getElementById(b.id);
     if (!el) return;
-    const nx = el.offsetLeft + 40;
-    const ny = el.offsetTop + 60;
-    if (Math.hypot(hero.x - nx, hero.worldY - ny) < 80) {
-      if (keys[' '] && !bubble.classList.contains('active')) {
-        talkNpc(n);
-      }
+    const top = el.offsetTop;
+    const height = el.offsetHeight;
+    const left = el.offsetLeft;
+    const width = el.offsetWidth;
+
+    const isInside = (
+      hero.x >= left - 20 &&
+      hero.x <= left + width + 20 &&
+      hero.worldY >= top &&
+      hero.worldY <= top + height
+    );
+
+    const roof = document.getElementById('roof-' + b.id);
+    if (isInside) {
+      if (roof) roof.style.opacity = '0.05';
+      el.classList.add('inside-active');
+      currentLoc = b.name;
+    } else {
+      if (roof) roof.style.opacity = '0.98';
+      el.classList.remove('inside-active');
     }
+  });
+
+  const locEl = document.getElementById('rpgLocation');
+  if (locEl) {
+    if (currentLoc === "OUTSIDE MEADOW") {
+      locEl.textContent = '🌲 OUTSIDE MEADOW';
+      locEl.style.color = '#4ade80';
+    } else {
+      locEl.textContent = `📍 INSIDE: ${currentLoc}`;
+      locEl.style.color = '#facc15';
+    }
+  }
+
+  // Update Roaming Shiny Pokémon
+  shinyMons.forEach(m => {
+    m.x += m.vx;
+    if (m.x < 120 || m.x > window.innerWidth - 120) m.vx *= -1;
   });
 }
 
@@ -2085,34 +2449,58 @@ function drawRpg() {
   rCtx.clearRect(0, 0, rCanvas.width, rCanvas.height);
   const sy = hero.worldY - camY;
 
+  // Draw Shiny Pokémon
+  shinyMons.forEach(m => {
+    const my = m.y - camY;
+    if (my > -40 && my < window.innerHeight + 40) {
+      rCtx.save();
+      rCtx.shadowColor = '#facc15';
+      rCtx.shadowBlur = 14;
+      rCtx.font = '22px sans-serif';
+      rCtx.textAlign = 'center';
+      rCtx.fillText(m.icon, m.x, my);
+      rCtx.font = '8px "Press Start 2P"';
+      rCtx.fillStyle = '#facc15';
+      rCtx.fillText(m.name, m.x, my - 18);
+      rCtx.restore();
+    }
+  });
+
   // Draw NPCs at world locations
   npcs.forEach(n => {
     const el = document.querySelector(n.section);
     if (el) {
-      const nx = el.offsetLeft + 40;
+      const nx = el.offsetLeft + 50;
       const ny = el.offsetTop + 60 - camY;
       if (ny > -50 && ny < window.innerHeight + 50) {
+        rCtx.save();
         rCtx.fillStyle = '#0f172a';
-        rCtx.beginPath(); rCtx.arc(nx, ny, 20, 0, Math.PI * 2); rCtx.fill();
-        rCtx.strokeStyle = '#38bdf8'; rCtx.lineWidth = 2; rCtx.stroke();
-        rCtx.font = '20px sans-serif'; rCtx.textAlign = 'center'; rCtx.textBaseline = 'middle';
+        rCtx.beginPath(); rCtx.arc(nx, ny, 22, 0, Math.PI * 2); rCtx.fill();
+        rCtx.strokeStyle = '#38bdf8'; rCtx.lineWidth = 3; rCtx.stroke();
+        rCtx.font = '22px sans-serif'; rCtx.textAlign = 'center'; rCtx.textBaseline = 'middle';
         rCtx.fillText(n.icon, nx, ny);
 
-        if (Math.hypot(hero.x - nx, sy - ny) < 80) {
+        if (Math.hypot(hero.x - nx, sy - ny) < 85) {
           rCtx.fillStyle = '#fbbf24'; rCtx.font = '9px "Press Start 2P"';
-          rCtx.fillText('[SPACE TO TALK]', nx, ny - 30);
+          rCtx.fillText('[SPACE TO TALK]', nx, ny - 32);
         }
+        rCtx.restore();
       }
     }
   });
 
-  // Draw Hero
-  rCtx.fillStyle = '#10b981';
-  rCtx.shadowColor = '#10b981'; rCtx.shadowBlur = 10;
-  rCtx.beginPath(); rCtx.arc(hero.x, sy, 15, 0, Math.PI * 2); rCtx.fill();
-  rCtx.fillStyle = '#f8fafc';
-  rCtx.fillRect(hero.x - 3, sy - 6, 6, 6);
-  rCtx.shadowBlur = 0;
+  // Draw Hero Player
+  rCtx.save();
+  rCtx.shadowColor = '#22c55e';
+  rCtx.shadowBlur = 12;
+  rCtx.fillStyle = '#15803d';
+  rCtx.beginPath(); rCtx.arc(hero.x, sy, 16, 0, Math.PI * 2); rCtx.fill();
+  rCtx.fillStyle = '#facc15';
+  rCtx.beginPath(); rCtx.arc(hero.x, sy - 4, 9, 0, Math.PI * 2); rCtx.fill();
+  // Hero Cap & Direction Visor
+  rCtx.fillStyle = '#dc2626';
+  rCtx.fillRect(hero.x - 7, sy - 14, 14, 6);
+  rCtx.restore();
 }
 
 function loopRpg() {
