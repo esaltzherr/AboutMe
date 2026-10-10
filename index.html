@@ -356,69 +356,6 @@
       color: var(--text);
     }
 
-    /* Target Studios Banner */
-    .studios-banner {
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid var(--card-border);
-      border-radius: 18px;
-      padding: 16px 28px;
-      margin: 20px 0 0 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
-    .studios-banner-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .studios-banner-label {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 700;
-    }
-
-    .studio-tags {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .studio-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-weight: 700;
-    }
-
-    .studio-riot {
-      background: rgba(239, 68, 68, 0.12);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #f87171;
-    }
-
-    .studio-wotc {
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      color: #fbbf24;
-    }
-
-    .studio-nintendo {
-      background: rgba(239, 68, 68, 0.12);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #fca5a5;
-    }
-
     /* Sections Shared */
     section {
       padding: 70px 0;
@@ -690,102 +627,6 @@
       color: #7dd3fc;
     }
 
-    /* Gamer DNA & Systems Philosophy Section */
-    .dna-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-    }
-
-    .dna-card {
-      background: linear-gradient(145deg, #131c31 0%, #0c1220 100%);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 28px;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.2s, border-color 0.2s;
-    }
-
-    .dna-card:hover {
-      transform: translateY(-3px);
-      border-color: #334155;
-    }
-
-    .dna-card-header {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 16px;
-    }
-
-    .dna-icon-badge {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
-    }
-
-    .dna-title {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: #ffffff;
-    }
-
-    .dna-sub {
-      font-size: 0.8rem;
-      color: var(--cyan);
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .dna-desc {
-      font-size: 0.92rem;
-      color: var(--text-muted);
-      line-height: 1.7;
-      margin-bottom: 18px;
-    }
-
-    .dna-highlight-box {
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 12px;
-      padding: 14px 16px;
-      font-size: 0.84rem;
-      color: #e2e8f0;
-      line-height: 1.6;
-    }
-
-    .dna-highlight-title {
-      font-size: 0.75rem;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .pokemon-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .pokemon-chip {
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      color: #fbbf24;
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 6px;
-    }
-
     /* Skills Grid */
     .skills-grid {
       display: grid;
@@ -916,6 +757,130 @@
       line-height: 1.7;
     }
 
+    /* Gamer DNA & Systems Philosophy Section */
+    .dna-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .dna-card {
+      background: linear-gradient(145deg, #131c31 0%, #0c1220 100%);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .dna-card:hover {
+      transform: translateY(-3px);
+      border-color: #334155;
+    }
+
+    .dna-card-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .dna-icon-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .dna-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .dna-sub {
+      font-size: 0.8rem;
+      color: var(--cyan);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .dna-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .dna-highlight-box {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 0.84rem;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+
+    .dna-highlight-title {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .pokemon-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .pokemon-card {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(251, 191, 36, 0.25);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .pokemon-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+
+    .pokemon-img {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 8px rgba(251, 191, 36, 0.3));
+    }
+
+    .pokemon-info-name {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pokemon-info-sub {
+      font-size: 0.72rem;
+      color: var(--gold);
+      font-weight: 600;
+    }
+
     /* Resume Downloads Bar */
     .resume-bar {
       background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
@@ -1010,6 +975,7 @@
       .featured-project-card { grid-template-columns: 1fr; }
       .featured-media { min-height: 250px; }
       .nav-links { display: none; }
+      .pokemon-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -1027,10 +993,10 @@
       </a>
       <ul class="nav-links">
         <li><a href="#featured">Steam Project</a></li>
-        <li><a href="#projects">All Games</a></li>
-        <li><a href="#philosophy">Systems & Passion</a></li>
+        <li><a href="#projects">Games & Systems</a></li>
         <li><a href="#skills">Skills</a></li>
         <li><a href="#experience">Experience</a></li>
+        <li><a href="#philosophy">Systems & DNA</a></li>
         <li><a href="#resumes">Resumes</a></li>
         <li><a href="mailto:lsaltzherr@gmail.com" class="btn-nav-cta">Get in Touch</a></li>
       </ul>
@@ -1050,7 +1016,7 @@
             Engineering responsive, scalable <span class="hero-gradient-text">gameplay systems</span> & immersive combat.
           </h1>
           <p>
-            Hi, I’m <strong>Elroy Saltzherr</strong>. I design and program combat architectures, progression loops, and custom designer tools in Unity (C#) and Unreal Engine. Lead Developer of <em>Dark Throne</em> on Steam with a passion for combat feel, balance tuning, card game economics, and game AI.
+            Hi, I’m <strong>Elroy Saltzherr</strong>. I design and program combat architectures, progression loops, and custom designer tools in Unity (C#) and Unreal Engine. Lead Developer of <em>Dark Throne</em> on Steam with a passion for combat feel, balance tuning, AI pipelines, and cloud automation.
           </p>
           <div class="hero-actions">
             <a href="#featured" class="btn btn-primary">🎮 View Shipped Work</a>
@@ -1093,19 +1059,6 @@
               <span class="meta-val">League of Legends (Diamond)</span>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- Target Studios Banner -->
-      <div class="studios-banner">
-        <div class="studios-banner-left">
-          <span style="font-size: 1.2rem;">🎯</span>
-          <span class="studios-banner-label">Target Studios & Ambition:</span>
-        </div>
-        <div class="studio-tags">
-          <span class="studio-tag studio-riot">⚔️ Riot Games (LoL / 2XKO)</span>
-          <span class="studio-tag studio-wotc">🃏 Wizards of the Coast (MTG)</span>
-          <span class="studio-tag studio-nintendo">🔴 Nintendo / Pokémon</span>
         </div>
       </div>
     </div>
@@ -1159,9 +1112,9 @@
     <div class="container">
       <div class="section-header">
         <span class="section-eyebrow">Portfolio Work</span>
-        <h2 class="section-title">Games & Interactive Systems</h2>
+        <h2 class="section-title">Games, Systems & Automation</h2>
         <p class="section-subtitle">
-          From fast-paced browser games to competitive game jam prototypes, tactical AI, and card tools.
+          From fast-paced browser games to competitive game jam prototypes and high-throughput enterprise automation.
         </p>
       </div>
 
@@ -1170,7 +1123,7 @@
         <button class="filter-btn active" onclick="filterProjects('all')">All Projects</button>
         <button class="filter-btn" onclick="filterProjects('jam')">Game Jams</button>
         <button class="filter-btn" onclick="filterProjects('browser')">Browser & Web</button>
-        <button class="filter-btn" onclick="filterProjects('systems')">AI & Tools</button>
+        <button class="filter-btn" onclick="filterProjects('tools')">Cloud & Automation</button>
       </div>
 
       <div class="projects-grid">
@@ -1294,50 +1247,27 @@
           </div>
         </div>
 
-        <!-- Project: Planet Wars Behavior Tree Bot -->
-        <div class="project-card" data-category="systems">
-          <div class="project-card-media" style="background: linear-gradient(135deg, #1e1b4b 0%, #0c1222 100%); display: flex; align-items: center; justify-content: center; font-size: 3rem;">
-            🪐
-            <span class="project-tag">Tactical AI Bot</span>
+        <!-- Project: E-Commerce AI & Automation Pipeline -->
+        <div class="project-card" data-category="tools">
+          <div class="project-card-media" style="background: linear-gradient(135deg, #064e3b 0%, #0c1222 100%); display: flex; align-items: center; justify-content: center; font-size: 3rem;">
+            ⚡
+            <span class="project-tag">AI & Cloud Pipeline</span>
           </div>
           <div class="project-card-body">
-            <h3 class="project-card-title">Planet Wars AI Bot</h3>
-            <div class="project-card-sub">Behavior Trees • Tactical Scoring • Python</div>
+            <h3 class="project-card-title">E-Commerce AI & Automation</h3>
+            <div class="project-card-sub">Cloud Microservice • Python & AI Integration</div>
             <p class="project-card-desc">
-              Autonomous fleet commander AI utilizing hierarchical Behavior Trees (Selectors, Sequences, Conditions, Inverters) to evaluate planetary expansion, strategic reinforcement, and defensive maneuvering.
+              High-throughput automation suite for international retail stores (Jambelles & LongboardsUSA). Built and deployed a containerized Google Cloud Run service serving ~900 users across 3,000+ interactions, slashing multi-hour catalog tasks to 10 minutes with AI-assisted data validation and webhook orchestration.
             </p>
             <div class="tech-pill-row">
-              <span class="tech-pill">Behavior Trees</span>
-              <span class="tech-pill">Tactical Scoring</span>
               <span class="tech-pill">Python</span>
+              <span class="tech-pill">Google Cloud Run</span>
+              <span class="tech-pill">AI Automation</span>
+              <span class="tech-pill">REST APIs</span>
             </div>
             <div class="project-card-footer">
-              <a href="https://github.com/esaltzherr/Plantet-Wars-behavior-tree-bot" target="_blank" class="project-link-btn">View Bot Source →</a>
-              <span class="mono" style="font-size: 0.76rem; color: var(--text-dim);">Game AI</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Project: MTG Bluetooth Counters Tracker -->
-        <div class="project-card" data-category="systems">
-          <div class="project-card-media" style="background: linear-gradient(135deg, #451a03 0%, #0c1222 100%); display: flex; align-items: center; justify-content: center; font-size: 3rem;">
-            🃏
-            <span class="project-tag">Card Game Tool</span>
-          </div>
-          <div class="project-card-body">
-            <h3 class="project-card-title">MTG Counters App</h3>
-            <div class="project-card-sub">Hardware Integration • Bluetooth Device Sync</div>
-            <p class="project-card-desc">
-              Companion app designed to connect via Bluetooth to custom physical devices that replace dice for complex Magic: The Gathering board states with heavy +1/+1 and counter tracking.
-            </p>
-            <div class="tech-pill-row">
-              <span class="tech-pill">Hardware Sync</span>
-              <span class="tech-pill">Bluetooth</span>
-              <span class="tech-pill">Game Ergonomics</span>
-            </div>
-            <div class="project-card-footer">
-              <a href="https://github.com/esaltzherr/MTG-Counters-App" target="_blank" class="project-link-btn">View App Repo →</a>
-              <a href="https://github.com/esaltzherr/MTGCheap" target="_blank" style="color: var(--text-dim); text-decoration: none; font-size: 0.8rem;">MTGCheap</a>
+              <span class="mono" style="font-size: 0.85rem; color: #34d399; font-weight: 700;">Deployed on GCP</span>
+              <span class="mono" style="font-size: 0.76rem; color: var(--text-dim);">~900 Users</span>
             </div>
           </div>
         </div>
@@ -1345,8 +1275,160 @@
     </div>
   </section>
 
-  <!-- Gamer DNA & Systems Philosophy -->
-  <section id="philosophy" style="background: rgba(15, 23, 42, 0.4);">
+  <!-- Technical Skills -->
+  <section id="skills">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Core Competencies</span>
+        <h2 class="section-title">Technical Skills & Toolset</h2>
+        <p class="section-subtitle">
+          Solid computer science foundation backed by hands-on game development, AI pipelines, and systems engineering.
+        </p>
+      </div>
+
+      <div class="skills-grid">
+        <div class="skill-card">
+          <div class="skill-card-icon">⚡</div>
+          <h3 class="skill-card-title">Languages</h3>
+          <ul class="skill-list">
+            <li><span class="skill-bullet"></span> C# (Primary Engine Language)</li>
+            <li><span class="skill-bullet"></span> C++ (Game Systems & Data Structs)</li>
+            <li><span class="skill-bullet"></span> Python (Automation, AI, Scripting)</li>
+            <li><span class="skill-bullet"></span> JavaScript / TypeScript</li>
+            <li><span class="skill-bullet"></span> SQL (Database & State Persistence)</li>
+          </ul>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-icon">🎮</div>
+          <h3 class="skill-card-title">Engines & Tech</h3>
+          <ul class="skill-list">
+            <li><span class="skill-bullet"></span> Unity (2D / 3D, Physics, Animation)</li>
+            <li><span class="skill-bullet"></span> Unreal Engine (Blueprints & C++)</li>
+            <li><span class="skill-bullet"></span> Phaser.js / HTML5 Canvas</li>
+            <li><span class="skill-bullet"></span> ShaderLab / Custom Shaders</li>
+            <li><span class="skill-bullet"></span> Steamworks SDK Integration</li>
+          </ul>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-icon">🎯</div>
+          <h3 class="skill-card-title">Gameplay & Design</h3>
+          <ul class="skill-list">
+            <li><span class="skill-bullet"></span> Combat Cadence & Ability Tuning</li>
+            <li><span class="skill-bullet"></span> Progression & Economy Balancing</li>
+            <li><span class="skill-bullet"></span> Finite State Machines & Behavior Trees</li>
+            <li><span class="skill-bullet"></span> Custom In-Engine Designer Tools</li>
+            <li><span class="skill-bullet"></span> Playtest Telemetry & Bug Tracking</li>
+          </ul>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-icon">🛠️</div>
+          <h3 class="skill-card-title">AI, Cloud & Tools</h3>
+          <ul class="skill-list">
+            <li><span class="skill-bullet"></span> AI-Driven Workflows & Automation</li>
+            <li><span class="skill-bullet"></span> Git / GitHub (Version Control)</li>
+            <li><span class="skill-bullet"></span> Google Cloud Platform (VM, Cloud Run)</li>
+            <li><span class="skill-bullet"></span> Visual Studio / VS Code</li>
+            <li><span class="skill-bullet"></span> Linux / Docker / Shell Scripting</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Work Experience -->
+  <section id="experience">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Work History</span>
+        <h2 class="section-title">Industry & Engineering Experience</h2>
+        <p class="section-subtitle">
+          Proven track record in autonomous systems, robotics, AI-driven automation, and shipped titles.
+        </p>
+      </div>
+
+      <div class="timeline">
+        <!-- Experience: Skild.AI -->
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <div>
+                <div class="timeline-role">VR Robot Operator</div>
+                <div class="timeline-company">Skild.AI • San Mateo, CA</div>
+              </div>
+              <div class="timeline-date">Jan 2026 – Present</div>
+            </div>
+            <ul class="timeline-points">
+              <li>Operate and monitor advanced VR-controlled robotic systems in dynamic real-time environments.</li>
+              <li>Troubleshoot system anomalies, identifying discrepancies in tele-operation and validating robotic AI policy behavior.</li>
+              <li>Train new operators on performance standards, data validation workflows, and safety procedures.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Experience: Dark Throne -->
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <div>
+                <div class="timeline-role">Lead Programmer & Game Designer</div>
+                <div class="timeline-company">Steam Release (Dark Throne) • Santa Cruz, CA</div>
+              </div>
+              <div class="timeline-date">Mar 2024 – Jun 2024</div>
+            </div>
+            <ul class="timeline-points">
+              <li>Architected and shipped a complete 2D Metroidvania on Steam with "Mostly Positive" user reviews.</li>
+              <li>Authored modular combat systems, player movement abilities, enemy AI behavior graphs, and custom save states.</li>
+              <li>Conducted structured playtesting sessions to iterate on difficulty curves, combat frame pacing, and boss mechanics.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Experience: Jambelles / LongboardsUSA -->
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <div>
+                <div class="timeline-role">Automation Engineer</div>
+                <div class="timeline-company">Jambelles.nl & LongboardsUSA.com • Remote</div>
+              </div>
+              <div class="timeline-date">May 2025 – Jan 2026</div>
+            </div>
+            <ul class="timeline-points">
+              <li>Engineered Python automation scripts and AI workflows that reduced multi-hour manual publishing pipelines down to 10 minutes.</li>
+              <li>Architected and deployed a containerized Google Cloud Run feature serving ~900 users across 3,000+ interactions.</li>
+              <li>Built data-validation pipelines to ensure cross-platform catalog integrity and automated QA test passes.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Education: UC Santa Cruz -->
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--cyan);"></div>
+          <div class="timeline-card">
+            <div class="timeline-header">
+              <div>
+                <div class="timeline-role">B.S. in Computer Science: Game Design</div>
+                <div class="timeline-company">University of California, Santa Cruz (UCSC)</div>
+              </div>
+              <div class="timeline-date">Sep 2020 – Jun 2024</div>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 10px;">
+              Rigorous game development curriculum spanning gameplay engineering, creative coding, game AI, procedural generation, sound design, and interdisciplinary team game production.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gamer DNA & Systems Philosophy (Placed near bottom) -->
+  <section id="philosophy" style="background: rgba(15, 23, 42, 0.45);">
     <div class="container">
       <div class="section-header">
         <span class="section-eyebrow">Player DNA & Design Mindset</span>
@@ -1406,12 +1488,40 @@
             Lifelong Pokémon player fascinated by encounter probability, shiny odds distribution curves, and unique battle gimmick mechanics (stat thresholds, ability triggers, form changes).
           </p>
           <div class="dna-highlight-box">
-            <div class="dna-highlight-title">Favorite Shiny Signatures:</div>
-            <div class="pokemon-list">
-              <span class="pokemon-chip">✨ Shiny Marshadow</span>
-              <span class="pokemon-chip">✨ Shiny Wishiwashi (Schooling)</span>
-              <span class="pokemon-chip">✨ Shiny Perrserker</span>
-              <span class="pokemon-chip">✨ Shiny Mega Golisopod (Emergency Exit)</span>
+            <div class="dna-highlight-title">Favorite Pokémon (All Shiny):</div>
+            <div class="pokemon-grid">
+              <!-- Marshadow -->
+              <div class="pokemon-card">
+                <img src="images/pokemon/marshadow_highres.png" alt="Shiny Marshadow" class="pokemon-img" />
+                <div>
+                  <div class="pokemon-info-name">Marshadow ✨</div>
+                  <div class="pokemon-info-sub">Ghost / Fighting</div>
+                </div>
+              </div>
+              <!-- Wishiwashi -->
+              <div class="pokemon-card">
+                <img src="images/pokemon/wishiwashi_highres.png" alt="Shiny Wishiwashi" class="pokemon-img" />
+                <div>
+                  <div class="pokemon-info-name">Wishiwashi ✨</div>
+                  <div class="pokemon-info-sub">Schooling Form</div>
+                </div>
+              </div>
+              <!-- Perrserker -->
+              <div class="pokemon-card">
+                <img src="images/pokemon/perrserker_highres.png" alt="Shiny Perrserker" class="pokemon-img" />
+                <div>
+                  <div class="pokemon-info-name">Perrserker ✨</div>
+                  <div class="pokemon-info-sub">Steely Spirit</div>
+                </div>
+              </div>
+              <!-- Golisopod -->
+              <div class="pokemon-card">
+                <img src="images/pokemon/golisopod_highres.png" alt="Shiny Golisopod" class="pokemon-img" />
+                <div>
+                  <div class="pokemon-info-name">Golisopod ✨</div>
+                  <div class="pokemon-info-sub">Emergency Exit</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1431,158 +1541,6 @@
           <div class="dna-highlight-box">
             <div class="dna-highlight-title">Teamwork Under Pressure:</div>
             Translating complex game rules into real-time physical strategies, split-second spatial tracking, and seamless cross-disciplinary communication under competitive tournament deadlines.
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Technical Skills -->
-  <section id="skills">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-eyebrow">Core Competencies</span>
-        <h2 class="section-title">Technical Skills & Toolset</h2>
-        <p class="section-subtitle">
-          Solid computer science foundation backed by hands-on game development and systems engineering.
-        </p>
-      </div>
-
-      <div class="skills-grid">
-        <div class="skill-card">
-          <div class="skill-card-icon">⚡</div>
-          <h3 class="skill-card-title">Languages</h3>
-          <ul class="skill-list">
-            <li><span class="skill-bullet"></span> C# (Primary Engine Language)</li>
-            <li><span class="skill-bullet"></span> C++ (Game Systems & Data Structs)</li>
-            <li><span class="skill-bullet"></span> Python (Automation, AI, Scripting)</li>
-            <li><span class="skill-bullet"></span> JavaScript / TypeScript</li>
-            <li><span class="skill-bullet"></span> SQL (Database & State Persistence)</li>
-          </ul>
-        </div>
-
-        <div class="skill-card">
-          <div class="skill-card-icon">🎮</div>
-          <h3 class="skill-card-title">Engines & Tech</h3>
-          <ul class="skill-list">
-            <li><span class="skill-bullet"></span> Unity (2D / 3D, Physics, Animation)</li>
-            <li><span class="skill-bullet"></span> Unreal Engine (Blueprints & C++)</li>
-            <li><span class="skill-bullet"></span> Phaser.js / HTML5 Canvas</li>
-            <li><span class="skill-bullet"></span> ShaderLab / Custom Shaders</li>
-            <li><span class="skill-bullet"></span> Steamworks SDK Integration</li>
-          </ul>
-        </div>
-
-        <div class="skill-card">
-          <div class="skill-card-icon">🎯</div>
-          <h3 class="skill-card-title">Gameplay & Design</h3>
-          <ul class="skill-list">
-            <li><span class="skill-bullet"></span> Combat Cadence & Ability Tuning</li>
-            <li><span class="skill-bullet"></span> Progression & Economy Balancing</li>
-            <li><span class="skill-bullet"></span> Finite State Machines & Behavior Trees</li>
-            <li><span class="skill-bullet"></span> Custom In-Engine Designer Tools</li>
-            <li><span class="skill-bullet"></span> Playtest Telemetry & Bug Tracking</li>
-          </ul>
-        </div>
-
-        <div class="skill-card">
-          <div class="skill-card-icon">🛠️</div>
-          <h3 class="skill-card-title">Tools & Infrastructure</h3>
-          <ul class="skill-list">
-            <li><span class="skill-bullet"></span> Git / GitHub (Version Control)</li>
-            <li><span class="skill-bullet"></span> Google Cloud Platform (VM, Run)</li>
-            <li><span class="skill-bullet"></span> Visual Studio / VS Code</li>
-            <li><span class="skill-bullet"></span> Linux / Bash / Automation</li>
-            <li><span class="skill-bullet"></span> SolidWorks CAD (Physical Prototyping)</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Work Experience -->
-  <section id="experience">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-eyebrow">Work History</span>
-        <h2 class="section-title">Industry & Engineering Experience</h2>
-        <p class="section-subtitle">
-          Proven track record in autonomous systems, robotics, high-traffic automation, and shipped titles.
-        </p>
-      </div>
-
-      <div class="timeline">
-        <!-- Experience: Skild.AI -->
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="timeline-card">
-            <div class="timeline-header">
-              <div>
-                <div class="timeline-role">VR Robot Operator</div>
-                <div class="timeline-company">Skild.AI • San Mateo, CA</div>
-              </div>
-              <div class="timeline-date">Jan 2026 – Present</div>
-            </div>
-            <ul class="timeline-points">
-              <li>Operate and monitor advanced VR-controlled robotic systems in dynamic real-time environments.</li>
-              <li>Troubleshoot system anomalies, identifying discrepancies in tele-operation and validating robotic policy behavior.</li>
-              <li>Train new operators on performance standards, data validation workflows, and safety procedures.</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Experience: Dark Throne -->
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="timeline-card">
-            <div class="timeline-header">
-              <div>
-                <div class="timeline-role">Lead Programmer & Game Designer</div>
-                <div class="timeline-company">Steam Release (Dark Throne) • Santa Cruz, CA</div>
-              </div>
-              <div class="timeline-date">Mar 2024 – Jun 2024</div>
-            </div>
-            <ul class="timeline-points">
-              <li>Architected and shipped a complete 2D Metroidvania on Steam with "Mostly Positive" user reviews.</li>
-              <li>Authored modular combat systems, player movement abilities, enemy AI behavior graphs, and custom save states.</li>
-              <li>Conducted structured playtesting sessions to iterate on difficulty curves, combat frame pacing, and boss mechanics.</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Experience: Jambelles / LongboardsUSA -->
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="timeline-card">
-            <div class="timeline-header">
-              <div>
-                <div class="timeline-role">Automation Engineer</div>
-                <div class="timeline-company">Jambelles.nl & LongboardsUSA.com • Remote</div>
-              </div>
-              <div class="timeline-date">May 2025 – Jan 2026</div>
-            </div>
-            <ul class="timeline-points">
-              <li>Engineered Python automation scripts that reduced multi-hour manual publishing pipelines down to 10 minutes.</li>
-              <li>Architected and deployed a containerized Google Cloud Run feature serving ~900 users across 3,000+ interactions.</li>
-              <li>Built data-validation pipelines to ensure cross-platform catalog integrity and automated QA test passes.</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Education: UC Santa Cruz -->
-        <div class="timeline-item">
-          <div class="timeline-dot" style="background: var(--cyan);"></div>
-          <div class="timeline-card">
-            <div class="timeline-header">
-              <div>
-                <div class="timeline-role">B.S. in Computer Science: Game Design</div>
-                <div class="timeline-company">University of California, Santa Cruz (UCSC)</div>
-              </div>
-              <div class="timeline-date">Sep 2020 – Jun 2024</div>
-            </div>
-            <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 10px;">
-              Rigorous game development curriculum spanning gameplay engineering, creative coding, game AI, procedural generation, sound design, and interdisciplinary team game production.
-            </p>
           </div>
         </div>
       </div>
