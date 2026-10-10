@@ -1,19 +1,23 @@
 /* =========================================================
-   ELROY SALTZHERR • PORTFOLIO HOVER EASTER EGGS ENGINE v3.0
+   ELROY SALTZHERR • PORTFOLIO HOVER EASTER EGGS ENGINE v4.0
    Tactile, responsive, perfectly positioned micro-interactions:
-   - UCSC Banana Slug peek
-   - Dark Throne dynamic mouse flashlight
-   - Building Scaler 2D physics block collisions
-   - Possession Escape readable chase
-   - E-Commerce top fountain burst with random angles
-   - Authentic League of Legends Mastery 7 crest
-   - Authentic Magic: The Gathering Counterspell card
-   - Pokémon Click-to-Catch with low catch rates & temporary vanish
-   - Sports visual Soccer Goal & Basketball Hoop animations
+   - Secret Tracker HUD: 0/18 Discovered
+   - UCSC Banana Slug peek directly above UCSC (no long text)
+   - Dark Throne dynamic mouse flashlight in darkness
+   - Building Scaler persistent multi-instance 2D physics blocks
+   - The Last Ember impactful flames & rising embers (fixed layout)
+   - Possession Escape readable corridor chase with "AHHHHHH!!!!!"
+   - E-Commerce top-origin randomized angle merchandise fountain (lasts longer)
+   - All 4 Technical Skills & Toolset interactive effects
+   - League of Legends official Mastery 7 crest (clean, no 1% text)
+   - Magic: The Gathering Counterspell card peeking from the corner
+   - Pokémon Hover-to-Catch with low catch rates, breakouts & temporary vanish
+   - Competitive Robotics FRC Driver Station (fixed positioning)
+   - Sports Visual Soccer Goal & Basketball Hoop (fixed positioning)
    ========================================================= */
 
 (function initEasterEggs() {
-  // Web Audio Synthesizer for rich dynamic SFX
+  // Web Audio Synthesizer
   class EggAudio {
     constructor() { this.ctx = null; }
     init() {
@@ -36,28 +40,21 @@
       } catch(e) {}
     }
 
-    // UCSC Slug Squeak
     playSlug() {
       this.init();
       this.playTone(660, 0.08, 'sine', 0.08);
       setTimeout(() => this.playTone(880, 0.12, 'triangle', 0.1), 70);
     }
-
-    // Hello Chime
     playHello() {
       this.init();
       this.playTone(523.25, 0.08, 'triangle', 0.1);
       setTimeout(() => this.playTone(659.25, 0.14, 'triangle', 0.12), 70);
     }
-
-    // Dark Throne Torch Light Ambient
     playTorchIgnite() {
       this.init();
-      this.playTone(180, 0.3, 'sawtooth', 0.04);
-      setTimeout(() => this.playTone(220, 0.4, 'sine', 0.05), 100);
+      this.playTone(180, 0.25, 'sawtooth', 0.04);
+      setTimeout(() => this.playTone(220, 0.35, 'sine', 0.05), 100);
     }
-
-    // Gunshot & Ricochet
     playGunshot() {
       this.init();
       this.playTone(320, 0.05, 'sawtooth', 0.18);
@@ -67,33 +64,23 @@
       this.init();
       this.playTone(800 + Math.random() * 400, 0.06, 'triangle', 0.08);
     }
-
-    // Pencil Eraser
     playErase() {
       this.init();
       for (let i = 0; i < 4; i++) {
-        setTimeout(() => {
-          this.playTone(160 + (i % 2) * 40, 0.04, 'sawtooth', 0.03);
-        }, i * 60);
+        setTimeout(() => this.playTone(160 + (i % 2) * 40, 0.04, 'sawtooth', 0.03), i * 60);
       }
     }
-
-    // Physics Block Clack
     playBlockClack() {
       this.init();
-      this.playTone(260 + Math.random() * 120, 0.05, 'triangle', 0.1);
-      setTimeout(() => this.playTone(140, 0.08, 'sine', 0.08), 20);
+      this.playTone(260 + Math.random() * 120, 0.04, 'triangle', 0.1);
+      setTimeout(() => this.playTone(140, 0.07, 'sine', 0.08), 20);
     }
-
-    // Fire Embers
     playFireCrackling() {
       this.init();
       for (let i = 0; i < 3; i++) {
         setTimeout(() => this.playTone(400 + Math.random() * 300, 0.08, 'sine', 0.03), i * 80);
       }
     }
-
-    // Ghost Chase
     playGhostChase() {
       this.init();
       if (!this.ctx) return;
@@ -110,30 +97,22 @@
       osc.connect(g); g.connect(this.ctx.destination);
       osc.start(); osc.stop(this.ctx.currentTime + 0.4);
     }
-
-    // E-Commerce Cha-Ching
     playChaChing() {
       this.init();
       this.playTone(987.77, 0.08, 'sine', 0.12);
       setTimeout(() => this.playTone(1318.51, 0.22, 'sine', 0.15), 70);
     }
-
-    // League Mastery 7 Fanfare
     playMastery() {
       this.init();
       [587.33, 880, 1174.66, 1760].forEach((f, i) => {
         setTimeout(() => this.playTone(f, 0.25, 'triangle', 0.12), i * 75);
       });
     }
-
-    // MTG Counterspell Mystic Surge
     playCounterspell() {
       this.init();
       this.playTone(180, 0.25, 'sawtooth', 0.07);
       setTimeout(() => this.playTone(880, 0.35, 'sine', 0.12), 80);
     }
-
-    // Pokéball Wobble & Catch/Breakout
     playPokeballBounce() {
       this.init();
       this.playTone(340, 0.04, 'sine', 0.08);
@@ -155,8 +134,6 @@
       this.playTone(240, 0.1, 'sawtooth', 0.1);
       setTimeout(() => this.playTone(180, 0.15, 'square', 0.08), 80);
     }
-
-    // Sports Whistle & Buzzer
     playWhistle() {
       this.init();
       this.playTone(1046.5, 0.15, 'square', 0.08);
@@ -166,13 +143,6 @@
       this.init();
       this.playTone(220, 0.3, 'sawtooth', 0.1);
     }
-    playBatCrack() {
-      this.init();
-      this.playTone(400, 0.03, 'sawtooth', 0.2);
-      setTimeout(() => this.playTone(800, 0.15, 'triangle', 0.15), 20);
-    }
-
-    // Other Skill Sounds
     playGizmo() {
       this.init();
       this.playTone(330, 0.05, 'square', 0.06);
@@ -194,43 +164,90 @@
       this.playTone(140, 0.25, 'sawtooth', 0.06);
       setTimeout(() => this.playTone(440, 0.1, 'square', 0.08), 200);
     }
+    playSecretUnlocked() {
+      this.init();
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+        setTimeout(() => this.playTone(f, 0.15, 'triangle', 0.08), i * 70);
+      });
+    }
   }
 
   const sfx = new EggAudio();
   document.addEventListener('click', () => sfx.init(), { once: true });
   document.addEventListener('mouseover', () => sfx.init(), { once: true });
 
+  // Secrets Tracker State
+  const TOTAL_SECRETS = 18;
+  const foundSecrets = new Set();
+
+  function markSecret(name) {
+    if (!foundSecrets.has(name)) {
+      foundSecrets.add(name);
+      sfx.playSecretUnlocked();
+      updateTrackerHUD();
+    }
+  }
+
+  function updateTrackerHUD() {
+    const countEl = document.getElementById('egg-found-count');
+    const chip = document.getElementById('egg-tracker-chip');
+    if (countEl) countEl.textContent = foundSecrets.size;
+    if (chip) {
+      chip.classList.add('bump');
+      setTimeout(() => chip.classList.remove('bump'), 300);
+    }
+    if (foundSecrets.size === TOTAL_SECRETS) {
+      if (chip) chip.innerHTML = '🏆 ALL 18 SECRETS FOUND! MASTER!';
+    }
+  }
+
   // Inject CSS Styles
   const style = document.createElement('style');
   style.textContent = `
-    /* UCSC Banana Slug */
-    .ucsc-slug-badge {
-      position: absolute;
-      top: -34px;
-      left: 50%;
-      transform: translateX(-50%) scale(0);
-      background: #facc15;
-      color: #000;
-      border: 2px solid #ca8a04;
-      padding: 4px 10px;
+    /* Secrets Tracker HUD Chip */
+    .egg-tracker-chip {
+      position: fixed;
+      top: 14px;
+      right: 20px;
+      background: rgba(15, 23, 42, 0.94);
+      border: 1.5px solid #fbbf24;
       border-radius: 999px;
+      padding: 6px 14px;
       font-family: 'Press Start 2P', monospace;
-      font-size: 0.55rem;
-      font-weight: bold;
-      pointer-events: none;
-      z-index: 200;
-      box-shadow: 0 4px 15px rgba(250, 204, 21, 0.6);
+      font-size: 0.58rem;
+      color: #fbbf24;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6), 0 0 15px rgba(251, 191, 36, 0.3);
+      z-index: 999999;
       display: flex;
       align-items: center;
-      gap: 6px;
-      white-space: nowrap;
-      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      gap: 8px;
+      user-select: none;
+      pointer-events: none;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.2s, color 0.2s;
     }
-    .ucsc-slug-badge.show {
-      transform: translateX(-50%) scale(1);
+    .egg-tracker-chip.bump {
+      transform: scale(1.18);
+      border-color: #38bdf8;
+      color: #38bdf8;
     }
 
-    /* Dark Throne Flashlight Spotlight Overlay */
+    /* UCSC Banana Slug (Just the slug above UCSC) */
+    .ucsc-slug-peek {
+      position: absolute;
+      top: -24px;
+      right: 18px;
+      font-size: 1.35rem;
+      pointer-events: none;
+      z-index: 200;
+      transform: scale(0);
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .ucsc-slug-peek.show {
+      transform: scale(1);
+    }
+
+    /* Dark Throne Flashlight Spotlight */
     .dt-flashlight-overlay {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -239,11 +256,9 @@
       z-index: 100;
       opacity: 0;
       transition: opacity 0.35s ease;
-      background: radial-gradient(circle 140px at var(--fx, 50%) var(--fy, 50%), transparent 0%, rgba(2, 6, 23, 0.95) 85%);
+      background: radial-gradient(circle 140px at var(--fx, 50%) var(--fy, 50%), transparent 0%, rgba(2, 6, 23, 0.94) 85%);
     }
-    .dt-flashlight-overlay.active {
-      opacity: 1;
-    }
+    .dt-flashlight-overlay.active { opacity: 1; }
     .dt-torch-aura {
       position: absolute;
       width: 140px; height: 140px;
@@ -345,9 +360,34 @@
       z-index: 104;
     }
 
-    /* Possession Escape: Slower, Readable Corridor Chase */
+    /* Last Ember Fire Elements */
+    .ember-fire-tongue {
+      position: absolute !important;
+      font-size: 1.4rem;
+      pointer-events: none;
+      z-index: 103;
+      animation: fireTongue 0.9s ease-in-out infinite alternate;
+    }
+    @keyframes fireTongue {
+      from { transform: translateY(0) scale(0.9); opacity: 0.85; }
+      to { transform: translateY(-8px) scale(1.15); opacity: 1; }
+    }
+    .easter-fire-particle {
+      position: absolute !important;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 102;
+      animation: fireRise 1.2s ease-out forwards;
+    }
+    @keyframes fireRise {
+      0% { opacity: 1; transform: translate(0, 0) scale(1); }
+      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.3); }
+    }
+
+    /* Possession Escape */
     .easter-corridor-runner {
-      position: absolute;
+      position: absolute !important;
       font-size: 1.7rem;
       pointer-events: none;
       z-index: 105;
@@ -356,7 +396,7 @@
       transition: transform 0.2s;
     }
     .easter-corridor-ghost {
-      position: absolute;
+      position: absolute !important;
       font-size: 1.8rem;
       pointer-events: none;
       z-index: 104;
@@ -364,7 +404,7 @@
       filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.8));
     }
     .easter-screaming-bubble-v2 {
-      position: absolute;
+      position: absolute !important;
       background: #ef4444;
       color: #fff;
       font-family: 'Press Start 2P', monospace;
@@ -379,76 +419,128 @@
 
     /* E-Commerce Top Fountain Arc */
     .easter-ecom-item-v2 {
-      position: absolute;
+      position: absolute !important;
       font-size: 1.5rem;
       pointer-events: none;
       z-index: 105;
-      animation: ecomArc 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      animation: ecomArc 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
     @keyframes ecomArc {
-      0% { transform: translate(-50%, -50%) scale(0.3) rotate(0deg); opacity: 1; }
-      100% { transform: translate(calc(-50% + var(--ex)), calc(-50% + var(--ey))) scale(1.15) rotate(var(--erot)); opacity: 0; }
+      0% { transform: translate(-50%, -50%) scale(0.4) rotate(0deg); opacity: 1; }
+      75% { opacity: 1; }
+      100% { transform: translate(calc(-50% + var(--ex)), calc(-50% + var(--ey))) scale(1.1) rotate(var(--erot)); opacity: 0; }
     }
 
-    /* League of Legends Official Mastery 7 */
+    /* Technical Skills Overlays */
+    .easter-lang-bubble {
+      position: absolute !important;
+      background: rgba(99, 102, 241, 0.95);
+      border: 1px solid #818cf8;
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      pointer-events: none;
+      z-index: 103;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+      animation: langFloat 1.2s ease-out forwards;
+    }
+    @keyframes langFloat {
+      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+      100% { transform: translate(calc(-50% + var(--lx)), calc(-50% + var(--ly))) scale(1.1); opacity: 0; }
+    }
+    .easter-gizmo-box {
+      position: absolute !important;
+      top: 14px; right: 14px;
+      background: rgba(15, 23, 42, 0.94);
+      border: 2px solid #38bdf8;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.52rem;
+      color: #38bdf8;
+      pointer-events: none;
+      z-index: 104;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+      animation: popIn 0.25s ease;
+    }
+    .easter-crit-splash {
+      position: absolute !important;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: rgba(15, 23, 42, 0.95);
+      border: 3px solid #fbbf24;
+      box-shadow: 0 0 35px rgba(251, 191, 36, 0.8);
+      border-radius: 12px;
+      padding: 10px 16px;
+      text-align: center;
+      pointer-events: none;
+      z-index: 105;
+      animation: critExplode 0.85s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes critExplode {
+      0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+      25% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+      75% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      100% { transform: translate(-50%, -60%) scale(0.9); opacity: 0; }
+    }
+    .easter-cloud-terminal {
+      position: absolute !important;
+      bottom: 12px; left: 12px; right: 12px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid #10b981;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8), 0 0 20px rgba(16, 185, 129, 0.3);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: #34d399;
+      pointer-events: none;
+      z-index: 105;
+      animation: slideUpTerminal 0.25s ease;
+    }
+    @keyframes slideUpTerminal {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* League of Legends: Clean Official Old Highest Mastery Icon */
     .lol-mastery-crest-img {
-      position: absolute;
-      top: 16px;
-      left: 50%;
-      transform: translateX(-50%) scale(0);
-      width: 100px;
-      height: auto;
+      position: absolute !important;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 105px; height: auto;
       filter: drop-shadow(0 0 25px rgba(56, 189, 248, 0.85));
       pointer-events: none;
       z-index: 105;
       transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     .lol-mastery-crest-img.show {
-      transform: translateX(-50%) scale(1);
-    }
-    .lol-mastery-banner-v2 {
-      position: absolute;
-      top: 110px;
-      left: 50%;
-      transform: translateX(-50%) scale(0);
-      background: rgba(15, 23, 42, 0.94);
-      border: 2px solid #38bdf8;
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
-      padding: 5px 12px;
-      border-radius: 999px;
-      color: #38bdf8;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.55rem;
-      z-index: 105;
-      pointer-events: none;
-      white-space: nowrap;
-      transition: transform 0.3s ease 0.1s;
-    }
-    .lol-mastery-banner-v2.show {
-      transform: translateX(-50%) scale(1);
+      transform: translate(-50%, -50%) scale(1);
     }
 
-    /* MTG Counterspell Authentic Card */
-    .mtg-card-img-pop {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0) rotate(-3deg);
-      width: 135px;
-      height: auto;
+    /* MTG Counterspell Peeking from Corner */
+    .mtg-card-img-corner {
+      position: absolute !important;
+      bottom: -60px; right: -40px;
+      transform: rotate(-14deg) scale(0.7);
+      width: 145px; height: auto;
       border-radius: 8px;
       box-shadow: 0 12px 35px rgba(0, 0, 0, 0.9), 0 0 30px rgba(59, 130, 246, 0.8);
       pointer-events: none;
       z-index: 106;
-      transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      opacity: 0;
     }
-    .mtg-card-img-pop.show {
-      transform: translate(-50%, -50%) scale(1) rotate(-1deg);
+    .mtg-card-img-corner.show {
+      bottom: 12px; right: 14px;
+      transform: rotate(-8deg) scale(1);
+      opacity: 1;
     }
     .mtg-response-banner-v2 {
-      position: absolute;
-      top: 14px;
-      left: 50%;
+      position: absolute !important;
+      top: 14px; left: 50%;
       transform: translateX(-50%) scale(0);
       background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%);
       border: 2px solid #60a5fa;
@@ -463,13 +555,11 @@
       white-space: nowrap;
       transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .mtg-response-banner-v2.show {
-      transform: translateX(-50%) scale(1);
-    }
+    .mtg-response-banner-v2.show { transform: translateX(-50%) scale(1); }
 
-    /* Pokémon Caught Vanish & Click Cursor */
+    /* Pokémon Caught Vanish */
     .pokemon-card {
-      cursor: crosshair !important;
+      cursor: pointer !important;
       transition: transform 0.3s, opacity 0.4s !important;
     }
     .pokemon-caught-vanish {
@@ -487,9 +577,8 @@
       100% { opacity: 1; transform: scale(1); filter: brightness(1); }
     }
     .pokemon-fail-banner {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
+      position: absolute !important;
+      bottom: 16px; left: 50%;
       transform: translateX(-50%) scale(0);
       background: rgba(239, 68, 68, 0.95);
       border: 2px solid #fca5a5;
@@ -504,17 +593,50 @@
       white-space: nowrap;
       animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
+    .easter-caught-banner {
+      position: absolute !important;
+      bottom: 16px; left: 50%;
+      transform: translateX(-50%) scale(0);
+      background: #facc15;
+      color: #0f172a;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.55rem;
+      padding: 6px 12px;
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(250, 204, 21, 0.6);
+      pointer-events: none;
+      z-index: 107;
+      white-space: nowrap;
+      animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
 
-    /* Sports: Visual Goal & Basketball Hoop */
+    /* Competitive Robotics Status */
+    .easter-frc-status {
+      position: absolute !important;
+      top: 14px; right: 14px;
+      background: rgba(15, 23, 42, 0.94);
+      border: 2px solid #a855f7;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.52rem;
+      color: #c084fc;
+      pointer-events: none;
+      z-index: 104;
+      box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+      animation: popIn 0.25s ease;
+    }
+
+    /* Sports Scene Box & Visual Net/Hoop */
     .sports-scene-box {
-      position: absolute;
-      top: 12px; left: 12px; right: 12px; bottom: 12px;
+      position: absolute !important;
+      top: 0; left: 0; right: 0; bottom: 0;
       pointer-events: none;
       z-index: 104;
       overflow: hidden;
     }
     .sports-goal-net {
-      position: absolute;
+      position: absolute !important;
       top: 25px; right: 20px;
       width: 75px; height: 55px;
       border-top: 4px solid #fff;
@@ -525,19 +647,16 @@
       box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
       transition: transform 0.15s ease;
     }
-    .sports-goal-net.hit {
-      transform: scale(1.15) skewX(8deg);
-    }
+    .sports-goal-net.hit { transform: scale(1.15) skewX(8deg); }
     .sports-hoop-rim {
-      position: absolute;
+      position: absolute !important;
       top: 25px; right: 30px;
       width: 44px; height: 16px;
       border: 3px solid #f97316;
       border-radius: 50%;
-      background: transparent;
     }
     .sports-hoop-net {
-      position: absolute;
+      position: absolute !important;
       top: 36px; right: 34px;
       width: 36px; height: 32px;
       background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.4) 0px, rgba(255,255,255,0.4) 2px, transparent 2px, transparent 6px),
@@ -545,12 +664,30 @@
       border-bottom: 2px solid #fff;
     }
     .sports-flying-ball {
-      position: absolute;
+      position: absolute !important;
       font-size: 1.6rem;
       pointer-events: none;
       z-index: 106;
       transition: left 0.55s cubic-bezier(0.25, 1, 0.5, 1), top 0.55s cubic-bezier(0.25, 1, 0.5, 1), transform 0.55s ease;
     }
+    .easter-sports-score-v2 {
+      position: absolute !important;
+      top: 14px; left: 50%;
+      transform: translateX(-50%) scale(0);
+      background: linear-gradient(135deg, #06b6d4 0%, #0284c7 100%);
+      border: 2px solid #38bdf8;
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.7);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.58rem;
+      pointer-events: none;
+      z-index: 105;
+      white-space: nowrap;
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .easter-sports-score-v2.show { transform: translateX(-50%) scale(1); }
 
     @keyframes popIn {
       from { transform: translateX(-50%) scale(0.6); opacity: 0; }
@@ -559,7 +696,14 @@
   `;
   document.head.appendChild(style);
 
-  // Helper functions
+  // Inject Tracker Chip at Top Right
+  const trackerChip = document.createElement('div');
+  trackerChip.id = 'egg-tracker-chip';
+  trackerChip.className = 'egg-tracker-chip';
+  trackerChip.innerHTML = '🥚 SECRETS: <span id="egg-found-count">0</span>/' + TOTAL_SECRETS;
+  document.body.appendChild(trackerChip);
+
+  // Helper selectors
   function findProjectCard(titleText) {
     const cards = document.querySelectorAll('.project-card');
     for (let c of cards) {
@@ -588,19 +732,20 @@
   }
 
   /* =========================================================
-     1. UCSC BANANA SLUG PEEK (SAMMY THE SLUG)
+     1. UCSC BANANA SLUG PEEK (ONLY SLUG ABOVE UCSC)
      ========================================================= */
   const badgePill = document.querySelector('.badge-pill');
   if (badgePill) {
     badgePill.style.position = 'relative';
     const slug = document.createElement('div');
-    slug.className = 'ucsc-slug-badge';
-    slug.innerHTML = '🍌 🐌 "Go Slugs! • UCSC 2024"';
+    slug.className = 'ucsc-slug-peek';
+    slug.innerHTML = '🍌 🐌';
     badgePill.appendChild(slug);
 
     badgePill.addEventListener('mouseenter', () => {
       slug.classList.add('show');
       sfx.playSlug();
+      markSecret('ucsc_slug');
     });
     badgePill.addEventListener('mouseleave', () => slug.classList.remove('show'));
   }
@@ -612,20 +757,19 @@
   if (dtCard) {
     dtCard.style.position = 'relative';
 
-    // Flashlight dark overlay
     const flOverlay = document.createElement('div');
     flOverlay.className = 'dt-flashlight-overlay';
     dtCard.appendChild(flOverlay);
 
-    // Warm torch aura following mouse
     const torch = document.createElement('div');
     torch.className = 'dt-torch-aura';
     dtCard.appendChild(torch);
 
-    dtCard.addEventListener('mouseenter', (e) => {
+    dtCard.addEventListener('mouseenter', () => {
       flOverlay.classList.add('active');
       torch.classList.add('active');
       sfx.playTorchIgnite();
+      markSecret('dark_throne_torch');
     });
 
     dtCard.addEventListener('mousemove', (e) => {
@@ -658,6 +802,7 @@
     heroCard.addEventListener('mouseenter', () => {
       bubble.classList.add('show');
       sfx.playHello();
+      markSecret('profile_hello');
     });
     heroCard.addEventListener('mouseleave', () => bubble.classList.remove('show'));
   }
@@ -670,6 +815,8 @@
     gunCard.style.position = 'relative';
     gunCard.addEventListener('mouseenter', () => {
       sfx.playGunshot();
+      markSecret('gun_ricochet');
+
       const media = gunCard.querySelector('.project-card-media');
       const originX = media ? media.offsetLeft + media.offsetWidth * 0.49 : gunCard.offsetWidth * 0.49;
       const originY = media ? media.offsetTop + media.offsetHeight * 0.64 : 110;
@@ -725,6 +872,7 @@
   if (pencilCard) {
     const desc = pencilCard.querySelector('.project-card-desc');
     pencilCard.addEventListener('mouseenter', () => {
+      markSecret('pencil_eraser');
       if (desc && !desc.classList.contains('erasing-active')) {
         desc.classList.add('erasing-active');
         sfx.playErase();
@@ -776,82 +924,72 @@
   }
 
   /* =========================================================
-     6. BUILDING SCALER: 2D RIGID-BODY PHYSICS BLOCKS
+     6. BUILDING SCALER: PERSISTENT MULTI-INSTANCE 2D PHYSICS
      ========================================================= */
   const scalerCard = findProjectCard("Building Scaler");
   if (scalerCard) {
     scalerCard.style.position = 'relative';
     const blockColors = ['#ef4444', '#3b82f6', '#f97316', '#eab308', '#22c55e', '#a855f7', '#06b6d4'];
 
-    scalerCard.addEventListener('mouseenter', () => {
-      const bodies = [];
-      const floorY = scalerCard.offsetHeight - 42;
+    // Persistent simulation state
+    const persistentBodies = [];
+    const floorY = scalerCard.offsetHeight - 42;
+    let physLoopRunning = false;
 
-      for (let i = 0; i < 5; i++) {
-        setTimeout(() => {
-          const el = document.createElement('div');
-          el.className = 'physics-tetris-block';
-          const color = blockColors[Math.floor(Math.random() * blockColors.length)];
-          el.style.background = color;
-          scalerCard.appendChild(el);
+    function runPhysLoop() {
+      if (physLoopRunning) return;
+      physLoopRunning = true;
 
-          const body = {
-            el,
-            x: 40 + Math.random() * (scalerCard.offsetWidth - 110),
-            y: 10,
-            vx: (Math.random() - 0.5) * 4,
-            vy: 1,
-            rot: (Math.random() - 0.5) * 20,
-            vrot: (Math.random() - 0.5) * 8,
-            settled: false
-          };
-          bodies.push(body);
-        }, i * 200);
-      }
+      const loopInt = setInterval(() => {
+        let activeMoving = false;
 
-      // 2D Physics Loop for Block Collisions
-      let simTicks = 0;
-      const physInt = setInterval(() => {
-        simTicks++;
-        for (let a = 0; a < bodies.length; a++) {
-          const bA = bodies[a];
-          bA.vy += 0.7; // Gravity
+        for (let a = 0; a < persistentBodies.length; a++) {
+          const bA = persistentBodies[a];
+          if (bA.settled) continue;
+
+          bA.vy += 0.65; // Gravity
           bA.x += bA.vx;
           bA.y += bA.vy;
           bA.rot += bA.vrot;
+          activeMoving = true;
 
-          // Floor collision
+          // Floor
           if (bA.y >= floorY) {
             bA.y = floorY;
-            bA.vy = -bA.vy * 0.35;
-            bA.vx *= 0.8;
+            bA.vy = -bA.vy * 0.32;
+            bA.vx *= 0.75;
             bA.vrot *= 0.7;
-            if (Math.abs(bA.vy) < 0.8) bA.vy = 0;
+            if (Math.abs(bA.vy) < 0.6) {
+              bA.vy = 0;
+              bA.settled = true;
+            }
           }
 
-          // Wall collision
+          // Walls
           if (bA.x <= 15) { bA.x = 15; bA.vx = -bA.vx * 0.5; }
           if (bA.x >= scalerCard.offsetWidth - 40) { bA.x = scalerCard.offsetWidth - 40; bA.vx = -bA.vx * 0.5; }
 
-          // Block-to-block collision
-          for (let b = a + 1; b < bodies.length; b++) {
-            const bB = bodies[b];
+          // Collide with ALL other bodies (including previous instances!)
+          for (let b = 0; b < persistentBodies.length; b++) {
+            if (a === b) continue;
+            const bB = persistentBodies[b];
             const dx = bA.x - bB.x;
             const dy = bA.y - bB.y;
             const dist = Math.hypot(dx, dy);
+
             if (dist < 26) {
               const overlap = 26 - dist;
               const nx = dx / (dist || 1);
               const ny = dy / (dist || 1);
+
               bA.x += nx * overlap * 0.5;
               bA.y += ny * overlap * 0.5;
               bB.x -= nx * overlap * 0.5;
               bB.y -= ny * overlap * 0.5;
 
-              bA.vx += nx * 2;
-              bB.vx -= nx * 2;
-              bA.vrot += (Math.random() - 0.5) * 15;
-              bB.vrot -= (Math.random() - 0.5) * 15;
+              bA.vx += nx * 1.5;
+              bB.vx -= nx * 1.5;
+              bB.settled = false; // Wake up settled block!
               sfx.playBlockClack();
             }
           }
@@ -861,22 +999,58 @@
           bA.el.style.transform = `rotate(${bA.rot}deg)`;
         }
 
-        if (simTicks > 120) {
-          clearInterval(physInt);
-          setTimeout(() => bodies.forEach(b => b.el.remove()), 1800);
+        if (!activeMoving && persistentBodies.length > 0) {
+          clearInterval(loopInt);
+          physLoopRunning = false;
         }
       }, 25);
+    }
+
+    scalerCard.addEventListener('mouseenter', () => {
+      markSecret('scaler_blocks');
+
+      // Drop 2-3 new blocks each hover
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => {
+          if (persistentBodies.length > 18) {
+            const oldest = persistentBodies.shift();
+            if (oldest && oldest.el) oldest.el.remove();
+          }
+
+          const el = document.createElement('div');
+          el.className = 'physics-tetris-block';
+          const color = blockColors[Math.floor(Math.random() * blockColors.length)];
+          el.style.background = color;
+          scalerCard.appendChild(el);
+
+          const body = {
+            el,
+            x: 35 + Math.random() * (scalerCard.offsetWidth - 90),
+            y: 10,
+            vx: (Math.random() - 0.5) * 3,
+            vy: 1,
+            rot: (Math.random() - 0.5) * 20,
+            vrot: (Math.random() - 0.5) * 6,
+            settled: false
+          };
+          persistentBodies.push(body);
+          runPhysLoop();
+        }, i * 160);
+      }
     });
   }
 
   /* =========================================================
-     7. THE LAST EMBER: IMPACTFUL FIRE FROM SIDES & BOTTOM
+     7. THE LAST EMBER: FLAMES & SIDES EMBERS (FIXED LAYOUT)
      ========================================================= */
   const emberCard = findProjectCard("Last Ember");
   if (emberCard) {
     emberCard.style.position = 'relative';
+
     emberCard.addEventListener('mouseenter', () => {
       sfx.playFireCrackling();
+      markSecret('last_ember');
+
       const flameSpots = [
         { left: '20px', bottom: '15px' },
         { left: '50%', bottom: '15px' },
@@ -893,7 +1067,7 @@
         setTimeout(() => ft.remove(), 1600);
       });
 
-      for (let i = 0; i < 18; i++) {
+      for (let i = 0; i < 16; i++) {
         setTimeout(() => {
           const p = document.createElement('div');
           p.className = 'easter-fire-particle';
@@ -905,19 +1079,21 @@
           p.style.setProperty('--ty', `-${60 + Math.random() * 90}px`);
           emberCard.appendChild(p);
           setTimeout(() => p.remove(), 1200);
-        }, i * 55);
+        }, i * 60);
       }
     });
   }
 
   /* =========================================================
-     8. POSSESSION ESCAPE: READABLE CORRIDOR SPRINT & CHASE
+     8. POSSESSION ESCAPE: READABLE CHASE WITH "AHHHHHH!!!!!"
      ========================================================= */
   const ghostCard = findProjectCard("Possession Escape");
   if (ghostCard) {
     ghostCard.style.position = 'relative';
+
     ghostCard.addEventListener('mouseenter', () => {
       sfx.playGhostChase();
+      markSecret('possession_escape');
 
       const runner = document.createElement('div');
       runner.className = 'easter-corridor-runner';
@@ -929,14 +1105,14 @@
 
       const scream = document.createElement('div');
       scream.className = 'easter-screaming-bubble-v2';
-      scream.textContent = '😱 "IT\'S RIGHT BEHIND ME!"';
+      scream.textContent = '😱 AHHHHHH!!!!!';
 
       ghostCard.appendChild(runner);
       ghostCard.appendChild(ghost);
       ghostCard.appendChild(scream);
 
       let rx = 30;
-      let vx = 3.2; // Slower, readable speed
+      let vx = 3.2; // Readable speed
       const trackY = ghostCard.offsetHeight - 58;
 
       const chaseInt = setInterval(() => {
@@ -966,13 +1142,16 @@
   }
 
   /* =========================================================
-     9. E-COMMERCE / JAMBELLES: TOP ORIGIN RANDOM ANGLE FOUNTAIN
+     9. E-COMMERCE / JAMBELLES: TOP FOUNTAIN & LASTS LONGER
      ========================================================= */
   const ecomCard = findProjectCard("E-Commerce") || findProjectCard("Jambelles");
   if (ecomCard) {
     ecomCard.style.position = 'relative';
+
     ecomCard.addEventListener('mouseenter', () => {
       sfx.playChaChing();
+      markSecret('ecom_fountain');
+
       const items = ['🛹', '🧦', '👕', '🧢', '💵', '📦', '💸', '✨'];
 
       items.forEach((icon, idx) => {
@@ -980,23 +1159,110 @@
         itemEl.className = 'easter-ecom-item-v2';
         itemEl.textContent = icon;
         itemEl.style.left = '50%';
-        itemEl.style.top = '28px'; // Top part origin
+        itemEl.style.top = '25px'; // Origin at top part
 
-        // Randomized downward & outward angle spread (20 deg to 160 deg)
         const angle = (0.2 + (idx / items.length) * 0.6) * Math.PI;
-        const dist = 110 + Math.random() * 80;
+        const dist = 100 + Math.random() * 80;
         itemEl.style.setProperty('--ex', `${Math.cos(angle) * dist}px`);
         itemEl.style.setProperty('--ey', `${Math.sin(angle) * dist + 40}px`);
         itemEl.style.setProperty('--erot', `${(Math.random() - 0.5) * 360}deg`);
 
         ecomCard.appendChild(itemEl);
-        setTimeout(() => itemEl.remove(), 1400);
+        setTimeout(() => itemEl.remove(), 2400); // Lasts longer
       });
     });
   }
 
   /* =========================================================
-     10. LEAGUE OF LEGENDS: OFFICIAL IN-GAME MASTERY 7 CREST
+     10. SKILLS: LANGUAGES (RADIAL GREETINGS)
+     ========================================================= */
+  const langCard = findSkillCard("Languages");
+  if (langCard) {
+    langCard.style.position = 'relative';
+    langCard.addEventListener('mouseenter', () => {
+      sfx.playTone(523, 0.08, 'sine');
+      markSecret('skills_languages');
+
+      const hellos = ['¡Hola!', 'Bonjour!', 'こんにちは!', 'Ciao!', 'Olá!', 'Hallo!'];
+      hellos.forEach((w, idx) => {
+        setTimeout(() => {
+          const pill = document.createElement('div');
+          pill.className = 'easter-lang-bubble';
+          pill.textContent = w;
+          pill.style.left = '50%';
+          pill.style.top = '50%';
+          const angle = (idx / hellos.length) * Math.PI * 2;
+          pill.style.setProperty('--lx', `${Math.cos(angle) * 85}px`);
+          pill.style.setProperty('--ly', `${Math.sin(angle) * 65}px`);
+          langCard.appendChild(pill);
+          setTimeout(() => pill.remove(), 1200);
+        }, idx * 60);
+      });
+    });
+  }
+
+  /* =========================================================
+     11. SKILLS: ENGINES & TECH (3D PHYSX DEBUGGER)
+     ========================================================= */
+  const engineCard = findSkillCard("Engines");
+  if (engineCard) {
+    engineCard.style.position = 'relative';
+    engineCard.addEventListener('mouseenter', () => {
+      sfx.playGizmo();
+      markSecret('skills_engines');
+
+      const gizmo = document.createElement('div');
+      gizmo.className = 'easter-gizmo-box';
+      gizmo.innerHTML = '⚙️ PHYSX 3D • 60 FPS [OK]';
+      engineCard.appendChild(gizmo);
+      setTimeout(() => gizmo.remove(), 1600);
+    });
+  }
+
+  /* =========================================================
+     12. SKILLS: GAMEPLAY & DESIGN (RPG CRIT HITSTOP)
+     ========================================================= */
+  const designCard = findSkillCard("Gameplay & Design");
+  if (designCard) {
+    designCard.style.position = 'relative';
+    designCard.addEventListener('mouseenter', () => {
+      sfx.playCritHit();
+      markSecret('skills_gameplay');
+
+      const splash = document.createElement('div');
+      splash.className = 'easter-crit-splash';
+      splash.innerHTML = `
+        <div style="font-family:'Press Start 2P'; font-size:0.85rem; color:#facc15; margin-bottom:4px;">💥 CRIT! 9,999</div>
+        <div style="font-family:'Press Start 2P'; font-size:0.55rem; color:#38bdf8;">⚔️ 4-HIT COMBO [MAX]</div>
+      `;
+      designCard.appendChild(splash);
+      setTimeout(() => splash.remove(), 850);
+    });
+  }
+
+  /* =========================================================
+     13. SKILLS: AI, CLOUD & TOOLS (LIVE CLUSTER TERMINAL)
+     ========================================================= */
+  const cloudCard = findSkillCard("AI, Cloud & Tools");
+  if (cloudCard) {
+    cloudCard.style.position = 'relative';
+    cloudCard.addEventListener('mouseenter', () => {
+      sfx.playCloudTerminal();
+      markSecret('skills_cloud');
+
+      const term = document.createElement('div');
+      term.className = 'easter-cloud-terminal';
+      term.innerHTML = `
+        <div><span style="color:#60a5fa;">$</span> gcloud run deploy stocks-bot --region us-central1</div>
+        <div style="color:#a7f3d0;">✓ 0ms cold-start microservice live 🚀</div>
+      `;
+      cloudCard.appendChild(term);
+      setTimeout(() => term.remove(), 2000);
+    });
+  }
+
+  /* =========================================================
+     14. LEAGUE OF LEGENDS: OFFICIAL IN-GAME MASTERY 7 CREST
      ========================================================= */
   const leagueCard = findDnaCard("League of Legends");
   if (leagueCard) {
@@ -1004,28 +1270,22 @@
 
     const crestImg = document.createElement('img');
     crestImg.src = 'images/mastery_7.png';
-    crestImg.alt = 'League of Legends Mastery 7 Crest';
+    crestImg.alt = 'Mastery 7 Crest';
     crestImg.className = 'lol-mastery-crest-img';
     leagueCard.appendChild(crestImg);
 
-    const banner = document.createElement('div');
-    banner.className = 'lol-mastery-banner-v2';
-    banner.innerHTML = '💎 MASTERY LEVEL 7 • TOP 1% DIAMOND';
-    leagueCard.appendChild(banner);
-
     leagueCard.addEventListener('mouseenter', () => {
       crestImg.classList.add('show');
-      banner.classList.add('show');
       sfx.playMastery();
+      markSecret('league_mastery');
     });
     leagueCard.addEventListener('mouseleave', () => {
       crestImg.classList.remove('show');
-      banner.classList.remove('show');
     });
   }
 
   /* =========================================================
-     11. MAGIC: THE GATHERING: AUTHENTIC COUNTERSPELL CARD
+     15. MAGIC: THE GATHERING: COUNTERSPELL PEEKING FROM CORNER
      ========================================================= */
   const mtgCard = findDnaCard("Magic");
   if (mtgCard) {
@@ -1033,19 +1293,20 @@
 
     const banner = document.createElement('div');
     banner.className = 'mtg-response-banner-v2';
-    banner.innerHTML = '⚡ IN RESPONSE... [CAST COUNTERSPELL]';
+    banner.innerHTML = '⚡ IN RESPONSE... [COUNTERSPELL]';
     mtgCard.appendChild(banner);
 
     const cardImg = document.createElement('img');
     cardImg.src = 'images/counterspell.png';
     cardImg.alt = 'Magic The Gathering Counterspell Card';
-    cardImg.className = 'mtg-card-img-pop';
+    cardImg.className = 'mtg-card-img-corner';
     mtgCard.appendChild(cardImg);
 
     mtgCard.addEventListener('mouseenter', () => {
       banner.classList.add('show');
       cardImg.classList.add('show');
       sfx.playCounterspell();
+      markSecret('mtg_counterspell');
     });
     mtgCard.addEventListener('mouseleave', () => {
       banner.classList.remove('show');
@@ -1054,7 +1315,7 @@
   }
 
   /* =========================================================
-     12. POKÉMON: CLICK-TO-CATCH & LOW CATCH RATE & VANISH
+     16. POKÉMON: HOVER-TO-CATCH, LOW CATCH RATE & VANISH
      ========================================================= */
   const pokeCard = findDnaCard("Pokémon");
   if (pokeCard) {
@@ -1064,7 +1325,6 @@
       { name: 'Great Ball', top: '#0284c7', rate: 0.18 },
       { name: 'Poké Ball', top: '#ef4444', rate: 0.12 }
     ];
-
     const failQuotes = [
       "Oh no! The Pokémon broke free!",
       "Aww! It appeared to be caught!",
@@ -1072,17 +1332,17 @@
       "Darn! Almost had it!"
     ];
 
-    // Click on any specific Pokemon to throw ball at it!
+    // Trigger on HOVER over any individual Pokemon card!
     const monCards = pokeCard.querySelectorAll('.pokemon-card');
     monCards.forEach(mon => {
-      mon.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (mon.classList.contains('pokemon-caught-vanish')) return;
+      mon.addEventListener('mouseenter', () => {
+        if (mon.classList.contains('pokemon-caught-vanish') || mon.dataset.ballActive === 'true') return;
+        mon.dataset.ballActive = 'true';
+        markSecret('pokemon_catch');
 
         const tier = ballTiers[Math.floor(Math.random() * ballTiers.length)];
         const monName = mon.querySelector('.pokemon-info-name') ? mon.querySelector('.pokemon-info-name').textContent.replace('✨', '').trim() : 'Pokémon';
 
-        // Spawn ball and fly to target
         const ball = document.createElement('div');
         ball.className = 'easter-pokeball-sprite';
         ball.style.background = `linear-gradient(180deg, ${tier.top} 50%, #ffffff 50%)`;
@@ -1097,8 +1357,8 @@
         sfx.playPokeballBounce();
 
         let bx = 20, by = 20;
-        let bvx = (targetX - 20) / 16;
-        let bvy = (targetY - 20) / 16;
+        let bvx = (targetX - 20) / 14;
+        let bvy = (targetY - 20) / 14;
         let step = 0;
 
         const throwInt = setInterval(() => {
@@ -1108,21 +1368,19 @@
           ball.style.top = `${by}px`;
           ball.style.transform = `rotate(${step * 30}deg)`;
 
-          if (step >= 16) {
+          if (step >= 14) {
             clearInterval(throwInt);
-            // Impact with target Pokemon
             sfx.playPokeballBounce();
 
-            // Low Catch Rate Roll
             const rollSuccess = Math.random() < tier.rate;
-
             let wobbles = 0;
+
             const wobbleInt = setInterval(() => {
               wobbles++;
               sfx.playPokeballWobble();
               ball.style.transform = `rotate(${wobbles % 2 === 0 ? 18 : -18}deg) scale(1.15)`;
 
-              // If FAILED
+              // FAILED (Breakout)
               if (!rollSuccess && wobbles >= 2) {
                 clearInterval(wobbleInt);
                 sfx.playPokemonBreakout();
@@ -1137,15 +1395,15 @@
                 setTimeout(() => {
                   ball.remove();
                   failBanner.remove();
+                  mon.dataset.ballActive = 'false';
                 }, 1600);
               }
-              // If SUCCESS
+              // SUCCESS (Caught)
               else if (rollSuccess && wobbles >= 3) {
                 clearInterval(wobbleInt);
                 sfx.playPokemonCaught();
                 ball.style.transform = 'scale(1.25)';
 
-                // Pokemon disappears temporarily
                 mon.classList.add('pokemon-caught-vanish');
 
                 const winBanner = document.createElement('div');
@@ -1158,11 +1416,13 @@
                   winBanner.remove();
                 }, 2200);
 
-                // Respawns after 4.5 seconds
                 setTimeout(() => {
                   mon.classList.remove('pokemon-caught-vanish');
                   mon.classList.add('pokemon-respawn-burst');
-                  setTimeout(() => mon.classList.remove('pokemon-respawn-burst'), 800);
+                  setTimeout(() => {
+                    mon.classList.remove('pokemon-respawn-burst');
+                    mon.dataset.ballActive = 'false';
+                  }, 800);
                 }, 4500);
               }
             }, 350);
@@ -1173,20 +1433,50 @@
   }
 
   /* =========================================================
-     13. SPORTS: VISUAL SOCCER GOAL & BASKETBALL HOOP
+     17. COMPETITIVE ROBOTICS: FRC DRIVER STATUS (FIXED)
+     ========================================================= */
+  const roboticsCard = findDnaCard("Robotics");
+  if (roboticsCard) {
+    roboticsCard.style.position = 'relative';
+
+    roboticsCard.addEventListener('mouseenter', () => {
+      // Remove any existing badge first
+      const existing = roboticsCard.querySelector('.easter-frc-status');
+      if (existing) existing.remove();
+
+      sfx.playRoboticsMotor();
+      markSecret('robotics_driver');
+
+      const status = document.createElement('div');
+      status.className = 'easter-frc-status';
+      status.innerHTML = '🤖 FRC 199 DEEP BLUE • DRIVER 1 [ACTIVE]';
+      roboticsCard.appendChild(status);
+      setTimeout(() => status.remove(), 1800);
+    });
+  }
+
+  /* =========================================================
+     18. SPORTS: VISUAL SOCCER GOAL & BASKETBALL HOOP (FIXED)
      ========================================================= */
   const sportsCard = findDnaCard("Sports");
   if (sportsCard) {
     sportsCard.style.position = 'relative';
 
     sportsCard.addEventListener('mouseenter', () => {
+      // Remove any existing scenes/banners
+      const existingScene = sportsCard.querySelector('.sports-scene-box');
+      if (existingScene) existingScene.remove();
+      const existingBanner = sportsCard.querySelector('.easter-sports-score-v2');
+      if (existingBanner) existingBanner.remove();
+
+      markSecret('sports_game');
       const mode = Math.random() < 0.5 ? 'soccer' : 'basketball';
+
       const scene = document.createElement('div');
       scene.className = 'sports-scene-box';
       sportsCard.appendChild(scene);
 
       if (mode === 'soccer') {
-        // Soccer Goal
         const goal = document.createElement('div');
         goal.className = 'sports-goal-net';
         scene.appendChild(goal);
@@ -1219,7 +1509,6 @@
           }, 1800);
         }, 580);
       } else {
-        // Basketball Hoop
         const rim = document.createElement('div');
         rim.className = 'sports-hoop-rim';
         const net = document.createElement('div');
@@ -1234,7 +1523,6 @@
         ball.style.top = `${sportsCard.offsetHeight - 50}px`;
         scene.appendChild(ball);
 
-        // Arc over rim and drop through
         setTimeout(() => {
           ball.style.left = `${sportsCard.offsetWidth - 70}px`;
           ball.style.top = '15px';
@@ -1258,78 +1546,5 @@
     });
   }
 
-  /* =========================================================
-     14. ENGINES & TECH: 3D GIZMO & PHYSICS COMPILER DEBUGGER
-     ========================================================= */
-  const engineCard = findSkillCard("Engines");
-  if (engineCard) {
-    engineCard.style.position = 'relative';
-    engineCard.addEventListener('mouseenter', () => {
-      sfx.playGizmo();
-      const gizmo = document.createElement('div');
-      gizmo.className = 'easter-gizmo-box';
-      gizmo.innerHTML = '⚙️ PHYSX 3D • 60 FPS [OK]';
-      engineCard.appendChild(gizmo);
-      setTimeout(() => gizmo.remove(), 1600);
-    });
-  }
-
-  /* =========================================================
-     15. GAMEPLAY & DESIGN: RPG CRIT HITSTOP & DAMAGE SPLASH
-     ========================================================= */
-  const designCard = findSkillCard("Gameplay & Design");
-  if (designCard) {
-    designCard.style.position = 'relative';
-    designCard.addEventListener('mouseenter', () => {
-      sfx.playCritHit();
-      designCard.style.transform = 'scale(1.02) rotate(-1deg)';
-      setTimeout(() => { designCard.style.transform = 'none'; }, 100);
-
-      const splash = document.createElement('div');
-      splash.className = 'easter-crit-splash';
-      splash.innerHTML = `
-        <div style="font-family:'Press Start 2P'; font-size:0.85rem; color:#facc15; margin-bottom:4px;">💥 CRIT! 9,999</div>
-        <div style="font-family:'Press Start 2P'; font-size:0.55rem; color:#38bdf8;">⚔️ 4-HIT COMBO [MAX]</div>
-      `;
-      designCard.appendChild(splash);
-      setTimeout(() => splash.remove(), 850);
-    });
-  }
-
-  /* =========================================================
-     16. AI, CLOUD & TOOLS: LIVE GCP CLUSTER TERMINAL
-     ========================================================= */
-  const cloudCard = findSkillCard("AI, Cloud & Tools");
-  if (cloudCard) {
-    cloudCard.style.position = 'relative';
-    cloudCard.addEventListener('mouseenter', () => {
-      sfx.playCloudTerminal();
-      const term = document.createElement('div');
-      term.className = 'easter-cloud-terminal';
-      term.innerHTML = `
-        <div><span style="color:#60a5fa;">$</span> gcloud run deploy stocks-bot --region us-central1</div>
-        <div style="color:#a7f3d0;">✓ 0ms cold-start microservice live 🚀</div>
-      `;
-      cloudCard.appendChild(term);
-      setTimeout(() => term.remove(), 2000);
-    });
-  }
-
-  /* =========================================================
-     17. COMPETITIVE ROBOTICS: FRC DRIVER MATCH READOUT
-     ========================================================= */
-  const roboticsCard = findDnaCard("Robotics");
-  if (roboticsCard) {
-    roboticsCard.style.position = 'relative';
-    roboticsCard.addEventListener('mouseenter', () => {
-      sfx.playRoboticsMotor();
-      const status = document.createElement('div');
-      status.className = 'easter-frc-status';
-      status.innerHTML = '🤖 FRC 199 DEEP BLUE • DRIVER 1 [ACTIVE]';
-      roboticsCard.appendChild(status);
-      setTimeout(() => status.remove(), 1800);
-    });
-  }
-
-  console.log("Portfolio Easter Eggs Engine v3.0 initialized.");
+  console.log("Portfolio Easter Eggs Engine v4.0 initialized. Total secrets:", TOTAL_SECRETS);
 })();
