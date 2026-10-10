@@ -642,7 +642,16 @@
     /* Pokémon Pokéball Throw & Vanish */
     .pokemon-card {
       cursor: pointer !important;
-      transition: transform 0.3s, opacity 0.4s !important;
+      transition: transform 0.3s ease, opacity 0.35s ease, filter 0.3s ease !important;
+    }
+    .pokemon-card:not(.pokemon-caught-vanish):not(.pokemon-absorbing) {
+      opacity: 1 !important;
+      filter: none !important;
+    }
+    .pokemon-absorbing {
+      opacity: 0.3 !important;
+      filter: brightness(2.2) drop-shadow(0 0 14px #ef4444) !important;
+      transform: scale(0.88) !important;
     }
     .pokemon-caught-vanish {
       opacity: 0 !important;
@@ -1077,7 +1086,7 @@
   }
 
   /* =========================================================
-     6. BUILDING SCALER: RIGID-BODY AABB PHYSICS & TIME-BASED LIFECYCLE
+     6. BUILDING SCALER: UPRIGHT AABB STACKING & PURE TIME-BASED LIFECYCLE
      ========================================================= */
   const scalerCard = findProjectCard("Building Scaler");
   if (scalerCard) {
@@ -1085,7 +1094,7 @@
     const blockColors = ['#ef4444', '#3b82f6', '#f97316', '#eab308', '#22c55e', '#a855f7', '#06b6d4'];
 
     const persistentBodies = [];
-    const floorY = scalerCard.offsetHeight - 32;
+    const floorY = scalerCard.offsetHeight - 30;
     let physLoopRunning = false;
     let lastClackTime = 0;
 
@@ -1105,7 +1114,7 @@
           if (elapsed >= bA.lifespan) {
             bA.el.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
             bA.el.style.opacity = '0';
-            bA.el.style.transform += ' scale(0.4)';
+            bA.el.style.transform = 'scale(0.4)';
             const toRemove = bA.el;
             setTimeout(() => { if (toRemove && toRemove.parentNode) toRemove.remove(); }, 350);
             persistentBodies.splice(a, 1);
@@ -1120,17 +1129,23 @@
           bA.vy += 0.65; // Gravity
           bA.x += bA.vx;
           bA.y += bA.vy;
-          bA.rot += bA.vrot;
           activeMoving = true;
+
+          // While falling, gentle upright sway (within ±3 degrees)
+          if (!bA.settled) {
+            bA.rot = Math.sin((now - bA.spawnTime) * 0.008) * 3;
+          }
 
           // Floor collision (Accurate hitbox: bottom is y + h)
           if (bA.y + bA.h >= floorY) {
             bA.y = floorY - bA.h;
-            bA.vy = -bA.vy * 0.22;
-            bA.vx *= 0.7;
-            bA.vrot *= 0.5;
+            bA.vy = -bA.vy * 0.2;
+            bA.vx *= 0.65;
+            bA.rot = 0; // Snap perfectly upright on impact!
             if (Math.abs(bA.vy) < 0.6) {
               bA.vy = 0;
+              bA.vx = 0;
+              bA.rot = 0;
               bA.settled = true;
             }
           }
@@ -1167,43 +1182,59 @@
             const overlapY = halfH - Math.abs(dy);
 
             if (overlapX > 0 && overlapY > 0) {
-              // Colliding! Resolve along axis of minimum penetration
-              if (overlapX < overlapY) {
-                // Separate horizontally
-                const signX = dx > 0 ? 1 : -1;
-                bA.x += signX * overlapX * 0.5;
-                bB.x -= signX * overlapX * 0.5;
-                const vDiff = (bA.vx - bB.vx) * 0.35;
-                bA.vx = vDiff;
-                bB.vx = -vDiff;
-                bA.settled = false;
-                bB.settled = false;
-              } else {
-                // Separate vertically
-                const signY = dy > 0 ? 1 : -1;
-                bA.y += signY * overlapY * 0.5;
-                bB.y -= signY * overlapY * 0.5;
+              // Colliding! Straighten out instantly
+              bA.rot = 0;
+              if (bB.settled) bB.rot = 0;
 
+              if (overlapX < overlapY) {
+                // Horizontal collision (hit side of another block)
+                const signX = dx > 0 ? 1 : -1;
+                if (bB.settled) {
+                  bA.x += signX * overlapX;
+                  bA.vx = -bA.vx * 0.3;
+                } else if (bA.settled) {
+                  bB.x -= signX * overlapX;
+                  bB.vx = -bB.vx * 0.3;
+                } else {
+                  bA.x += signX * overlapX * 0.5;
+                  bB.x -= signX * overlapX * 0.5;
+                  const vAvg = (bA.vx - bB.vx) * 0.35;
+                  bA.vx = vAvg;
+                  bB.vx = -vAvg;
+                }
+              } else {
+                // Vertical collision (stacking)
                 if (dy < 0) {
-                  // A is on top of B
-                  bA.vy = -bA.vy * 0.2;
-                  bA.vx *= 0.8;
+                  // A is on top of B (A lands directly on top of B!)
+                  bA.y = bB.y - bA.h;
+                  bA.vy = -bA.vy * 0.15;
+                  bA.vx *= 0.6;
+                  bA.rot = 0;
                   if (Math.abs(bA.vy) < 0.6) {
                     bA.vy = 0;
+                    bA.vx = 0;
                     bA.settled = true;
                   }
                 } else {
                   // B is on top of A
-                  bB.vy = -bB.vy * 0.2;
-                  bB.vx *= 0.8;
-                  if (Math.abs(bB.vy) < 0.6) {
-                    bB.vy = 0;
-                    bB.settled = true;
+                  if (bA.settled) {
+                    bB.y = bA.y - bB.h;
+                    bB.vy = -bB.vy * 0.15;
+                    bB.vx *= 0.6;
+                    bB.rot = 0;
+                    if (Math.abs(bB.vy) < 0.6) {
+                      bB.vy = 0;
+                      bB.vx = 0;
+                      bB.settled = true;
+                    }
+                  } else {
+                    bA.y += overlapY * 0.5;
+                    bB.y -= overlapY * 0.5;
                   }
                 }
               }
 
-              // Throttled quiet clack audio (max 2 per sec)
+              // Throttled quiet clack audio
               if (now - lastClackTime > 450) {
                 sfx.playBlockClack();
                 lastClackTime = now;
@@ -1213,7 +1244,7 @@
 
           bA.el.style.left = `${bA.x}px`;
           bA.el.style.top = `${bA.y}px`;
-          bA.el.style.transform = `rotate(${bA.rot}deg)`;
+          bA.el.style.transform = bA.rot !== 0 ? `rotate(${bA.rot}deg)` : 'none';
         }
 
         if (!activeMoving && persistentBodies.length === 0) {
@@ -1226,7 +1257,7 @@
     scalerCard.addEventListener('mouseenter', () => {
       markSecret('scaler_blocks');
 
-      // Randomize block shapes: Square (24x24), Wide (36x18), Tall (18x36)
+      // Randomized block shapes: Square (24x24), Wide (36x18), Tall (18x36)
       const shapes = [
         { w: 24, h: 24 },
         { w: 36, h: 18 },
@@ -1249,10 +1280,9 @@
             h: shape.h,
             x: 35 + Math.random() * (scalerCard.offsetWidth - 110),
             y: 10,
-            vx: (Math.random() - 0.5) * 2.5,
+            vx: (Math.random() - 0.5) * 2,
             vy: 1,
             rot: 0,
-            vrot: (Math.random() - 0.5) * 2,
             settled: false,
             spawnTime: Date.now(),
             lifespan: 6500 // Purely time-based 6.5s lifetime
@@ -1768,10 +1798,7 @@
             sfx.playPokeballBounce();
 
             // Pokémon absorbs into ball
-            mon.style.transition = 'filter 0.25s ease, opacity 0.25s ease, transform 0.25s ease';
-            mon.style.filter = 'brightness(2.2) drop-shadow(0 0 14px #ef4444)';
-            mon.style.opacity = '0.25';
-            mon.style.transform = 'scale(0.85)';
+            mon.classList.add('pokemon-absorbing');
 
             const rollSuccess = Math.random() < tier.rate;
 
@@ -1822,10 +1849,11 @@
                   setTimeout(() => p.remove(), 500);
                 });
 
-                // Pokémon breaks free
-                mon.style.filter = 'none';
-                mon.style.opacity = '1';
-                mon.style.transform = 'scale(1)';
+                // Pokémon breaks free - remove absorbing class and restore full appearance immediately
+                mon.classList.remove('pokemon-absorbing');
+                mon.style.filter = '';
+                mon.style.opacity = '';
+                mon.style.transform = '';
 
                 const failBanner = document.createElement('div');
                 failBanner.className = 'pokemon-fail-banner';
@@ -1836,6 +1864,9 @@
                 setTimeout(() => {
                   ball.remove();
                   failBanner.remove();
+                  mon.style.filter = '';
+                  mon.style.opacity = '';
+                  mon.style.transform = '';
                   mon.dataset.ballActive = 'false';
                 }, 1500);
               } else {
@@ -1851,6 +1882,7 @@
                     setTimeout(() => {
                       sfx.playPokemonCaught();
                       ball.classList.add('ball-caught');
+                      mon.classList.remove('pokemon-absorbing');
                       mon.classList.add('pokemon-caught-vanish');
 
                       const winBanner = document.createElement('div');
@@ -1865,9 +1897,15 @@
 
                       setTimeout(() => {
                         mon.classList.remove('pokemon-caught-vanish');
+                        mon.style.filter = '';
+                        mon.style.opacity = '';
+                        mon.style.transform = '';
                         mon.classList.add('pokemon-respawn-burst');
                         setTimeout(() => {
                           mon.classList.remove('pokemon-respawn-burst');
+                          mon.style.filter = '';
+                          mon.style.opacity = '';
+                          mon.style.transform = '';
                           mon.dataset.ballActive = 'false';
                         }, 800);
                       }, 4500);
