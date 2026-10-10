@@ -827,6 +827,10 @@
       line-height: 1.6;
     }
 
+    .mastery-chart-box a:hover img {
+      transform: scale(1.03);
+    }
+
     .dna-highlight-title {
       font-size: 0.75rem;
       color: var(--text-dim);
@@ -1454,6 +1458,20 @@
           <p class="dna-desc">
             Reached <strong>Diamond rank</strong> primarily piloting unconventional, off-meta bottom lane / ADC carries: <strong>Taliyah</strong>, <strong>Zyra</strong>, and <strong>Diana ADC</strong>.
           </p>
+
+          <!-- Top 4 Mastery Bubble Chart -->
+          <div class="mastery-chart-box" style="margin: 14px 0 16px 0; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 14px; padding: 14px; text-align: center;">
+            <div style="font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; margin-bottom: 8px;">
+              Top 4 Champion Mastery (<a href="https://masterychart.com/profile/na/LRoy-Rocks" target="_blank" style="color: var(--cyan); text-decoration: none;">LRoy#Rocks</a>)
+            </div>
+            <a href="https://masterychart.com/profile/na/LRoy-Rocks" target="_blank" title="View full Mastery Chart for LRoy#Rocks" style="display: block; text-decoration: none;">
+              <img src="images/league_mastery_top4.png" alt="Top 4 Mastery Chart (Taliyah 2.4M, Zyra 803k, Miss Fortune 677k, Diana 467k)" style="width: 100%; max-width: 270px; height: auto; display: block; margin: 0 auto; filter: drop-shadow(0 4px 16px rgba(56, 189, 248, 0.22)); transition: transform 0.2s;" />
+              <div style="margin-top: 8px; font-size: 0.76rem; color: var(--cyan); font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                <span>View Full Mastery Chart</span> →
+              </div>
+            </a>
+          </div>
+
           <div class="dna-highlight-box">
             <div class="dna-highlight-title">Systems & Balance Insight:</div>
             Theorycrafting non-standard champions exposes combat math: ability scaling breakpoints, wave state leverage, projectile hitbox exploitation, and ability cooldown windows that punish standard meta play.
@@ -1472,10 +1490,13 @@
           <p class="dna-desc">
             Avid deckbuilder specializing in <strong>Bracket 2–3 casual/Commander</strong> play. Passionate about building highly resilient, synergistic engines on a strict <strong>~$100 budget cap</strong>.
           </p>
-          <div class="dna-highlight-box">
+          <div class="dna-highlight-box" style="margin-bottom: 14px;">
             <div class="dna-highlight-title">Game Economy & Synergy Insight:</div>
             Budget constraints force genuine game design thinking: instead of relying on expensive generic staples, decks win through non-linear recursion, resource redundancy, and table-wide interactive puzzle solving.
           </div>
+          <a href="https://moxfield.com/lists/y70W4-favorite-decks" target="_blank" class="btn btn-secondary" style="width: 100%; justify-content: center; font-size: 0.82rem; padding: 10px 14px; border-color: rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.08); color: #fbbf24; text-decoration: none;">
+            🃏 View Favorite Decks on Moxfield →
+          </a>
         </div>
 
         <!-- Card 3: Pokemon & Shiny Hunting -->
