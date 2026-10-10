@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elroy Saltzherr • 2D DOM Platformer Mode</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Press+Start+2P&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    /* Embed same styles as index.html */
+    :root {
+      --bg: #090d16;
+      --card-bg: #101726;
+      --card-border: #1e293b;
+      --card-hover: #172033;
+      --accent: #6366f1;
+      --cyan: #38bdf8;
+      --gold: #fbbf24;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+      user-select: none;
+    }
+
+    /* Platformer Game HUD Overlay */
+    #game-hud {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10000;
+      background: rgba(9, 13, 22, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 2px solid var(--accent);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.72rem;
+    }
+
+    .hud-stats {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .hud-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hud-controls-hint {
+      color: var(--cyan);
+      font-size: 0.65rem;
+    }
+
+    .btn-exit-game {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      color: #fca5a5;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.65rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-exit-game:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    /* Player Sprite Canvas Layer */
+    #platformer-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Level Container (Holds all platform elements) */
+    .level-container {
+      max-width: 1140px;
+      margin: 80px auto 100px auto;
+      padding: 0 24px;
+    }
+
+    /* Platformer Elements (Acts as solid platforms) */
+    .solid-platform {
+      background: var(--card-bg);
+      border: 2px solid rgba(99, 102, 241, 0.35);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      position: relative;
+      transition: border-color 0.2s;
+    }
+
+    .solid-platform.touched {
+      border-color: var(--gold);
+      box-shadow: 0 0 20px rgba(251, 191, 36, 0.35);
+    }
+
+    .platform-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      background: rgba(99, 102, 241, 0.2);
+      color: var(--cyan);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .platform-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .platform-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .gem-indicator {
+      position: absolute;
+      top: -24px;
+      right: 24px;
+      font-size: 1.4rem;
+      animation: float-gem 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes float-gem {
+      from { transform: translateY(0); }
+      to { transform: translateY(-8px); }
+    }
+
+    /* Modal for inspect */
+    #inspect-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(16px);
+      border: 2px solid var(--gold);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      z-index: 10001;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 40px rgba(251, 191, 36, 0.3);
+      display: none;
+      opacity: 0;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    #inspect-modal.active {
+      display: block;
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .modal-btn {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 10px 20px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 10px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- HUD -->
+  <div id="game-hud">
+    <div class="hud-stats">
+      <div class="hud-badge" style="color: var(--gold);">★ GEMS: <span id="gem-count">0</span> / 6</div>
+      <div class="hud-badge" style="color: var(--cyan);">LEVEL: <span id="level-display">PORTFOLIO DEEP DIVE</span></div>
+    </div>
+    <div class="hud-controls-hint">
+      [A][D] / [←][→] MOVE • [W] / [SPACE] JUMP • [DOUBLE JUMP] UNLOCKED
+    </div>
+    <a href="play.html" class="btn-exit-game">ESC / EXIT</a>
+  </div>
+
+  <!-- Player Canvas -->
+  <canvas id="platformer-canvas"></canvas>
+
+  <!-- Level Platforms -->
+  <div class="level-container" id="level">
+    <!-- Platform 1: Hero -->
+    <div class="solid-platform" id="plat-hero" data-name="Elroy Saltzherr (Lead Dev)" data-gem="true">
+      <span class="gem-indicator">💎</span>
+      <span class="platform-tag">LEVEL START • SPAWN ZONE</span>
+      <h1 class="platform-title">Elroy Saltzherr — Gameplay Programmer & Designer</h1>
+      <p class="platform-desc">
+        Welcome to the playable portfolio! Jump across the solid sections below to explore shipped titles, cloud systems, and competitive insights.
+      </p>
+    </div>
+
+    <!-- Platform 2: Dark Throne -->
+    <div class="solid-platform" id="plat-darkthrone" data-name="Dark Throne (Steam Release)" data-url="https://store.steampowered.com/app/2995790/Dark_Throne/" data-gem="true">
+      <span class="gem-indicator">💎</span>
+      <span class="platform-tag" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">FLAGSHIP TITLE</span>
+      <h2 class="platform-title">Dark Throne — 2D Metroidvania on Steam</h2>
+      <p class="platform-desc">
+        Shipped commercial Metroidvania. Engineered player controllers, combat state machines, boss AI, and Steamworks SDK. (Touch this platform to inspect!)
+      </p>
+    </div>
+
+    <!-- Platform 3: Where's My Gun -->
+    <div class="solid-platform" id="plat-gun" data-name="Where's My Gun? (Phaser)" data-url="https://esaltzherr.github.io/120FinalGame/" data-gem="true">
+      <span class="gem-indicator">💎</span>
+      <span class="platform-tag">GAME JAM WAVE SURVIVAL</span>
+      <h2 class="platform-title">Where's My Gun? — Phaser.js</h2>
+      <p class="platform-desc">
+        Wave survival game featuring dynamic risk-reward progression mechanics where upgrading one skill disables another.
+      </p>
+    </div>
+
+    <!-- Platform 4: Cloud Automation -->
+    <div class="solid-platform" id="plat-cloud" data-name="Cloud Automation (Jambelles & Longboards)" data-gem="true">
+      <span class="gem-indicator">💎</span>
+      <span class="platform-tag" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8;">AUTONOMOUS AI SYSTEMS</span>
+      <h2 class="platform-title">Cloud Run & Gemini Multi-Agent Pipelines</h2>
+      <p class="platform-desc">
+        Cut catalog publishing from hours to 10 minutes. Containerized Google Cloud Run feature serving 900+ users.
+      </p>
+    </div>
+
+    <!-- Platform 5: Competitive Acumen -->
+    <div class="solid-platform" id="plat-acumen" data-name="Diamond LoL & MTG Acumen" data-gem="true">
+      <span class="gem-indicator">💎</span>
+      <span class="platform-tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">COMPETITIVE DNA</span>
+      <h2 class="platform-title">Diamond League of Legends (2.4M Taliyah) & MTG Economy</h2>
+      <p class="platform-desc">
+        Piloting off-meta bottom lane carries to Diamond; designing resilient ~$100 Commander decks.
+      </p>
+    </div>
+
+    <!-- Platform 6: Shipped Finish Line -->
+    <div class="solid-platform" id="plat-finish" data-name="Level Complete! Resumes Available" data-url="index.html#resumes" data-gem="true" style="border-color: var(--gold); text-align: center; padding: 40px;">
+      <span class="gem-indicator">🏆</span>
+      <span class="platform-tag" style="background: rgba(251, 191, 36, 0.2); color: var(--gold);">FINISH LINE</span>
+      <h2 class="platform-title">You Completed the Traversal!</h2>
+      <p class="platform-desc">
+        Download full Gameplay Programmer & Technical Designer resumes, or return to standard mode.
+      </p>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="inspect-modal">
+    <div style="font-size: 2rem; margin-bottom: 10px;">🌟</div>
+    <h3 id="modal-title" style="font-size: 1.3rem; margin-bottom: 8px; color: #fff;">Platform Inspected!</h3>
+    <p id="modal-desc" style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 16px;">Platform info loaded.</p>
+    <a id="modal-link" href="#" target="_blank" class="modal-btn">Visit Link →</a>
+    <button onclick="closeModal()" style="margin-left: 10px; padding: 10px 18px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: #fff; cursor: pointer;">Resume Playing [ESC]</button>
+  </div>
+
+  <script>
+    // Web Audio Synthesizer for Authentic Game Sound Effects
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function playSound(type) {
+      try {
+        if (!audioCtx) audioCtx = new AudioCtx();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const t = audioCtx.currentTime;
+
+        if (type === 'jump') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(150, t);
+          osc.frequency.exponentialRampToValueAtTime(450, t + 0.12);
+          gain.gain.setValueAtTime(0.12, t);
+          gain.gain.linearRampToValueAtTime(0, t + 0.12);
+          osc.start(t);
+          osc.stop(t + 0.12);
+        } else if (type === 'double-jump') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(300, t);
+          osc.frequency.exponentialRampToValueAtTime(700, t + 0.15);
+          gain.gain.setValueAtTime(0.15, t);
+          gain.gain.linearRampToValueAtTime(0, t + 0.15);
+          osc.start(t);
+          osc.stop(t + 0.15);
+        } else if (type === 'coin') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(987.77, t); // B5
+          osc.frequency.setValueAtTime(1318.51, t + 0.08); // E6
+          gain.gain.setValueAtTime(0.18, t);
+          gain.gain.linearRampToValueAtTime(0, t + 0.28);
+          osc.start(t);
+          osc.stop(t + 0.28);
+        }
+      } catch (e) {}
+    }
+
+    // 2D Physics Engine
+    const canvas = document.getElementById('platformer-canvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = document.documentElement.scrollHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Player State
+    const player = {
+      x: window.innerWidth / 2 - 16,
+      y: 120,
+      w: 28,
+      h: 42,
+      vx: 0,
+      vy: 0,
+      speed: 6.8,
+      gravity: 0.65,
+      jumpForce: -13.5,
+      isGrounded: false,
+      jumpsLeft: 2,
+      facing: 1, // 1 = right, -1 = left
+      color: '#6366f1'
+    };
+
+    let gemsCollected = 0;
+    const keys = {};
+
+    window.addEventListener('keydown', e => {
+      keys[e.code] = true;
+      if (['Space', 'KeyW', 'ArrowUp'].includes(e.code)) {
+        e.preventDefault();
+        tryJump();
+      }
+      if (e.code === 'Escape') {
+        closeModal();
+      }
+    });
+
+    window.addEventListener('keyup', e => {
+      keys[e.code] = false;
+    });
+
+    function tryJump() {
+      if (player.jumpsLeft > 0) {
+        player.vy = player.jumpForce;
+        if (player.jumpsLeft === 2) {
+          playSound('jump');
+        } else {
+          playSound('double-jump');
+        }
+        player.jumpsLeft--;
+        player.isGrounded = false;
+      }
+    }
+
+    // Platforms
+    function getPlatformRects() {
+      const plats = document.querySelectorAll('.solid-platform');
+      const rects = [];
+      plats.forEach(el => {
+        const r = el.getBoundingClientRect();
+        rects.push({
+          x: r.left + window.scrollX,
+          y: r.top + window.scrollY,
+          w: r.width,
+          h: r.height,
+          el: el
+        });
+      });
+      return rects;
+    }
+
+    function checkCollision(p, rect) {
+      return (
+        p.x < rect.x + rect.w &&
+        p.x + p.w > rect.x &&
+        p.y < rect.y + rect.h &&
+        p.y + p.h > rect.y
+      );
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('inspect-modal');
+      modal.classList.remove('active');
+    }
+
+    function inspectPlatform(el) {
+      const modal = document.getElementById('inspect-modal');
+      document.getElementById('modal-title').textContent = el.getAttribute('data-name');
+      document.getElementById('modal-desc').textContent = el.querySelector('.platform-desc').textContent;
+      const url = el.getAttribute('data-url');
+      const linkBtn = document.getElementById('modal-link');
+      if (url) {
+        linkBtn.href = url;
+        linkBtn.style.display = 'inline-block';
+      } else {
+        linkBtn.style.display = 'none';
+      }
+      modal.classList.add('active');
+    }
+
+    // Main Game Loop
+    function update() {
+      // Horizontal input
+      if (keys['KeyA'] || keys['ArrowLeft']) {
+        player.vx = -player.speed;
+        player.facing = -1;
+      } else if (keys['KeyD'] || keys['ArrowRight']) {
+        player.vx = player.speed;
+        player.facing = 1;
+      } else {
+        player.vx *= 0.75;
+      }
+
+      // Apply Gravity
+      player.vy += player.gravity;
+      if (player.vy > 15) player.vy = 15;
+
+      // Move X
+      player.x += player.vx;
+      // Screen bounds X
+      if (player.x < 10) player.x = 10;
+      if (player.x + player.w > window.innerWidth - 10) player.x = window.innerWidth - 10 - player.w;
+
+      // Move Y & Collisions
+      player.y += player.vy;
+      const platforms = getPlatformRects();
+      player.isGrounded = false;
+
+      for (const plat of platforms) {
+        if (checkCollision(player, plat)) {
+          // Landing on top
+          if (player.vy > 0 && player.y + player.h - player.vy <= plat.y + 12) {
+            player.y = plat.y - player.h;
+            player.vy = 0;
+            player.isGrounded = true;
+            player.jumpsLeft = 2; // Reset double jump
+
+            // Gem pickup & touched styling
+            if (!plat.el.classList.contains('touched')) {
+              plat.el.classList.add('touched');
+              const gemEl = plat.el.querySelector('.gem-indicator');
+              if (gemEl) {
+                gemEl.style.display = 'none';
+                gemsCollected++;
+                document.getElementById('gem-count').textContent = gemsCollected;
+                playSound('coin');
+              }
+            }
+          }
+        }
+      }
+
+      // Smooth Camera follow Y
+      const targetScrollY = player.y - window.innerHeight / 2;
+      window.scrollTo({
+        top: targetScrollY,
+        behavior: 'auto'
+      });
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw Player Knight
+      ctx.save();
+      ctx.translate(player.x, player.y);
+
+      // Shadow on ground
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+      ctx.beginPath();
+      ctx.ellipse(player.w / 2, player.h + 2, player.w / 2, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Body (Knight Armor)
+      ctx.fillStyle = '#6366f1';
+      ctx.fillRect(4, 14, player.w - 8, player.h - 18);
+
+      // Knight Helmet
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillRect(2, 0, player.w - 4, 16);
+
+      // Visor Glow
+      ctx.fillStyle = '#38bdf8';
+      const visorX = player.facing === 1 ? 14 : 4;
+      ctx.fillRect(visorX, 6, 8, 4);
+
+      // Sword or Cape
+      ctx.fillStyle = '#f43f5e';
+      const capeX = player.facing === 1 ? 0 : player.w - 4;
+      ctx.fillRect(capeX, 16, 4, 18);
+
+      ctx.restore();
+    }
+
+    function loop() {
+      update();
+      render();
+      requestAnimationFrame(loop);
+    }
+    loop();
+  </script>
+</body>
+</html>
