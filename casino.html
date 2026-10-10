@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elroy Saltzherr • High-Roller Portfolio Casino</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Press+Start+2P&family=Cinzel:wght@700;900&family=JetBrains+Mono:wght@600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090b10;
+      --card-bg: rgba(18, 23, 34, 0.85);
+      --gold: #f59e0b;
+      --gold-glow: rgba(245, 158, 11, 0.45);
+      --emerald: #10b981;
+      --crimson: #ef4444;
+      --neon-cyan: #38bdf8;
+      --purple: #a855f7;
+      --felt: #064e3b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 10% 40%, rgba(16, 185, 129, 0.1) 0%, transparent 45%),
+        radial-gradient(circle at 90% 70%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 30px 20px 80px 20px;
+    }
+
+    /* Top Navigation Bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .btn-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      color: #cbd5e1;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    .btn-nav:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* Bankroll & Status Bar */
+    .casino-header {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+      border: 2px solid rgba(245, 158, 11, 0.3);
+      border-radius: 20px;
+      padding: 24px 30px;
+      margin-bottom: 35px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(245, 158, 11, 0.15);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .casino-title-group h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .casino-title-group p {
+      font-size: 0.92rem;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    .bankroll-cluster {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .bankroll-chip {
+      background: rgba(0, 0, 0, 0.5);
+      border: 2px solid var(--gold);
+      border-radius: 14px;
+      padding: 10px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      box-shadow: 0 0 15px var(--gold-glow);
+    }
+
+    .chip-label {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #cbd5e1;
+    }
+
+    .chip-amount {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 1.35rem;
+      color: var(--gold);
+      text-shadow: 0 0 10px var(--gold-glow);
+    }
+
+    .bailout-btn {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
+      transition: all 0.2s;
+    }
+
+    .bailout-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.1);
+    }
+
+    /* Game Tables Grid */
+    .tables-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-bottom: 45px;
+    }
+
+    @media (max-width: 960px) {
+      .tables-section { grid-template-columns: 1fr; }
+    }
+
+    .casino-table {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .table-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .table-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .table-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--neon-cyan);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+
+    /* Slot Machine UI */
+    .slot-housing {
+      background: #020617;
+      border: 4px solid #334155;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .reels-display {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .reel {
+      width: 86px;
+      height: 96px;
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 50%, #1e293b 100%);
+      border: 2px solid var(--gold);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.8rem;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.7), inset 0 0 10px rgba(245, 158, 11, 0.3);
+      user-select: none;
+      transition: transform 0.1s;
+    }
+
+    .reel.spinning {
+      animation: reel-blur 0.12s infinite alternate;
+    }
+
+    @keyframes reel-blur {
+      from { transform: translateY(-4px); filter: blur(2px); }
+      to { transform: translateY(4px); filter: blur(2px); }
+    }
+
+    .slot-payout-box {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 8px 14px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .slot-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .bet-pills {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-bet {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #cbd5e1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all 0.15s;
+    }
+
+    .btn-bet.active {
+      background: var(--gold);
+      color: #000;
+      border-color: var(--gold);
+      box-shadow: 0 0 10px var(--gold-glow);
+    }
+
+    .btn-spin {
+      background: linear-gradient(135deg, var(--gold) 0%, #d97706 100%);
+      color: #000;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.8rem;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 6px 20px var(--gold-glow);
+      transition: all 0.15s;
+      flex-grow: 1;
+    }
+
+    .btn-spin:hover:not(:disabled) {
+      transform: translateY(-2px);
+      filter: brightness(1.15);
+    }
+
+    .btn-spin:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Blackjack Table UI */
+    .felt-table {
+      background: var(--felt);
+      border: 4px solid #047857;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.7);
+      margin-bottom: 20px;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .dealer-zone, .player-zone {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .zone-info {
+      font-size: 0.76rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #a7f3d0;
+    }
+
+    .cards-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .card {
+      width: 48px;
+      height: 68px;
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 6px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1rem;
+      user-select: none;
+      position: relative;
+    }
+
+    .card.red { color: #dc2626; }
+    .card.hidden {
+      background: repeating-linear-gradient(45deg, #1e3a8a, #1e3a8a 5px, #172554 5px, #172554 10px);
+      color: transparent;
+      border: 2px solid #fff;
+    }
+
+    .bj-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-bj {
+      flex: 1;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 800;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: #fff;
+      transition: all 0.15s;
+    }
+
+    .btn-hit { background: #2563eb; }
+    .btn-stand { background: #d97706; }
+    .btn-deal { background: #059669; }
+
+    .btn-bj:hover:not(:disabled) {
+      transform: translateY(-2px);
+      filter: brightness(1.15);
+    }
+    .btn-bj:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Marketplace Section */
+    .shop-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .shop-header h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.6rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .unlock-progress-pill {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.72rem;
+      padding: 8px 14px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      border-radius: 10px;
+    }
+
+    .sections-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 24px;
+    }
+
+    .section-card {
+      background: var(--card-bg);
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 26px;
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .section-card.locked {
+      filter: grayscale(0.4);
+      opacity: 0.85;
+    }
+
+    .section-card.unlocked {
+      border-color: var(--gold);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 25px rgba(245, 158, 11, 0.25);
+      filter: none;
+      opacity: 1;
+      background: linear-gradient(145deg, rgba(24, 30, 46, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+    }
+
+    .card-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .card-price-tag {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.78rem;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--gold);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .unlocked-stamp {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.7rem;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--emerald);
+      border: 1px solid var(--emerald);
+      display: none;
+    }
+
+    .section-card.unlocked .card-price-tag { display: none; }
+    .section-card.unlocked .unlocked-stamp { display: inline-block; }
+
+    .card-icon-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .section-icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      flex-shrink: 0;
+    }
+
+    .section-card.unlocked .section-icon-box {
+      border-color: var(--gold);
+      box-shadow: 0 0 15px var(--gold-glow);
+    }
+
+    .card-title-group h3 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.3;
+    }
+
+    .card-title-group span {
+      font-size: 0.75rem;
+      color: var(--neon-cyan);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .card-teaser {
+      font-size: 0.92rem;
+      color: #94a3b8;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .card-full-intel {
+      display: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 16px;
+      margin-bottom: 18px;
+      font-size: 0.88rem;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    .section-card.unlocked .card-full-intel {
+      display: block;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .intel-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .intel-pill {
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .btn-buy-section {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--gold) 0%, #d97706 100%);
+      color: #000;
+      border: none;
+      font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px var(--gold-glow);
+      transition: all 0.2s;
+    }
+
+    .btn-buy-section:hover:not(:disabled) {
+      transform: translateY(-2px);
+      filter: brightness(1.15);
+    }
+
+    .btn-buy-section:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .section-card.unlocked .btn-buy-section {
+      background: rgba(255, 255, 255, 0.08);
+      color: #94a3b8;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: none;
+      cursor: default;
+      transform: none;
+    }
+
+    /* Confetti Canvas */
+    #confettiCanvas {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Toast */
+    .casino-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 2px solid var(--gold);
+      padding: 14px 22px;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px var(--gold-glow);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 10000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .casino-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confettiCanvas"></canvas>
+  <div class="casino-toast" id="toast"><span>🎰</span> <span id="toastMsg">Welcome to the Portfolio Casino!</span></div>
+
+  <div class="container">
+    <div class="top-bar">
+      <a href="play.html" class="btn-nav">◀ Arcade Hub</a>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-nav" id="btnAudioToggle">🔊 AUDIO: ON</button>
+        <button class="btn-nav" id="btnRecruiterCheat" style="border-color: var(--neon-cyan); color: var(--neon-cyan);">💼 Recruiter Seed Grant (+$2,000)</button>
+        <a href="index.html" class="btn-nav">Standard Site ▶</a>
+      </div>
+    </div>
+
+    <!-- Casino Header & Bankroll -->
+    <div class="casino-header">
+      <div class="casino-title-group">
+        <h1>♠ THE REPO HIGH-ROLLER CASINO ♠</h1>
+        <p>Gamble your developer bankroll on the slots & blackjack to fund and unlock Elroy’s career milestones.</p>
+      </div>
+      <div class="bankroll-cluster">
+        <div class="bankroll-chip">
+          <span class="chip-label">Dev Bankroll</span>
+          <span class="chip-amount" id="bankrollDisplay">$500</span>
+        </div>
+        <button class="bailout-btn" id="btnBailout">
+          ⚡ Emergency Hotfix (+$75)
+        </button>
+      </div>
+    </div>
+
+    <!-- Games Floor: Slots + Blackjack -->
+    <div class="tables-section">
+      <!-- TABLE 1: SLOTS -->
+      <div class="casino-table" style="border-top: 4px solid var(--gold);">
+        <div class="table-banner">
+          <div class="table-title">🎰 The Repo Reel</div>
+          <span class="table-badge">JACKPOT: 50× BET</span>
+        </div>
+
+        <div class="slot-housing">
+          <div class="reels-display">
+            <div class="reel" id="reel1">🗡️</div>
+            <div class="reel" id="reel2">📈</div>
+            <div class="reel" id="reel3">🤖</div>
+          </div>
+          <div class="slot-payout-box" id="slotResultText">
+            Match 3 of any icon to multiply your payout!
+          </div>
+        </div>
+
+        <div class="slot-controls">
+          <div class="bet-pills">
+            <button class="btn-bet" data-bet="10">$10</button>
+            <button class="btn-bet active" data-bet="25">$25</button>
+            <button class="btn-bet" data-bet="50">$50</button>
+            <button class="btn-bet" data-bet="100">$100</button>
+          </div>
+          <button class="btn-spin" id="btnSpin">SPIN REELS</button>
+        </div>
+      </div>
+
+      <!-- TABLE 2: BLACKJACK -->
+      <div class="casino-table" style="border-top: 4px solid var(--emerald);">
+        <div class="table-banner">
+          <div class="table-title">🃏 Dev 21 vs The Bug Dealer</div>
+          <span class="table-badge" id="bjHandResult">DEAL TO PLAY ($50 BET)</span>
+        </div>
+
+        <div class="felt-table">
+          <!-- Dealer Zone -->
+          <div class="dealer-zone">
+            <div class="zone-info">
+              <div>PRODUCTION BUG (DEALER)</div>
+              <div id="dealerScore" style="color: #6ee7b7; font-size: 0.9rem;">?</div>
+            </div>
+            <div class="cards-row" id="dealerCards">
+              <div class="card hidden">?</div>
+              <div class="card">K♠</div>
+            </div>
+          </div>
+
+          <!-- Player Zone -->
+          <div class="player-zone">
+            <div class="zone-info">
+              <div>YOU (LEAD DEV)</div>
+              <div id="playerScore" style="color: #6ee7b7; font-size: 0.9rem;">20</div>
+            </div>
+            <div class="cards-row" id="playerCards">
+              <div class="card red">Q♥</div>
+              <div class="card">10♠</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bj-actions">
+          <button class="btn-bj btn-deal" id="btnBjDeal">DEAL ($50)</button>
+          <button class="btn-bj btn-hit" id="btnBjHit" disabled>HIT</button>
+          <button class="btn-bj btn-stand" id="btnBjStand" disabled>STAND</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Marketplace: Buy Each Section -->
+    <div class="shop-header">
+      <h2>💎 The Portfolio VIP Auction House</h2>
+      <div class="unlock-progress-pill" id="unlockProgress">UNLOCKED: 0 / 6</div>
+    </div>
+
+    <div class="sections-grid" id="sectionsGrid">
+      <!-- 1. Dark Throne -->
+      <div class="section-card locked" id="sec-darkthrone">
+        <div>
+          <div class="card-top-row">
+            <span class="card-price-tag">$200</span>
+            <span class="unlocked-stamp">✓ UNLOCKED</span>
+          </div>
+          <div class="card-icon-title">
+            <div class="section-icon-box">🗡️</div>
+            <div class="card-title-group">
+              <h3>Dark Throne: Blood & Gold</h3>
+              <span>Flagship Steam Game</span>
+            </div>
+          </div>
+          <p class="card-teaser">
+            Fast-paced 2D dark fantasy action RPG on Steam. Pay the buy-in to decrypt complete combat physics, AI, and architecture specs.
+          </p>
+          <div class="card-full-intel">
+            <p>
+              Programmed 4-hit combo chains, stamina depletion curves, sub-pixel hitboxes, screenshake, and state machine enemy AI in Godot 4.3. Shipped commercially on Steam with high community praise for combat weight and responsiveness.
+            </p>
+            <div class="intel-pill-row">
+              <span class="intel-pill">Godot 4.3</span>
+              <span class="intel-pill">State Machines</span>
+              <span class="intel-pill">Combat Feel</span>
+              <span class="intel-pill">Steam Shipped</span>
+            </div>
+          </div>
+        </div>
+        <button class="btn-buy-section" onclick="buySection('darkthrone', 200)">
+          🔓 Unlock Section ($200)
+        </button>
+      </div>
+
+      <!-- 2. StocksBot -->
+      <div class="section-card locked" id="sec-stocksbot">
+        <div>
+          <div class="card-top-row">
+            <span class="card-price-tag">$350</span>
+            <span class="unlocked-stamp">✓ UNLOCKED</span>
+          </div>
+          <div class="card-icon-title">
+            <div class="section-icon-box">📈</div>
+            <div class="card-title-group">
+              <h3>StocksBot Autonomous Cloud</h3>
+              <span>Google Cloud Run Pipeline</span>
+            </div>
+          </div>
+          <p class="card-teaser">
+            Automated multi-agent stock market intelligence bot running 24/7 on Google Cloud. Pay to inspect container architecture.
+          </p>
+          <div class="card-full-intel">
+            <p>
+              Containerized Docker app orchestrated via Cloud Scheduler. Scrapes Finviz volume outliers, runs sentiment analysis via FinBERT/LLMs, and broadcasts real-time technical alerts straight into Discord with sub-second delivery.
+            </p>
+            <div class="intel-pill-row">
+              <span class="intel-pill">GCP Cloud Run</span>
+              <span class="intel-pill">Docker</span>
+              <span class="intel-pill">Python</span>
+              <span class="intel-pill">Discord Webhooks</span>
+            </div>
+          </div>
+        </div>
+        <button class="btn-buy-section" onclick="buySection('stocksbot', 350)">
+          🔓 Unlock Section ($350)
+        </button>
+      </div>
+
+      <!-- 3. FRC Robotics -->
+      <div class="section-card locked" id="sec-robotics">
+        <div>
+          <div class="card-top-row">
+            <span class="card-price-tag">$500</span>
+            <span class="unlocked-stamp">✓ UNLOCKED</span>
+          </div>
+          <div class="card-icon-title">
+            <div class="section-icon-box">🤖</div>
+            <div class="card-title-group">
+              <h3>FRC Robotics Driver & Lead</h3>
+              <span>Hardware & Fabrication</span>
+            </div>
+          </div>
+          <p class="card-teaser">
+            Competitive FIRST Robotics tournament pilot, precision machinist, and structural CAD designer under strict match countdowns.
+          </p>
+          <div class="card-full-intel">
+            <p>
+              Served as primary robot driver on the competitive field under millisecond reaction times. Designed aluminum drivetrains and intake mechanisms in CAD, operated CNC mills and sheet-metal fabrication, and led hardware debug during live regionals.
+            </p>
+            <div class="intel-pill-row">
+              <span class="intel-pill">Drive Team Lead</span>
+              <span class="intel-pill">Precision Machining</span>
+              <span class="intel-pill">CAD Fabrication</span>
+            </div>
+          </div>
+        </div>
+        <button class="btn-buy-section" onclick="buySection('robotics', 500)">
+          🔓 Unlock Section ($500)
+        </button>
+      </div>
+
+      <!-- 4. Jambelles Store Scaling -->
+      <div class="section-card locked" id="sec-jambelles">
+        <div>
+          <div class="card-top-row">
+            <span class="card-price-tag">$750</span>
+            <span class="unlocked-stamp">✓ UNLOCKED</span>
+          </div>
+          <div class="card-icon-title">
+            <div class="section-icon-box">🛹</div>
+            <div class="card-title-group">
+              <h3>Jambelles & Skate Store</h3>
+              <span>E-Commerce & High-Volume Operations</span>
+            </div>
+          </div>
+          <p class="card-teaser">
+            Scaled inventory workflows, multi-channel customer retention, and AI workflow integration for action sports brand.
+          </p>
+          <div class="card-full-intel">
+            <p>
+              Spearheaded e-commerce operations for Longboards & Jambelles storefront. Built AI-assisted inventory tracking models, managed cross-platform logistics pipelines, and boosted repeat customer conversions through optimized product presentation.
+            </p>
+            <div class="intel-pill-row">
+              <span class="intel-pill">AI Automation</span>
+              <span class="intel-pill">Logistics Scaling</span>
+              <span class="intel-pill">Omnichannel Growth</span>
+            </div>
+          </div>
+        </div>
+        <button class="btn-buy-section" onclick="buySection('jambelles', 750)">
+          🔓 Unlock Section ($750)
+        </button>
+      </div>
+
+      <!-- 5. Diamond Rank & Sports -->
+      <div class="section-card locked" id="sec-diamond">
+        <div>
+          <div class="card-top-row">
+            <span class="card-price-tag">$1,000</span>
+            <span class="unlocked-stamp">✓ UNLOCKED</span>
+          </div>
+          <div class="card-icon-title">
+            <div class="section-icon-box">💎</div>
+            <div class="card-title-group">
+              <h3>Diamond Rank & Multi-Sport</h3>
+              <span>Top 1% Reflexes & Team Athletics</span>
+            </div>
+          </div>
+          <p class="card-teaser">
+            Top 1% Diamond mastery in League of Legends combined with 15+ years of competitive soccer, basketball, baseball, and swimming.
+          </p>
+          <div class="card-full-intel">
+            <p>
+              Peak Diamond competitor (LRoy-Rocks) with high mastery in apex macro-rotation, split-second cooldown calculation, and calm tournament communication. Backed by 15 straight years of competitive soccer and multi-sport endurance discipline.
+            </p>
+            <div class="intel-pill-row">
+              <span class="intel-pill">Top 1% Diamond</span>
+              <span class="intel-pill">15 Yrs Soccer</span>
+              <span class="intel-pill">Split-Second Macro</span>
+            </div>
+          </div>
+        </div>
+        <button class="btn-buy-section" onclick="buySection('diamond', 1000)">
+          🔓 Unlock Section ($1,000)
+        </button>
+      </div>
+
+      <!-- 6. MTG & Shiny Pokémon Vault -->
+      <div class="section-card locked" id="sec-mtg">
+        <div>
+          <div class="card-top-row">
+            <span class="card-price-tag">$1,500</span>
+            <span class="unlocked-stamp">✓ UNLOCKED</span>
+          </div>
+          <div class="card-icon-title">
+            <div class="section-icon-box">🃏</div>
+            <div class="card-title-group">
+              <h3>MTG Strategy & Shiny Pokémon</h3>
+              <span>Complex Systems & Favorite Signatures</span>
+            </div>
+          </div>
+          <p class="card-teaser">
+            Deep EDH combo mechanics, board state probability management, and Elroy's curated signature all-shiny Pokémon team.
+          </p>
+          <div class="card-full-intel">
+            <p>
+              Architect of high-synergy 100-card EDH decks documented on <a href="https://moxfield.com/lists/y70W4-favorite-decks" target="_blank" style="color: #38bdf8; font-weight: bold; text-decoration: underline;">Moxfield</a>. Features signature shiny companions: Marshadow, Wishiwashi School Form, Perrserker, Mega Golisopod, Cramorant Gorging, and Litten.
+            </p>
+            <div class="intel-pill-row">
+              <span class="intel-pill">Systems Theory</span>
+              <span class="intel-pill">EDH Synergies</span>
+              <span class="intel-pill">Shiny Roster</span>
+            </div>
+          </div>
+        </div>
+        <button class="btn-buy-section" onclick="buySection('mtg', 1500)">
+          🔓 Unlock Section ($1,500)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================
+       SYNTHESIZED WEB AUDIO (Casino Sounds)
+       ========================================================= */
+    class CasinoSFX {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+      }
+      playCoin() {
+        if (!this.enabled || !this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(987.77, this.ctx.currentTime); // B5
+        osc.frequency.exponentialRampToValueAtTime(1318.51, this.ctx.currentTime + 0.08); // E6
+        gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.12);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.12);
+      }
+      playReelTick() {
+        if (!this.enabled || !this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.03);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.03);
+      }
+      playWin() {
+        if (!this.enabled || !this.ctx) return;
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.15, this.ctx.currentTime + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.08 + 0.2);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(this.ctx.currentTime + idx * 0.08);
+          osc.stop(this.ctx.currentTime + idx * 0.08 + 0.2);
+        });
+      }
+      playJackpot() {
+        if (!this.enabled || !this.ctx) return;
+        const notes = [523, 659, 783, 1046, 1318, 1567, 2093];
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.12, this.ctx.currentTime + idx * 0.06);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.06 + 0.25);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(this.ctx.currentTime + idx * 0.06);
+          osc.stop(this.ctx.currentTime + idx * 0.06 + 0.25);
+        });
+      }
+      playLoss() {
+        if (!this.enabled || !this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(260, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(140, this.ctx.currentTime + 0.25);
+        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.25);
+      }
+    }
+
+    const sfx = new CasinoSFX();
+
+    /* =========================================================
+       BANKROLL & STATE
+       ========================================================= */
+    let bankroll = 500;
+    let currentBet = 25;
+    const unlockedSections = new Set();
+    const totalSections = 6;
+
+    const bankrollDisplay = document.getElementById('bankrollDisplay');
+    const unlockProgress = document.getElementById('unlockProgress');
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toastMsg');
+
+    function updateBankroll(delta) {
+      bankroll += delta;
+      if (bankroll < 0) bankroll = 0;
+      bankrollDisplay.textContent = `$${bankroll.toLocaleString()}`;
+      checkAffordability();
+    }
+
+    function showToast(msg, icon = '🎰') {
+      toast.querySelector('span:first-child').textContent = icon;
+      toastMsg.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    function checkAffordability() {
+      // Updates buy button disabled status
+      document.querySelectorAll('.section-card.locked').forEach(card => {
+        const btn = card.querySelector('.btn-buy-section');
+        const costMatch = btn.textContent.match(/\$(\d+[\d,]*)/);
+        if (costMatch) {
+          const cost = parseInt(costMatch[1].replace(',', ''));
+          btn.disabled = bankroll < cost;
+        }
+      });
+    }
+
+    /* =========================================================
+       SLOT MACHINE LOGIC
+       ========================================================= */
+    const ICONS = ['🗡️', '📈', '🤖', '🛹', '💎', '🃏', '7️⃣'];
+    const reel1 = document.getElementById('reel1');
+    const reel2 = document.getElementById('reel2');
+    const reel3 = document.getElementById('reel3');
+    const btnSpin = document.getElementById('btnSpin');
+    const slotResultText = document.getElementById('slotResultText');
+
+    document.querySelectorAll('.btn-bet').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.btn-bet').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentBet = parseInt(btn.getAttribute('data-bet'));
+        sfx.init();
+        sfx.playCoin();
+      });
+    });
+
+    btnSpin.addEventListener('click', () => {
+      sfx.init();
+      if (bankroll < currentBet) {
+        showToast('Insufficient funds! Click Emergency Hotfix for chips.', '⚠️');
+        sfx.playLoss();
+        return;
+      }
+
+      updateBankroll(-currentBet);
+      btnSpin.disabled = true;
+      slotResultText.textContent = 'Spinning the codebase...';
+
+      reel1.classList.add('spinning');
+      reel2.classList.add('spinning');
+      reel3.classList.add('spinning');
+
+      let ticks = 0;
+      const spinInterval = setInterval(() => {
+        reel1.textContent = ICONS[Math.floor(Math.random() * ICONS.length)];
+        reel2.textContent = ICONS[Math.floor(Math.random() * ICONS.length)];
+        reel3.textContent = ICONS[Math.floor(Math.random() * ICONS.length)];
+        sfx.playReelTick();
+        ticks++;
+      }, 70);
+
+      setTimeout(() => {
+        clearInterval(spinInterval);
+        reel1.classList.remove('spinning');
+        reel2.classList.remove('spinning');
+        reel3.classList.remove('spinning');
+        btnSpin.disabled = false;
+
+        // Determine final reels
+        const res1 = ICONS[Math.floor(Math.random() * ICONS.length)];
+        const res2 = ICONS[Math.floor(Math.random() * ICONS.length)];
+        let res3 = ICONS[Math.floor(Math.random() * ICONS.length)];
+
+        // Give player a 35% chance to hit a pair or triple for fun gameplay
+        if (Math.random() < 0.35) res3 = res1;
+
+        reel1.textContent = res1;
+        reel2.textContent = res2;
+        reel3.textContent = res3;
+
+        evaluateSlots(res1, res2, res3);
+      }, 1400);
+    });
+
+    function evaluateSlots(r1, r2, r3) {
+      if (r1 === '7️⃣' && r2 === '7️⃣' && r3 === '7️⃣') {
+        const win = currentBet * 50;
+        updateBankroll(win);
+        slotResultText.innerHTML = `🔥 <b style="color: #f59e0b;">TRIPLE SEVENS MEGA JACKPOT! (+$${win})</b>`;
+        sfx.playJackpot();
+        triggerConfetti();
+        showToast(`MEGA JACKPOT! +$${win}!`, '🏆');
+      } else if (r1 === '💎' && r2 === '💎' && r3 === '💎') {
+        const win = currentBet * 30;
+        updateBankroll(win);
+        slotResultText.innerHTML = `💎 <b style="color: #38bdf8;">DIAMOND TRIPLE! (+$${win})</b>`;
+        sfx.playJackpot();
+        triggerConfetti();
+        showToast(`Diamond Mastery Payout! +$${win}`, '💎');
+      } else if (r1 === r2 && r2 === r3) {
+        const win = currentBet * 15;
+        updateBankroll(win);
+        slotResultText.innerHTML = `✨ <b style="color: #10b981;">TRIPLE ${r1}! PAYS 15× (+$${win})</b>`;
+        sfx.playWin();
+        showToast(`Triple Match! +$${win}`, '🎉');
+      } else if (r1 === r2 || r2 === r3 || r1 === r3) {
+        const win = currentBet * 2;
+        updateBankroll(win);
+        slotResultText.innerHTML = `🎯 <b>PAIR MATCH! PAYS 2× (+$${win})</b>`;
+        sfx.playWin();
+      } else {
+        slotResultText.textContent = `No match. The bug persists (-$${currentBet}). Spin again!`;
+        sfx.playLoss();
+      }
+    }
+
+    /* =========================================================
+       BLACKJACK LOGIC
+       ========================================================= */
+    const BJ_BET = 50;
+    let deck = [];
+    let playerHand = [];
+    let dealerHand = [];
+    let bjActive = false;
+
+    const btnBjDeal = document.getElementById('btnBjDeal');
+    const btnBjHit = document.getElementById('btnBjHit');
+    const btnBjStand = document.getElementById('btnBjStand');
+    const dealerCardsEl = document.getElementById('dealerCards');
+    const playerCardsEl = document.getElementById('playerCards');
+    const dealerScoreEl = document.getElementById('dealerScore');
+    const playerScoreEl = document.getElementById('playerScore');
+    const bjHandResult = document.getElementById('bjHandResult');
+
+    function createDeck() {
+      const suits = ['♠', '♥', '♦', '♣'];
+      const ranks = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+      deck = [];
+      suits.forEach(s => {
+        ranks.forEach(r => {
+          let val = parseInt(r);
+          if (['J', 'Q', 'K'].includes(r)) val = 10;
+          if (r === 'A') val = 11;
+          deck.push({ rank: r, suit: s, val, isRed: ['♥', '♦'].includes(s) });
+        });
+      });
+      deck.sort(() => Math.random() - 0.5);
+    }
+
+    function getHandValue(hand) {
+      let val = 0;
+      let aces = 0;
+      hand.forEach(c => {
+        val += c.val;
+        if (c.rank === 'A') aces++;
+      });
+      while (val > 21 && aces > 0) {
+        val -= 10;
+        aces--;
+      }
+      return val;
+    }
+
+    function renderHand(hand, container, hideFirst = false) {
+      container.innerHTML = '';
+      hand.forEach((card, idx) => {
+        const div = document.createElement('div');
+        div.className = `card ${card.isRed ? 'red' : ''}`;
+        if (hideFirst && idx === 0) {
+          div.className = 'card hidden';
+          div.textContent = '?';
+        } else {
+          div.textContent = `${card.rank}${card.suit}`;
+        }
+        container.appendChild(div);
+      });
+    }
+
+    btnBjDeal.addEventListener('click', () => {
+      sfx.init();
+      if (bankroll < BJ_BET) {
+        showToast('Need $50 to play Blackjack! Click Emergency Hotfix.', '⚠️');
+        sfx.playLoss();
+        return;
+      }
+      updateBankroll(-BJ_BET);
+      sfx.playCoin();
+      createDeck();
+
+      playerHand = [deck.pop(), deck.pop()];
+      dealerHand = [deck.pop(), deck.pop()];
+      bjActive = true;
+
+      renderHand(dealerHand, dealerCardsEl, true);
+      renderHand(playerHand, playerCardsEl, false);
+
+      dealerScoreEl.textContent = '?';
+      const pVal = getHandValue(playerHand);
+      playerScoreEl.textContent = pVal;
+
+      btnBjDeal.disabled = true;
+      btnBjHit.disabled = false;
+      btnBjStand.disabled = false;
+      bjHandResult.textContent = 'HAND IN PROGRESS';
+
+      if (pVal === 21) {
+        finishBlackjack();
+      }
+    });
+
+    btnBjHit.addEventListener('click', () => {
+      sfx.init();
+      sfx.playReelTick();
+      playerHand.push(deck.pop());
+      renderHand(playerHand, playerCardsEl, false);
+      const pVal = getHandValue(playerHand);
+      playerScoreEl.textContent = pVal;
+
+      if (pVal >= 21) {
+        finishBlackjack();
+      }
+    });
+
+    btnBjStand.addEventListener('click', () => {
+      sfx.init();
+      finishBlackjack();
+    });
+
+    function finishBlackjack() {
+      bjActive = false;
+      btnBjHit.disabled = true;
+      btnBjStand.disabled = true;
+      btnBjDeal.disabled = false;
+
+      // Reveal dealer
+      renderHand(dealerHand, dealerCardsEl, false);
+      let dVal = getHandValue(dealerHand);
+
+      const pVal = getHandValue(playerHand);
+
+      if (pVal <= 21) {
+        while (dVal < 17) {
+          dealerHand.push(deck.pop());
+          dVal = getHandValue(dealerHand);
+        }
+        renderHand(dealerHand, dealerCardsEl, false);
+      }
+
+      dealerScoreEl.textContent = dVal;
+
+      // Check Winner
+      if (pVal > 21) {
+        bjHandResult.textContent = 'BUST! BUG DEALER WINS';
+        sfx.playLoss();
+      } else if (pVal === 21 && playerHand.length === 2 && (dVal !== 21 || dealerHand.length > 2)) {
+        const win = Math.floor(BJ_BET * 2.5);
+        updateBankroll(win);
+        bjHandResult.textContent = `BLACKJACK! PAID 3:2 (+$${win})`;
+        sfx.playJackpot();
+        showToast(`Natural 21 Blackjack! +$${win}`, '🃏');
+      } else if (dVal > 21) {
+        const win = BJ_BET * 2;
+        updateBankroll(win);
+        bjHandResult.textContent = `DEALER BUSTS! YOU WIN (+$${win})`;
+        sfx.playWin();
+      } else if (pVal > dVal) {
+        const win = BJ_BET * 2;
+        updateBankroll(win);
+        bjHandResult.textContent = `YOU WIN! ${pVal} beats ${dVal} (+$${win})`;
+        sfx.playWin();
+      } else if (pVal === dVal) {
+        updateBankroll(BJ_BET);
+        bjHandResult.textContent = `PUSH! TIE AT ${pVal} (+$${BJ_BET})`;
+        sfx.playCoin();
+      } else {
+        bjHandResult.textContent = `DEALER WINS: ${dVal} beats ${pVal}`;
+        sfx.playLoss();
+      }
+    }
+
+    /* =========================================================
+       SECTION STORE UNLOCK LOGIC
+       ========================================================= */
+    function buySection(id, cost) {
+      sfx.init();
+      if (unlockedSections.has(id)) return;
+
+      if (bankroll < cost) {
+        showToast(`You need $${cost.toLocaleString()} to unlock this!`, '🔒');
+        sfx.playLoss();
+        return;
+      }
+
+      updateBankroll(-cost);
+      unlockedSections.add(id);
+
+      const card = document.getElementById(`sec-${id}`);
+      card.classList.remove('locked');
+      card.classList.add('unlocked');
+      const buyBtn = card.querySelector('.btn-buy-section');
+      buyBtn.textContent = '✓ SECTION UNLOCKED';
+      buyBtn.disabled = true;
+
+      sfx.playWin();
+      triggerConfetti();
+      showToast(`Unlocked: ${card.querySelector('h3').textContent}!`, '🔓');
+
+      unlockProgress.textContent = `UNLOCKED: ${unlockedSections.size} / ${totalSections}`;
+
+      if (unlockedSections.size === totalSections) {
+        sfx.playJackpot();
+        triggerConfetti();
+        showToast('🏆 100% PORTFOLIO HIGH-ROLLER CHAMPION!', '👑');
+      }
+    }
+
+    /* =========================================================
+       BAILOUT & RECRUITER CHEAT
+       ========================================================= */
+    document.getElementById('btnBailout').addEventListener('click', () => {
+      sfx.init();
+      updateBankroll(75);
+      sfx.playCoin();
+      showToast('Pushed hotfix to prod! +$75 Emergency Chips', '⚡');
+    });
+
+    document.getElementById('btnRecruiterCheat').addEventListener('click', () => {
+      sfx.init();
+      updateBankroll(2000);
+      sfx.playJackpot();
+      showToast('Recruiter Venture Capital Funding: +$2,000!', '💼');
+    });
+
+    const btnAudio = document.getElementById('btnAudioToggle');
+    btnAudio.addEventListener('click', () => {
+      sfx.enabled = !sfx.enabled;
+      btnAudio.textContent = sfx.enabled ? '🔊 AUDIO: ON' : '🔇 AUDIO: OFF';
+    });
+
+    /* =========================================================
+       CONFETTI CANNON
+       ========================================================= */
+    const confCanvas = document.getElementById('confettiCanvas');
+    const confCtx = confCanvas.getContext('2d');
+    let confettiParticles = [];
+
+    function resizeConfetti() {
+      confCanvas.width = window.innerWidth;
+      confCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeConfetti);
+    resizeConfetti();
+
+    function triggerConfetti() {
+      const colors = ['#f59e0b', '#38bdf8', '#10b981', '#ec4899', '#ffffff'];
+      for (let i = 0; i < 90; i++) {
+        confettiParticles.push({
+          x: window.innerWidth / 2,
+          y: window.innerHeight / 2,
+          vx: (Math.random() - 0.5) * 18,
+          vy: (Math.random() - 0.8) * 20,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          size: Math.random() * 8 + 4,
+          gravity: 0.45,
+          alpha: 1
+        });
+      }
+    }
+
+    function renderConfetti() {
+      confCtx.clearRect(0, 0, confCanvas.width, confCanvas.height);
+      for (let i = confettiParticles.length - 1; i >= 0; i--) {
+        const p = confettiParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += p.gravity;
+        p.alpha -= 0.015;
+
+        confCtx.save();
+        confCtx.globalAlpha = Math.max(0, p.alpha);
+        confCtx.fillStyle = p.color;
+        confCtx.fillRect(p.x, p.y, p.size, p.size);
+        confCtx.restore();
+
+        if (p.alpha <= 0) {
+          confettiParticles.splice(i, 1);
+        }
+      }
+      requestAnimationFrame(renderConfetti);
+    }
+    renderConfetti();
+
+    // Initial check
+    checkAffordability();
+  </script>
+</body>
+</html>
