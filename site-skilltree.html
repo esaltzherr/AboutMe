@@ -1110,12 +1110,27 @@
     }
   </style>
 <style>
-    /* On-Site Game HUD Common Styling */
+    /* ZERO SCROLLBAR & VIRTUAL CAMERA CONTAINER */
+    html, body {
+      overflow: hidden !important;
+      height: 100vh !important;
+      width: 100vw !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    ::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
     #onsite-game-hud {
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100000;
-      background: rgba(9, 13, 22, 0.94);
+      background: rgba(9, 13, 22, 0.95);
       backdrop-filter: blur(14px);
       border-bottom: 2px solid #6366f1;
       padding: 10px 20px;
@@ -1185,7 +1200,14 @@
       color: #94a3b8;
       font-size: 0.55rem;
     }
-    body {
+
+    /* World stage that translates smoothly without native scrollbar */
+    #world-stage {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      will-change: transform;
       padding-top: 56px;
     }
 
@@ -1200,9 +1222,10 @@
 }
 .st-node-trigger:hover { background: #a855f7; }
 </style></head>
-<body>
 
-  <!-- ON-SITE RESKIN TOP HUD -->
+<body>
+  
+  <!-- ON-SITE RESKIN TOP HUD (Fixed on top of viewport) -->
   <div id="onsite-game-hud">
     <div class="hud-left">
       <a href="play.html" class="btn-hud">◀ Arcade Hub</a>
@@ -1212,13 +1235,15 @@
       <div class="hud-stat-chip">SKILL POINTS: <span id="stPoints">120 SP</span></div><div class="hud-stat-chip">UNLOCKED: <span id="stNodes">0/5</span></div>
     </div>
     <div class="hud-right">
-      <span class="hud-hint">Click [UNLOCK NODE] to ignite constellation lasers</span>
+      <span class="hud-hint">Click [UNLOCK NODE] to ignite constellation lasers | Wheel to scroll</span>
       <button class="btn-hud" id="btnAudioToggle">🔊 AUDIO: ON</button>
       <a href="skilltree.html" class="btn-hud btn-hud-compare">🖥️ Standalone Version ▶</a>
       <a href="index.html" class="btn-hud">Standard Site ▶</a>
     </div>
   </div>
 
+  <div id="world-stage">
+    
 
   <!-- Sticky Top Nav -->
   <header>
@@ -1924,8 +1949,10 @@
       });
     }
   </script>
-<script>
 
+  </div>
+  <script>
+    
 class NativeAudio {
   constructor() { this.ctx = null; this.enabled = true; }
   init() { if (!this.ctx) { const AC = window.AudioContext || window.webkitAudioContext; this.ctx = new AC(); } }
@@ -1958,15 +1985,51 @@ if (audioBtn) {
   });
 }
 
+    
+// Virtual Camera (Zero scrollbars, manual wheel scroll + game camera follow)
+let camY = 0;
+let targetCamY = 0;
+const stage = document.getElementById('world-stage');
+let maxCamY = 3000;
+
+function updateMaxCam() {
+  maxCamY = Math.max(0, stage.scrollHeight - window.innerHeight);
+}
+window.addEventListener('resize', updateMaxCam);
+setTimeout(updateMaxCam, 500);
+
+// Smooth mouse wheel / touchpad scroll without scrollbar
+window.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  targetCamY += e.deltaY;
+  targetCamY = Math.max(0, Math.min(maxCamY, targetCamY));
+}, { passive: false });
+
+function updateCamera(followWorldY) {
+  if (followWorldY !== undefined) {
+    targetCamY = followWorldY - window.innerHeight * 0.45;
+  }
+  targetCamY = Math.max(0, Math.min(maxCamY, targetCamY));
+  camY += (targetCamY - camY) * 0.12;
+  stage.style.transform = `translate3d(0, ${-camY}px, 0)`;
+  return camY;
+}
+
+    
+function loopSt() {
+  updateCamera();
+  requestAnimationFrame(loopSt);
+}
+requestAnimationFrame(loopSt);
 
 let points = 120;
 let unlocked = 0;
 const targets = [
-  { sel: '#featured', cost: 20, name: 'Dark Throne Combat Node' },
-  { sel: '#projects', cost: 25, name: 'Cloud Infrastructure Node' },
-  { sel: '#skills', cost: 25, name: 'Technical Design Node' },
-  { sel: '#experience', cost: 25, name: 'Robotics & Hardware Node' },
-  { sel: '#philosophy', cost: 25, name: 'Apex Competitive Acumen' }
+  { sel: '#featured', cost: 20 },
+  { sel: '#projects', cost: 25 },
+  { sel: '#skills', cost: 25 },
+  { sel: '#experience', cost: 25 },
+  { sel: '#philosophy', cost: 25 }
 ];
 
 targets.forEach((t, i) => {
@@ -1994,5 +2057,7 @@ targets.forEach((t, i) => {
   }
 });
 
-</script></body>
+  </script>
+</body>
+
 </html>
