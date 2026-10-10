@@ -838,7 +838,7 @@
 
     .pokemon-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
       gap: 10px;
       margin-top: 12px;
       width: 100%;
@@ -849,7 +849,7 @@
       background: rgba(15, 23, 42, 0.95);
       border: 1px solid rgba(251, 191, 36, 0.25);
       border-radius: 12px;
-      padding: 12px 8px;
+      padding: 12px 6px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -868,21 +868,20 @@
     }
 
     .pokemon-img {
-      width: 58px;
-      height: 58px;
+      width: 54px;
+      height: 54px;
       object-fit: contain;
       filter: drop-shadow(0 3px 10px rgba(251, 191, 36, 0.25));
     }
 
     .pokemon-info-name {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 800;
       color: #ffffff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
+      line-height: 1.25;
       text-align: center;
+      max-width: 100%;
+      display: block;
     }
 
     /* Resume Downloads Bar */
@@ -1513,6 +1512,16 @@
               <div class="pokemon-card">
                 <img src="images/pokemon/golisopod_highres.png" alt="Shiny Mega Golisopod" class="pokemon-img" />
                 <span class="pokemon-info-name">Mega Golisopod ✨</span>
+              </div>
+              <!-- Cramorant (Gorging) -->
+              <div class="pokemon-card">
+                <img src="images/pokemon/cramorant_highres.png" alt="Shiny Cramorant (Gorging Form)" class="pokemon-img" />
+                <span class="pokemon-info-name">Cramorant ✨</span>
+              </div>
+              <!-- Litten -->
+              <div class="pokemon-card">
+                <img src="images/pokemon/litten_highres.png" alt="Shiny Litten" class="pokemon-img" />
+                <span class="pokemon-info-name">Litten ✨</span>
               </div>
             </div>
           </div>
