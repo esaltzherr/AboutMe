@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elroy Saltzherr • Portfolio Play Arcade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Press+Start+2P&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #070b14;
+      --card-bg: rgba(15, 23, 42, 0.85);
+      --accent: #6366f1;
+      --cyan: #38bdf8;
+      --gold: #fbbf24;
+      --green: #34d399;
+      --rose: #f43f5e;
+      --purple: #a855f7;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 10%, rgba(99, 102, 241, 0.18) 0%, transparent 60%),
+        radial-gradient(circle at 80% 80%, rgba(56, 189, 248, 0.12) 0%, transparent 50%),
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 50px 24px 80px 24px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 50px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      color: #cbd5e1;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.88rem;
+      transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      transform: translateX(-3px);
+    }
+
+    .arcade-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(251, 191, 36, 0.12);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      border-radius: 999px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.65rem;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+    }
+
+    .hero-title {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .hero-title h1 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 1.8rem;
+      line-height: 1.5;
+      color: #fff;
+      text-shadow: 0 0 20px rgba(99, 102, 241, 0.6), 0 0 40px rgba(56, 189, 248, 0.4);
+      margin-bottom: 16px;
+    }
+
+    .hero-title p {
+      font-size: 1.1rem;
+      color: #94a3b8;
+      max-width: 680px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 28px;
+    }
+
+    .game-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+      transition: all 0.25s ease;
+    }
+
+    .game-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 22px 45px rgba(0, 0, 0, 0.5), 0 0 30px rgba(99, 102, 241, 0.25);
+    }
+
+    .game-tag {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .game-icon-box {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+
+    .game-card h2 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .game-card .subtitle {
+      font-size: 0.85rem;
+      color: var(--cyan);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 14px;
+    }
+
+    .game-card p {
+      font-size: 0.94rem;
+      color: #94a3b8;
+      line-height: 1.6;
+      margin-bottom: 22px;
+      flex-grow: 1;
+    }
+
+    .mechanics-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 24px;
+    }
+
+    .mech-pill {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .btn-play {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      text-decoration: none;
+      color: #fff;
+      transition: all 0.2s;
+    }
+
+    .btn-play:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.15);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <a href="index.html" class="btn-back">← Back to Standard Portfolio</a>
+      <div class="arcade-badge">🕹️ GAME TRAVERSAL LAB • V1.0</div>
+    </div>
+
+    <div class="hero-title">
+      <h1>CHOOSE YOUR TRAVERSAL</h1>
+      <p>
+        Experience Elroy’s shipped games, autonomous cloud systems, and design philosophy rendered as 5 distinct playable video game prototypes.
+      </p>
+    </div>
+
+    <div class="games-grid">
+      <!-- 1. 2D Platformer -->
+      <div class="game-card" style="border-top: 4px solid var(--accent);">
+        <span class="game-tag" style="background: rgba(99, 102, 241, 0.2); color: #818cf8;">PLATFORMER</span>
+        <div>
+          <div class="game-icon-box" style="background: rgba(99, 102, 241, 0.15); color: #818cf8;">⚔️</div>
+          <h2>DOM Platformer</h2>
+          <div class="subtitle">Dark Throne Physics • Web Level</div>
+          <p>
+            Your portfolio website becomes the game level! Run, jump, and wall-slide across project cards, header bars, and skill pills with smooth 2D platforming physics.
+          </p>
+          <div class="mechanics-pill-row">
+            <span class="mech-pill">Gravity & Velocity</span>
+            <span class="mech-pill">DOM Bounding Collisions</span>
+            <span class="mech-pill">Camera Tracking</span>
+          </div>
+        </div>
+        <a href="platformer.html" class="btn-play" style="background: linear-gradient(135deg, var(--accent) 0%, #4338ca 100%); box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);">
+          ▶ Play DOM Platformer
+        </a>
+      </div>
+
+      <!-- 2. 16-Bit RPG Town -->
+      <div class="game-card" style="border-top: 4px solid var(--green);">
+        <span class="game-tag" style="background: rgba(52, 211, 153, 0.2); color: #34d399;">RPG OVERWORLD</span>
+        <div>
+          <div class="game-icon-box" style="background: rgba(52, 211, 153, 0.15); color: #34d399;">🗺️</div>
+          <h2>16-Bit Town RPG</h2>
+          <div class="subtitle">Zelda & Pokémon Style • Village</div>
+          <p>
+            Explore a retro top-down pixel village! Visit the Dark Throne Keep, inspect automated drones at the Cloud Foundry, and pet roaming shiny Pokémon in the meadow.
+          </p>
+          <div class="mechanics-pill-row">
+            <span class="mech-pill">4-Way Walk Cycles</span>
+            <span class="mech-pill">Typewriter Dialogue</span>
+            <span class="mech-pill">Roaming Pokémon AI</span>
+          </div>
+        </div>
+        <a href="rpg.html" class="btn-play" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);">
+          ▶ Explore 16-Bit Town
+        </a>
+      </div>
+
+      <!-- 3. Detective Scavenger Hunt -->
+      <div class="game-card" style="border-top: 4px solid var(--gold);">
+        <span class="game-tag" style="background: rgba(251, 191, 36, 0.2); color: #fbbf24;">EASTER EGGS</span>
+        <div>
+          <div class="game-icon-box" style="background: rgba(251, 191, 36, 0.15); color: #fbbf24;">🔎</div>
+          <h2>Scavenger Detective</h2>
+          <div class="subtitle">Zero Friction • Web Audio Juice</div>
+          <p>
+            Experience the standard website elevated with hidden interactive secrets, synthesized 8-bit sound effects, Easter eggs, and a celebration confetti cannon upon 100% completion.
+          </p>
+          <div class="mechanics-pill-row">
+            <span class="mech-pill">8-Bit Synthesized Audio</span>
+            <span class="mech-pill">Radar Secrets HUD</span>
+            <span class="mech-pill">Konami Code</span>
+          </div>
+        </div>
+        <a href="scavenger.html" class="btn-play" style="background: linear-gradient(135deg, #d97706 0%, #b45309 100%); box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);">
+          ▶ Start Scavenger Hunt
+        </a>
+      </div>
+
+      <!-- 4. Metroidvania Skill Tree -->
+      <div class="game-card" style="border-top: 4px solid var(--purple);">
+        <span class="game-tag" style="background: rgba(168, 85, 247, 0.2); color: #c084fc;">SKILL GRAPH</span>
+        <div>
+          <div class="game-icon-box" style="background: rgba(168, 85, 247, 0.15); color: #c084fc;">⚡</div>
+          <h2>Constellation Tree</h2>
+          <div class="subtitle">Path of Exile • Sphere Grid</div>
+          <p>
+            Traverse Elroy’s career through an interactive, zoomable constellation skill tree. Spend experience points to light up laser nodes connecting combat code and systems.
+          </p>
+          <div class="mechanics-pill-row">
+            <span class="mech-pill">Interactive Canvas Graph</span>
+            <span class="mech-pill">Branching Unlocks</span>
+            <span class="mech-pill">Pan & Zoom Controls</span>
+          </div>
+        </div>
+        <a href="skilltree.html" class="btn-play" style="background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); box-shadow: 0 4px 16px rgba(168, 85, 247, 0.4);">
+          ▶ Enter Skill Tree
+        </a>
+      </div>
+
+      <!-- 5. Pac-Man / Bullet Hell Arcade -->
+      <div class="game-card" style="border-top: 4px solid var(--rose);">
+        <span class="game-tag" style="background: rgba(244, 63, 94, 0.2); color: #fb7185;">ARCADE ACTION</span>
+        <div>
+          <div class="game-icon-box" style="background: rgba(244, 63, 94, 0.15); color: #fb7185;">👾</div>
+          <h2>Arcade Pellet Scroller</h2>
+          <div class="subtitle">Pac-Man × Bullet Hell Survival</div>
+          <p>
+            Pilot your developer ship across the screen, eating portfolio XP pellets while dodging "Bugs" and "Deadlines." Project cards power up your weapons to blast them away!
+          </p>
+          <div class="mechanics-pill-row">
+            <span class="mech-pill">CRT Scanline Aesthetic</span>
+            <span class="mech-pill">Enemy Wave AI</span>
+            <span class="mech-pill">Project Power-Ups</span>
+          </div>
+        </div>
+        <a href="arcade.html" class="btn-play" style="background: linear-gradient(135deg, #e11d48 0%, #be123c 100%); box-shadow: 0 4px 16px rgba(244, 63, 94, 0.4);">
+          ▶ Launch Arcade Mode
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
