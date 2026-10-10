@@ -236,20 +236,23 @@
       color: #38bdf8;
     }
 
-    /* UCSC Banana Slug (Just the slug above UCSC) */
+    /* UCSC Banana Slug (Real Banana Slug Vector above UCSC) */
     .ucsc-slug-peek {
       position: absolute;
-      top: -24px;
-      right: 18px;
-      font-size: 1.35rem;
+      top: -34px;
+      right: 28px;
       pointer-events: none;
       z-index: 200;
-      transform: scale(0);
-      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
-      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform: translateY(10px) scale(0);
+      transform-origin: bottom center;
+      transition: transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     .ucsc-slug-peek.show {
-      transform: scale(1);
+      transform: translateY(0) scale(1);
+    }
+    .ucsc-slug-peek svg {
+      display: block;
+      filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 8px rgba(250, 204, 21, 0.5));
     }
 
     /* Dark Throne Flashlight Spotlight */
@@ -513,7 +516,78 @@
       to { transform: scale(1); opacity: 1; }
     }
 
-    /* League of Legends: Clean Official Mastery 7 Icon (Centered) */
+    /* League of Legends: Interactive Champion Bubbles & Mastery 7 Emote */
+    .league-bubbles-wrapper {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 16px;
+      padding: 10px 0 6px 0;
+    }
+    .league-champ-bubble {
+      position: relative;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2.5px solid #ca8a04;
+      background: #0f172a;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(234, 179, 8, 0.2);
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.2s, box-shadow 0.2s;
+      flex-shrink: 0;
+    }
+    .league-champ-bubble:hover {
+      transform: translateY(-6px) scale(1.08);
+      border-color: #facc15;
+      box-shadow: 0 0 25px rgba(250, 204, 21, 0.8), inset 0 0 15px rgba(250, 204, 21, 0.4);
+    }
+    .league-champ-avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+    .league-mastery-popup {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%) scale(0);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: none;
+      z-index: 120;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s ease;
+      opacity: 0;
+      white-space: nowrap;
+    }
+    .league-mastery-popup.show {
+      transform: translateX(-50%) scale(1);
+      opacity: 1;
+    }
+    .league-mastery-crest-icon {
+      width: 58px;
+      height: auto;
+      filter: drop-shadow(0 0 14px rgba(234, 179, 8, 0.9));
+      animation: masteryGleam 1.8s ease-in-out infinite alternate;
+    }
+    .league-mastery-pts-badge {
+      margin-top: 4px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid #eab308;
+      box-shadow: 0 0 12px rgba(234, 179, 8, 0.5);
+      color: #fef08a;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.52rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+    @keyframes masteryGleam {
+      0% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(234, 179, 8, 0.7)); }
+      100% { transform: scale(1.05); filter: drop-shadow(0 0 20px rgba(250, 204, 21, 0.95)); }
+    }
     .lol-mastery-crest-img {
       position: absolute !important;
       top: 50%; left: 50%;
@@ -619,31 +693,41 @@
     }
     .easter-pokeball-sprite {
       position: absolute !important;
-      width: 28px; height: 28px;
-      border-radius: 50%;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+      width: 34px; height: 34px;
       pointer-events: none;
       z-index: 106;
-      overflow: hidden;
-      border: 2px solid #000;
+      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+      transition: transform 0.14s ease-out;
     }
-    .pokeball-btn-center {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 8px; height: 8px;
-      background: #fff;
-      border: 2px solid #000;
-      border-radius: 50%;
-      z-index: 2;
+    .easter-pokeball-sprite .pokeball-svg {
+      width: 100%; height: 100%;
+      display: block;
     }
-    .pokeball-mid-band {
-      position: absolute;
-      top: 50%; left: 0; right: 0;
-      transform: translateY(-50%);
-      height: 3px;
-      background: #000;
-      z-index: 1;
+    .easter-pokeball-sprite.ball-burst .pokeball-top-half {
+      transform: translateY(-24px) rotate(-35deg) scale(0.9);
+      opacity: 0;
+      transition: transform 0.35s cubic-bezier(0.15, 0.9, 0.3, 1.2), opacity 0.3s ease;
+    }
+    .easter-pokeball-sprite.ball-burst .pokeball-bottom-half {
+      transform: translateY(18px) rotate(22deg) scale(0.9);
+      opacity: 0;
+      transition: transform 0.35s cubic-bezier(0.15, 0.9, 0.3, 1.2), opacity 0.3s ease;
+    }
+    .easter-pokeball-sprite.ball-caught {
+      filter: drop-shadow(0 0 16px rgba(250, 204, 21, 0.9)) drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+      transform: scale(1.18);
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .easter-poof-particle {
+      position: absolute !important;
+      pointer-events: none;
+      z-index: 108;
+      font-size: 1.1rem;
+      animation: poofScatter 0.5s ease-out forwards;
+    }
+    @keyframes poofScatter {
+      0% { transform: translate(0, 0) scale(0.5); opacity: 1; }
+      100% { transform: translate(var(--px), var(--py)) scale(1.4); opacity: 0; }
     }
 
     /* Competitive Robotics Status Badge (NO sliding!) */
@@ -768,14 +852,47 @@
   }
 
   /* =========================================================
-     1. UCSC BANANA SLUG PEEK (ONLY SLUG ABOVE UCSC)
+     1. UCSC BANANA SLUG PEEK (REAL BANANA SLUG VECTOR)
      ========================================================= */
   const badgePill = document.querySelector('.badge-pill');
   if (badgePill) {
     badgePill.style.position = 'relative';
     const slug = document.createElement('div');
     slug.className = 'ucsc-slug-peek';
-    slug.innerHTML = '🍌 🐌';
+    slug.innerHTML = `
+      <svg class="ucsc-slug-svg" viewBox="0 0 120 48" width="90" height="36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="slug-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#fef08a"/>
+            <stop offset="40%" stop-color="#facc15"/>
+            <stop offset="100%" stop-color="#eab308"/>
+          </linearGradient>
+        </defs>
+        <!-- Slime trail gleam -->
+        <path d="M 12 43 Q 60 41 108 43" stroke="rgba(253, 224, 71, 0.45)" stroke-width="3" stroke-linecap="round"/>
+        <!-- Slug Body -->
+        <path d="M 12 42 C 25 40, 40 32, 58 26 C 66 23, 76 22, 88 23 C 98 24, 106 28, 105 35 C 104 40, 94 42, 82 42 C 55 42, 35 43, 12 42 Z" fill="url(#slug-grad)" stroke="#ca8a04" stroke-width="1.5" stroke-linejoin="round"/>
+        <!-- Mantle (saddle) -->
+        <path d="M 64 24 C 68 20, 84 20, 88 24 C 90 28, 86 34, 76 34 C 66 34, 62 28, 64 24 Z" fill="#fde047" stroke="#d97706" stroke-width="1.2"/>
+        <!-- Upper Eye Stalks (Tentacles) -->
+        <path d="M 97 24 C 99 18, 102 12, 104 8" stroke="#ca8a04" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="104" cy="8" r="2.2" fill="#78350f"/>
+        <circle cx="104.5" cy="7.5" r="0.8" fill="#ffffff"/>
+        <path d="M 102 26 C 106 20, 110 14, 113 11" stroke="#ca8a04" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="113" cy="11" r="2.2" fill="#78350f"/>
+        <circle cx="113.5" cy="10.5" r="0.8" fill="#ffffff"/>
+        <!-- Lower Sensory Tentacles -->
+        <path d="M 104 33 C 107 35, 110 36, 112 36" stroke="#ca8a04" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M 101 36 C 103 38, 106 39, 108 39" stroke="#ca8a04" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Characteristic Banana Slug Spots -->
+        <ellipse cx="40" cy="35" rx="2.2" ry="1.4" fill="#854d0e" opacity="0.65"/>
+        <ellipse cx="52" cy="30" rx="2.5" ry="1.5" fill="#854d0e" opacity="0.65"/>
+        <ellipse cx="60" cy="36" rx="1.8" ry="1.2" fill="#854d0e" opacity="0.55"/>
+        <ellipse cx="78" cy="27" rx="2.2" ry="1.3" fill="#854d0e" opacity="0.65"/>
+        <ellipse cx="85" cy="32" rx="1.6" ry="1" fill="#854d0e" opacity="0.55"/>
+        <ellipse cx="30" cy="39" rx="1.6" ry="1" fill="#854d0e" opacity="0.55"/>
+      </svg>
+    `;
     badgePill.appendChild(slug);
 
     badgePill.addEventListener('mouseenter', () => {
@@ -960,7 +1077,7 @@
   }
 
   /* =========================================================
-     6. BUILDING SCALER: RANDOM SHAPES, TIMED VANISH & THROTTLED AUDIO
+     6. BUILDING SCALER: RIGID-BODY AABB PHYSICS & TIME-BASED LIFECYCLE
      ========================================================= */
   const scalerCard = findProjectCard("Building Scaler");
   if (scalerCard) {
@@ -968,7 +1085,7 @@
     const blockColors = ['#ef4444', '#3b82f6', '#f97316', '#eab308', '#22c55e', '#a855f7', '#06b6d4'];
 
     const persistentBodies = [];
-    const floorY = scalerCard.offsetHeight - 42;
+    const floorY = scalerCard.offsetHeight - 32;
     let physLoopRunning = false;
     let lastClackTime = 0;
 
@@ -983,14 +1100,19 @@
         for (let a = persistentBodies.length - 1; a >= 0; a--) {
           const bA = persistentBodies[a];
 
-          // Timed disappearance countdown
-          bA.life--;
-          if (bA.life <= 0) {
+          // Pure time-based lifetime (6.5s)
+          const elapsed = now - bA.spawnTime;
+          if (elapsed >= bA.lifespan) {
+            bA.el.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
             bA.el.style.opacity = '0';
             bA.el.style.transform += ' scale(0.4)';
-            setTimeout(() => bA.el.remove(), 500);
+            const toRemove = bA.el;
+            setTimeout(() => { if (toRemove && toRemove.parentNode) toRemove.remove(); }, 350);
             persistentBodies.splice(a, 1);
             continue;
+          } else if (elapsed >= bA.lifespan - 1200) {
+            // Fade out smoothly in final 1.2 seconds
+            bA.el.style.opacity = ((bA.lifespan - elapsed) / 1200).toFixed(2);
           }
 
           if (bA.settled) continue;
@@ -1001,44 +1123,85 @@
           bA.rot += bA.vrot;
           activeMoving = true;
 
-          // Floor
-          if (bA.y >= floorY - bA.h + 20) {
-            bA.y = floorY - bA.h + 20;
-            bA.vy = -bA.vy * 0.28;
-            bA.vx *= 0.75;
-            bA.vrot *= 0.65;
+          // Floor collision (Accurate hitbox: bottom is y + h)
+          if (bA.y + bA.h >= floorY) {
+            bA.y = floorY - bA.h;
+            bA.vy = -bA.vy * 0.22;
+            bA.vx *= 0.7;
+            bA.vrot *= 0.5;
             if (Math.abs(bA.vy) < 0.6) {
               bA.vy = 0;
               bA.settled = true;
             }
           }
 
-          // Walls
-          if (bA.x <= 15) { bA.x = 15; bA.vx = -bA.vx * 0.5; }
-          if (bA.x >= scalerCard.offsetWidth - bA.w - 15) { bA.x = scalerCard.offsetWidth - bA.w - 15; bA.vx = -bA.vx * 0.5; }
+          // Wall collision
+          if (bA.x <= 15) {
+            bA.x = 15;
+            bA.vx = -bA.vx * 0.4;
+          }
+          const maxW = scalerCard.offsetWidth - bA.w - 15;
+          if (bA.x >= maxW) {
+            bA.x = maxW;
+            bA.vx = -bA.vx * 0.4;
+          }
 
-          // Collide with all other bodies
+          // Accurate AABB collision between all bodies
           for (let b = 0; b < persistentBodies.length; b++) {
             if (a === b) continue;
             const bB = persistentBodies[b];
-            const dx = bA.x - bB.x;
-            const dy = bA.y - bB.y;
-            const minDist = (bA.w + bB.w) * 0.45;
-            const dist = Math.hypot(dx, dy);
 
-            if (dist < minDist) {
-              const overlap = minDist - dist;
-              const nx = dx / (dist || 1);
-              const ny = dy / (dist || 1);
+            // Centers
+            const cxA = bA.x + bA.w * 0.5;
+            const cyA = bA.y + bA.h * 0.5;
+            const cxB = bB.x + bB.w * 0.5;
+            const cyB = bB.y + bB.h * 0.5;
 
-              bA.x += nx * overlap * 0.5;
-              bA.y += ny * overlap * 0.5;
-              bB.x -= nx * overlap * 0.5;
-              bB.y -= ny * overlap * 0.5;
+            const dx = cxA - cxB;
+            const dy = cyA - cyB;
 
-              bA.vx += nx * 1.2;
-              bB.vx -= nx * 1.2;
-              bB.settled = false;
+            const halfW = (bA.w + bB.w) * 0.5;
+            const halfH = (bA.h + bB.h) * 0.5;
+
+            const overlapX = halfW - Math.abs(dx);
+            const overlapY = halfH - Math.abs(dy);
+
+            if (overlapX > 0 && overlapY > 0) {
+              // Colliding! Resolve along axis of minimum penetration
+              if (overlapX < overlapY) {
+                // Separate horizontally
+                const signX = dx > 0 ? 1 : -1;
+                bA.x += signX * overlapX * 0.5;
+                bB.x -= signX * overlapX * 0.5;
+                const vDiff = (bA.vx - bB.vx) * 0.35;
+                bA.vx = vDiff;
+                bB.vx = -vDiff;
+                bA.settled = false;
+                bB.settled = false;
+              } else {
+                // Separate vertically
+                const signY = dy > 0 ? 1 : -1;
+                bA.y += signY * overlapY * 0.5;
+                bB.y -= signY * overlapY * 0.5;
+
+                if (dy < 0) {
+                  // A is on top of B
+                  bA.vy = -bA.vy * 0.2;
+                  bA.vx *= 0.8;
+                  if (Math.abs(bA.vy) < 0.6) {
+                    bA.vy = 0;
+                    bA.settled = true;
+                  }
+                } else {
+                  // B is on top of A
+                  bB.vy = -bB.vy * 0.2;
+                  bB.vx *= 0.8;
+                  if (Math.abs(bB.vy) < 0.6) {
+                    bB.vy = 0;
+                    bB.settled = true;
+                  }
+                }
+              }
 
               // Throttled quiet clack audio (max 2 per sec)
               if (now - lastClackTime > 450) {
@@ -1063,20 +1226,15 @@
     scalerCard.addEventListener('mouseenter', () => {
       markSecret('scaler_blocks');
 
-      // Randomize block shapes: Square (22x22), Wide (32x16), Tall (16x32)
+      // Randomize block shapes: Square (24x24), Wide (36x18), Tall (18x36)
       const shapes = [
-        { w: 22, h: 22 },
-        { w: 32, h: 16 },
-        { w: 16, h: 32 }
+        { w: 24, h: 24 },
+        { w: 36, h: 18 },
+        { w: 18, h: 36 }
       ];
 
       for (let i = 0; i < 3; i++) {
         setTimeout(() => {
-          if (persistentBodies.length > 15) {
-            const oldest = persistentBodies.shift();
-            if (oldest && oldest.el) oldest.el.remove();
-          }
-
           const shape = shapes[Math.floor(Math.random() * shapes.length)];
           const el = document.createElement('div');
           el.className = 'physics-tetris-block';
@@ -1089,14 +1247,15 @@
             el,
             w: shape.w,
             h: shape.h,
-            x: 35 + Math.random() * (scalerCard.offsetWidth - 100),
+            x: 35 + Math.random() * (scalerCard.offsetWidth - 110),
             y: 10,
-            vx: (Math.random() - 0.5) * 3,
+            vx: (Math.random() - 0.5) * 2.5,
             vy: 1,
-            rot: (Math.random() - 0.5) * 20,
-            vrot: (Math.random() - 0.5) * 6,
+            rot: 0,
+            vrot: (Math.random() - 0.5) * 2,
             settled: false,
-            life: 240 // Disappears after ~6 seconds
+            spawnTime: Date.now(),
+            lifespan: 6500 // Purely time-based 6.5s lifetime
           };
           persistentBodies.push(body);
           runPhysLoop();
@@ -1373,26 +1532,51 @@
   }
 
   /* =========================================================
-     14. LEAGUE OF LEGENDS: OFFICIAL IN-GAME MASTERY 7 CREST
+     14. LEAGUE OF LEGENDS: INTERACTIVE CHAMPION BUBBLES & MASTERY EMOTE
      ========================================================= */
   const leagueCard = findDnaCard("League of Legends");
   if (leagueCard) {
     leagueCard.style.position = 'relative';
 
-    const crestImg = document.createElement('img');
-    crestImg.src = 'images/mastery_7.png';
-    crestImg.alt = 'Mastery 7 Crest';
-    crestImg.className = 'lol-mastery-crest-img';
-    leagueCard.appendChild(crestImg);
+    const bubbles = leagueCard.querySelectorAll('.league-champ-bubble');
+    bubbles.forEach(bubble => {
+      const champ = bubble.dataset.champ || 'Champion';
+      const pts = bubble.dataset.pts || '';
 
-    leagueCard.addEventListener('mouseenter', () => {
-      crestImg.classList.add('show');
-      sfx.playMastery();
-      markSecret('league_mastery');
+      const popup = document.createElement('div');
+      popup.className = 'league-mastery-popup';
+      popup.innerHTML = `
+        <img src="images/mastery_7.png" alt="Mastery 7" class="league-mastery-crest-icon" />
+        <div class="league-mastery-pts-badge">${champ} • ${pts}</div>
+      `;
+      bubble.appendChild(popup);
+
+      bubble.addEventListener('mouseenter', () => {
+        popup.classList.add('show');
+        sfx.playMastery();
+        markSecret('league_mastery');
+      });
+
+      bubble.addEventListener('mouseleave', () => {
+        popup.classList.remove('show');
+      });
     });
-    leagueCard.addEventListener('mouseleave', () => {
-      crestImg.classList.remove('show');
-    });
+
+    // Fallback if legacy single image is present
+    const legacyImg = leagueCard.querySelector('.mastery-chart-box img');
+    if (legacyImg && bubbles.length === 0) {
+      const crestImg = document.createElement('img');
+      crestImg.src = 'images/mastery_7.png';
+      crestImg.alt = 'Mastery 7 Crest';
+      crestImg.className = 'lol-mastery-crest-img';
+      leagueCard.appendChild(crestImg);
+      leagueCard.addEventListener('mouseenter', () => {
+        crestImg.classList.add('show');
+        sfx.playMastery();
+        markSecret('league_mastery');
+      });
+      leagueCard.addEventListener('mouseleave', () => crestImg.classList.remove('show'));
+    }
   }
 
   /* =========================================================
@@ -1426,16 +1610,110 @@
   }
 
   /* =========================================================
-     16. POKÉMON: HOVER-TO-CATCH WITH VISIBLE ARCS & VANISH
+     16. POKÉMON: GAME-ACCURATE POKÉBALLS, SHAKES & BREAKS
      ========================================================= */
   const pokeCard = findDnaCard("Pokémon");
   if (pokeCard) {
     pokeCard.style.position = 'relative';
     const ballTiers = [
-      { name: 'Ultra Ball', top: '#1e293b', rate: 0.25 },
-      { name: 'Great Ball', top: '#0284c7', rate: 0.18 },
-      { name: 'Poké Ball', top: '#ef4444', rate: 0.12 }
+      {
+        name: 'Poké Ball',
+        rate: 0.15,
+        svg: `<svg width="34" height="34" viewBox="0 0 100 100" class="pokeball-svg" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="shine-poke" cx="35%" cy="30%" r="50%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.65"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <circle cx="50" cy="50" r="48" fill="#0f172a" />
+          <g class="pokeball-bottom-half">
+            <path d="M 4 50 A 46 46 0 0 0 96 50 Z" fill="#f8fafc" />
+            <path d="M 4 50 A 46 46 0 0 0 96 50 Z" fill="#cbd5e1" opacity="0.3" />
+          </g>
+          <g class="pokeball-top-half">
+            <path d="M 4 50 A 46 46 0 0 1 96 50 Z" fill="#e11d48" />
+            <ellipse cx="38" cy="24" rx="22" ry="12" fill="url(#shine-poke)" />
+          </g>
+          <rect x="4" y="47" width="92" height="6" fill="#0f172a" />
+          <circle cx="50" cy="50" r="15" fill="#0f172a" />
+          <circle cx="50" cy="50" r="9" fill="#f8fafc" />
+          <circle cx="50" cy="50" r="5" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5" />
+        </svg>`
+      },
+      {
+        name: 'Great Ball',
+        rate: 0.22,
+        svg: `<svg width="34" height="34" viewBox="0 0 100 100" class="pokeball-svg" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="shine-great" cx="35%" cy="30%" r="50%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.65"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <circle cx="50" cy="50" r="48" fill="#0f172a" />
+          <g class="pokeball-bottom-half">
+            <path d="M 4 50 A 46 46 0 0 0 96 50 Z" fill="#f8fafc" />
+          </g>
+          <g class="pokeball-top-half">
+            <path d="M 4 50 A 46 46 0 0 1 96 50 Z" fill="#2563eb" />
+            <path d="M 14 36 C 18 20 28 14 38 12 C 34 22 28 32 18 42 Z" fill="#ef4444" />
+            <path d="M 86 36 C 82 20 72 14 62 12 C 66 22 72 32 82 42 Z" fill="#ef4444" />
+            <ellipse cx="50" cy="20" rx="20" ry="10" fill="url(#shine-great)" />
+          </g>
+          <rect x="4" y="47" width="92" height="6" fill="#0f172a" />
+          <circle cx="50" cy="50" r="15" fill="#0f172a" />
+          <circle cx="50" cy="50" r="9" fill="#f8fafc" />
+          <circle cx="50" cy="50" r="5" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5" />
+        </svg>`
+      },
+      {
+        name: 'Ultra Ball',
+        rate: 0.32,
+        svg: `<svg width="34" height="34" viewBox="0 0 100 100" class="pokeball-svg" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="shine-ultra" cx="35%" cy="30%" r="50%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <circle cx="50" cy="50" r="48" fill="#0f172a" />
+          <g class="pokeball-bottom-half">
+            <path d="M 4 50 A 46 46 0 0 0 96 50 Z" fill="#f8fafc" />
+          </g>
+          <g class="pokeball-top-half">
+            <path d="M 4 50 A 46 46 0 0 1 96 50 Z" fill="#18181b" />
+            <path d="M 20 46 L 24 20 C 34 10 66 10 76 20 L 80 46 L 68 46 L 65 26 C 58 20 42 20 35 26 L 32 46 Z" fill="#eab308" />
+            <ellipse cx="50" cy="22" rx="16" ry="8" fill="url(#shine-ultra)" />
+          </g>
+          <rect x="4" y="47" width="92" height="6" fill="#0f172a" />
+          <circle cx="50" cy="50" r="15" fill="#0f172a" />
+          <circle cx="50" cy="50" r="9" fill="#f8fafc" />
+          <circle cx="50" cy="50" r="5" fill="#fde047" stroke="#ca8a04" stroke-width="1.5" />
+        </svg>`
+      },
+      {
+        name: 'Master Ball',
+        rate: 0.99,
+        svg: `<svg width="34" height="34" viewBox="0 0 100 100" class="pokeball-svg" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="48" fill="#0f172a" />
+          <g class="pokeball-bottom-half">
+            <path d="M 4 50 A 46 46 0 0 0 96 50 Z" fill="#f8fafc" />
+          </g>
+          <g class="pokeball-top-half">
+            <path d="M 4 50 A 46 46 0 0 1 96 50 Z" fill="#7e22ce" />
+            <circle cx="24" cy="28" r="12" fill="#ec4899" stroke="#be185d" stroke-width="1.5" />
+            <circle cx="76" cy="28" r="12" fill="#ec4899" stroke="#be185d" stroke-width="1.5" />
+            <text x="50" y="34" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="18" fill="#ffffff">M</text>
+          </g>
+          <rect x="4" y="47" width="92" height="6" fill="#0f172a" />
+          <circle cx="50" cy="50" r="15" fill="#0f172a" />
+          <circle cx="50" cy="50" r="9" fill="#f8fafc" />
+          <circle cx="50" cy="50" r="5" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5" />
+        </svg>`
+      }
     ];
+
     const failQuotes = [
       "Oh no! The Pokémon broke free!",
       "Aww! It appeared to be caught!",
@@ -1453,20 +1731,19 @@
         const tier = ballTiers[Math.floor(Math.random() * ballTiers.length)];
         const monName = mon.querySelector('.pokemon-info-name') ? mon.querySelector('.pokemon-info-name').textContent.replace('✨', '').trim() : 'Pokémon';
 
-        // Use getBoundingClientRect for 100% accurate coordinates relative to pokeCard!
+        // 100% accurate coordinates relative to pokeCard
         const pokeRect = pokeCard.getBoundingClientRect();
         const monRect = mon.getBoundingClientRect();
-        const targetX = monRect.left - pokeRect.left + monRect.width * 0.5 - 14;
-        const targetY = monRect.top - pokeRect.top + monRect.height * 0.5 - 14;
+        const targetX = monRect.left - pokeRect.left + monRect.width * 0.5 - 17;
+        const targetY = monRect.top - pokeRect.top + monRect.height * 0.5 - 17;
 
         // Launch ball from top-right corner of card
-        const startX = pokeCard.offsetWidth - 40;
+        const startX = pokeCard.offsetWidth - 45;
         const startY = 25;
 
         const ball = document.createElement('div');
         ball.className = 'easter-pokeball-sprite';
-        ball.style.background = `linear-gradient(180deg, ${tier.top} 50%, #ffffff 50%)`;
-        ball.innerHTML = '<div class="pokeball-mid-band"></div><div class="pokeball-btn-center"></div>';
+        ball.innerHTML = tier.svg;
         ball.style.left = `${startX}px`;
         ball.style.top = `${startY}px`;
         pokeCard.appendChild(ball);
@@ -1480,7 +1757,7 @@
           const t = step / totalSteps;
           // Parabolic trajectory towards the hovered mon
           const curX = startX + (targetX - startX) * t;
-          const curY = startY + (targetY - startY) * t - Math.sin(t * Math.PI) * 35;
+          const curY = startY + (targetY - startY) * t - Math.sin(t * Math.PI) * 38;
 
           ball.style.left = `${curX}px`;
           ball.style.top = `${curY}px`;
@@ -1490,19 +1767,65 @@
             clearInterval(throwInt);
             sfx.playPokeballBounce();
 
+            // Pokémon absorbs into ball
+            mon.style.transition = 'filter 0.25s ease, opacity 0.25s ease, transform 0.25s ease';
+            mon.style.filter = 'brightness(2.2) drop-shadow(0 0 14px #ef4444)';
+            mon.style.opacity = '0.25';
+            mon.style.transform = 'scale(0.85)';
+
             const rollSuccess = Math.random() < tier.rate;
-            let wobbles = 0;
 
-            const wobbleInt = setInterval(() => {
-              wobbles++;
+            // Wobble 1 (at 320ms)
+            setTimeout(() => {
               sfx.playPokeballWobble();
-              ball.style.transform = `rotate(${wobbles % 2 === 0 ? 18 : -18}deg) scale(1.15)`;
+              ball.style.transform = 'rotate(-26deg) scale(1.12)';
+              setTimeout(() => {
+                ball.style.transform = 'rotate(18deg) scale(1.12)';
+                setTimeout(() => {
+                  ball.style.transform = 'rotate(0deg) scale(1)';
+                }, 130);
+              }, 130);
+            }, 320);
 
-              // FAILED (Breakout)
-              if (!rollSuccess && wobbles >= 2) {
-                clearInterval(wobbleInt);
+            // Wobble 2 (at 900ms)
+            setTimeout(() => {
+              sfx.playPokeballWobble();
+              ball.style.transform = 'rotate(-26deg) scale(1.12)';
+              setTimeout(() => {
+                ball.style.transform = 'rotate(18deg) scale(1.12)';
+                setTimeout(() => {
+                  ball.style.transform = 'rotate(0deg) scale(1)';
+                }, 130);
+              }, 130);
+            }, 900);
+
+            // Outcome (at 1500ms): Break or Wobble 3 & Catch
+            setTimeout(() => {
+              if (!rollSuccess) {
+                // FAILED: BALL BREAKS!
                 sfx.playPokemonBreakout();
-                ball.style.transform = 'scale(1.4)';
+                ball.classList.add('ball-burst');
+
+                // Burst particles
+                const poofIcons = ['💥', '💨', '✨', '💨'];
+                const angles = [45, 135, 225, 315];
+                poofIcons.forEach((icon, pi) => {
+                  const p = document.createElement('div');
+                  p.className = 'easter-poof-particle';
+                  p.textContent = icon;
+                  const rad = angles[pi] * Math.PI / 180;
+                  p.style.setProperty('--px', `${Math.cos(rad) * 28}px`);
+                  p.style.setProperty('--py', `${Math.sin(rad) * 28}px`);
+                  p.style.left = ball.style.left;
+                  p.style.top = ball.style.top;
+                  pokeCard.appendChild(p);
+                  setTimeout(() => p.remove(), 500);
+                });
+
+                // Pokémon breaks free
+                mon.style.filter = 'none';
+                mon.style.opacity = '1';
+                mon.style.transform = 'scale(1)';
 
                 const failBanner = document.createElement('div');
                 failBanner.className = 'pokemon-fail-banner';
@@ -1514,36 +1837,45 @@
                   ball.remove();
                   failBanner.remove();
                   mon.dataset.ballActive = 'false';
-                }, 1600);
-              }
-              // SUCCESS (Caught)
-              else if (rollSuccess && wobbles >= 3) {
-                clearInterval(wobbleInt);
-                sfx.playPokemonCaught();
-                ball.style.transform = 'scale(1.25)';
-
-                mon.classList.add('pokemon-caught-vanish');
-
-                const winBanner = document.createElement('div');
-                winBanner.className = 'easter-caught-banner';
-                winBanner.textContent = `⭐ All right! Shiny ${monName} was caught! ⭐`;
-                pokeCard.appendChild(winBanner);
-
+                }, 1500);
+              } else {
+                // SUCCESS: Wobble 3 and Click!
+                sfx.playPokeballWobble();
+                ball.style.transform = 'rotate(-26deg) scale(1.12)';
                 setTimeout(() => {
-                  ball.remove();
-                  winBanner.remove();
-                }, 2200);
-
-                setTimeout(() => {
-                  mon.classList.remove('pokemon-caught-vanish');
-                  mon.classList.add('pokemon-respawn-burst');
+                  ball.style.transform = 'rotate(18deg) scale(1.12)';
                   setTimeout(() => {
-                    mon.classList.remove('pokemon-respawn-burst');
-                    mon.dataset.ballActive = 'false';
-                  }, 800);
-                }, 4500);
+                    ball.style.transform = 'rotate(0deg) scale(1)';
+
+                    // Click! Caught!
+                    setTimeout(() => {
+                      sfx.playPokemonCaught();
+                      ball.classList.add('ball-caught');
+                      mon.classList.add('pokemon-caught-vanish');
+
+                      const winBanner = document.createElement('div');
+                      winBanner.className = 'easter-caught-banner';
+                      winBanner.textContent = `⭐ All right! Shiny ${monName} was caught! ⭐`;
+                      pokeCard.appendChild(winBanner);
+
+                      setTimeout(() => {
+                        ball.remove();
+                        winBanner.remove();
+                      }, 2200);
+
+                      setTimeout(() => {
+                        mon.classList.remove('pokemon-caught-vanish');
+                        mon.classList.add('pokemon-respawn-burst');
+                        setTimeout(() => {
+                          mon.classList.remove('pokemon-respawn-burst');
+                          mon.dataset.ballActive = 'false';
+                        }, 800);
+                      }, 4500);
+                    }, 350);
+                  }, 130);
+                }, 130);
               }
-            }, 350);
+            }, 1500);
           }
         }, 25);
       });
